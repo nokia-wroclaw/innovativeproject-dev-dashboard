@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Dashboard.Infrastructure.Models;
+﻿using Dashboard.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dashboard.Infrastructure.Data.Context
+namespace Dashboard.Data.Context
 {
     public class AppDbContext : DbContext
     {

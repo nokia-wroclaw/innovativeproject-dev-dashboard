@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
-using Dashboard.Infrastructure.Data.Interfaces;
+using Dashboard.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dashboard.Infrastructure.Data.Repositories
+namespace Dashboard.Data.Repositories
 {
     public class EfRepository<T> : IEfRepository<T>
         where T : class

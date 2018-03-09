@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Dashboard.Infrastructure.Data.Interfaces
+namespace Dashboard.Core.Interfaces.Repositories
 {
     /// <summary>
     /// Entity Framework repository for db model

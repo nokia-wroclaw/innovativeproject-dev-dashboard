@@ -1,6 +1,6 @@
-﻿using Dashboard.Application.Interfaces;
+﻿using Dashboard.Application.Interfaces.Services;
 using Dashboard.Application.Services;
-using Dashboard.Infrastructure.Data.Interfaces;
+using Dashboard.Core.Interfaces.Repositories;
 using Dashboard.Infrastructure.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 

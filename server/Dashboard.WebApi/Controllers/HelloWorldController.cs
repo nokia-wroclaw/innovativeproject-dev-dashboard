@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Dashboard.Application.Interfaces;
+﻿using System.Threading.Tasks;
+using Dashboard.Application.Interfaces.Services;
+using Dashboard.WebApi.ApiModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dashboard.WebApi.Controllers
@@ -19,18 +17,18 @@ namespace Dashboard.WebApi.Controllers
 
         // GET api/helloworld
         [HttpGet]
-        public async Task<JsonResult> Get()
+        public async Task<IActionResult> Get()
         {
             var allItems = await _toDoItemsService.GetAllAsync();
 
-            return Json(new
-            {
-                Documentation = "/swagger/v1/swagger.json",
+            return Ok(new
+                {
+                    Documentation = "/swagger/v1/swagger.json",
 
-                SwaggerEditor = "https://editor.swagger.io/",
+                    SwaggerEditor = "https://editor.swagger.io/",
 
-                ToDoItems = allItems
-            });
+                    ToDoItems = allItems
+                });
         }
     }
 }

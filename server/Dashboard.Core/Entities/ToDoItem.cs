@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Dashboard.Infrastructure.Models
+﻿namespace Dashboard.Core.Entities
 {
     public class ToDoItem
     {
