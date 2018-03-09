@@ -1,8 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatIconModule, MatCardModule } from '@angular/material'; 
+import { MatButtonModule, MatIconModule, MatCardModule } from '@angular/material';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
+import { HelloWorldService } from './hello-world/hello-world.service';
 
 
 @NgModule({
@@ -13,9 +15,10 @@ import { AppComponent } from './app.component';
     BrowserModule,
     MatButtonModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [HelloWorldService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
