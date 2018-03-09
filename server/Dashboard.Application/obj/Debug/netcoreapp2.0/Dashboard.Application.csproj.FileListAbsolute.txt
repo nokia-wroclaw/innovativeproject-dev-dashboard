@@ -1,0 +1,14 @@
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\bin\Debug\netcoreapp2.0\Dashboard.Application.deps.json
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\bin\Debug\netcoreapp2.0\Dashboard.Application.dll
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\bin\Debug\netcoreapp2.0\Dashboard.Application.pdb
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\obj\Debug\netcoreapp2.0\Dashboard.Application.csprojResolveAssemblyReference.cache
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\obj\Debug\netcoreapp2.0\Dashboard.Application.csproj.CoreCompileInputs.cache
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\obj\Debug\netcoreapp2.0\Dashboard.Application.AssemblyInfoInputs.cache
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\obj\Debug\netcoreapp2.0\Dashboard.Application.AssemblyInfo.cs
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\obj\Debug\netcoreapp2.0\Dashboard.Application.csproj.CopyComplete
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\obj\Debug\netcoreapp2.0\Dashboard.Application.dll
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\obj\Debug\netcoreapp2.0\Dashboard.Application.pdb
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.dll
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.pdb
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Models.dll
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Application\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Models.pdb

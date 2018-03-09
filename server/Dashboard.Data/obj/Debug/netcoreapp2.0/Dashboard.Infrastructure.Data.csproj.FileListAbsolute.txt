@@ -1,0 +1,12 @@
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.deps.json
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.dll
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.pdb
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\obj\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.csprojResolveAssemblyReference.cache
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\obj\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.csproj.CoreCompileInputs.cache
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\obj\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.AssemblyInfoInputs.cache
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\obj\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.AssemblyInfo.cs
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\obj\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.dll
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\obj\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.pdb
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Models.dll
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\bin\Debug\netcoreapp2.0\Dashboard.Infrastructure.Models.pdb
+C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\server\Dashboard.Data\obj\Debug\netcoreapp2.0\Dashboard.Infrastructure.Data.csproj.CopyComplete
