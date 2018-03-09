@@ -1,6 +1,7 @@
-﻿using Dashboard.Infrastructure.Data.Context;
-using Dashboard.Infrastructure.Data.Interfaces;
-using Dashboard.Infrastructure.Models;
+﻿using Dashboard.Core.Entities;
+using Dashboard.Core.Interfaces.Repositories;
+using Dashboard.Data.Context;
+using Dashboard.Data.Repositories;
 
 namespace Dashboard.Infrastructure.Data.Repositories
 {

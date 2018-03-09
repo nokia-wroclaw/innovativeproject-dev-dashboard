@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dashboard.Application.Interfaces;
-using Dashboard.Infrastructure.Data.Interfaces;
-using Dashboard.Infrastructure.Models;
+using Dashboard.Application.Interfaces.Services;
+using Dashboard.Core.Entities;
+using Dashboard.Core.Interfaces.Repositories;
 
 namespace Dashboard.Application.Services
 {

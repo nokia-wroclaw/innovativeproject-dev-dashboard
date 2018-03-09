@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Dashboard.Infrastructure.Models;
+using Dashboard.Core.Entities;
 
-namespace Dashboard.Infrastructure.Data.Context
+namespace Dashboard.Data.Context
 {
-    public abstract class AppDbContextSeed
+    public static class AppDbContextSeed
     {
         public static void Seed(AppDbContext ctx)
         {
