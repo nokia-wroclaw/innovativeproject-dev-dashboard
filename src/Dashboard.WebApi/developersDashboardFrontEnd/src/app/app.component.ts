@@ -12,10 +12,13 @@ export class AppComponent {
 
   title = 'developers-dashboard';
 
-  private todoList : Todo[]; 
+  private todoList: Todo[];
+  private errorMessage: String;
 
   constructor(private helloWorldService: HelloWorldService) {
-    helloWorldService.getTodoList().subscribe(todoList => this.todoList = todoList);
+    helloWorldService
+      .getTodoList()
+      .subscribe(todoList => this.todoList = todoList, error => this.errorMessage = error.statusText);
   }
 
 }

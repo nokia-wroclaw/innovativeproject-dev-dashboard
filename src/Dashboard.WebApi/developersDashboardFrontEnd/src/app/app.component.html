@@ -6,6 +6,7 @@
 </div>
 <div style="text-align: center;">
   <h2> Backend connection test: </h2>
+  <p *ngIf="errorMessage">Connection failed: {{errorMessage}}<p>
   <mat-card *ngFor="let todo of todoList; let i = index" style="width: 200px; max-width: 100%; margin: 10px 10px; display: inline-block;">
     <mat-card-title><i class="material-icons">done</i></mat-card-title>
     <mat-card-content>{{todo.id}}: {{todo.text}}</mat-card-content>

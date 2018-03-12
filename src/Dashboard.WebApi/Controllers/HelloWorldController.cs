@@ -21,14 +21,7 @@ namespace Dashboard.WebApi.Controllers
         {
             var allItems = await _toDoItemsService.GetAllAsync();
 
-            return Ok(new
-                {
-                    Documentation = "/swagger/v1/swagger.json",
-
-                    SwaggerEditor = "https://editor.swagger.io/",
-
-                    ToDoItems = allItems
-                });
+            return Ok(allItems);
         }
     }
 }
