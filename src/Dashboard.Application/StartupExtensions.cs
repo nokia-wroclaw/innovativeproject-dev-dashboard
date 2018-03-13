@@ -1,6 +1,7 @@
 ﻿using Dashboard.Application.Interfaces.Services;
 using Dashboard.Application.Services;
 using Dashboard.Core.Interfaces.Repositories;
+using Dashboard.Data.Repositories;
 using Dashboard.Infrastructure.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,7 @@ namespace Dashboard.Application
 
             //Register services
             services.AddTransient<IToDoItemsService, ToDoItemsService>();
+            services.AddTransient<IGitLabFetchService, GitLabFetchService>();
         }
     }
 }

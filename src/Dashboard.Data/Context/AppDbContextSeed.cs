@@ -14,8 +14,8 @@ namespace Dashboard.Data.Context
 
         private static List<ToDoItem> SeedItems => new List<ToDoItem>()
         {
-            new ToDoItem() {Id = 1, Text = "Cyka"},
-            new ToDoItem() {Id = 2, Text = "Hello"},
+            new ToDoItem() {Id = 1, Text = "Hello"},
+            new ToDoItem() {Id = 2, Text = "Cyka"},
             new ToDoItem() {Id = 3, Text = "Ta"},
         };
     }
