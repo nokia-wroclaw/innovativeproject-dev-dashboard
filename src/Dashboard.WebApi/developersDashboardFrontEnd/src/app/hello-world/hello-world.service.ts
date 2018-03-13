@@ -10,8 +10,15 @@ export class HelloWorldService {
 
   constructor(private http: HttpClient) { }
 
+  private url : string = '/api/helloworld';
+
+  getUrl(): string {
+    return this.url;
+  }
+
   getTodoList(): Observable<Todo[]> {
     return this.http.get<Todo[]>('/api/helloworld');
   }
+
 }
 

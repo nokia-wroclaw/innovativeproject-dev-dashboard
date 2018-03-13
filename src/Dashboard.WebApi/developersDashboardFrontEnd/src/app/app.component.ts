@@ -12,8 +12,8 @@ export class AppComponent {
 
   title = 'developers-dashboard';
 
-  private todoList: Todo[];
-  private errorMessage: String;
+  todoList: Todo[];
+  errorMessage: String;
 
   constructor(private helloWorldService: HelloWorldService) {
     helloWorldService
