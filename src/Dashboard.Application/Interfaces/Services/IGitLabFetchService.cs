@@ -6,5 +6,6 @@ namespace Dashboard.Application.Interfaces.Services
 {
     public interface IGitLabFetchService
     {
+        IEnumerable<NGitLab.Models.Project> GetAllAccessibleProjects();
     }
 }

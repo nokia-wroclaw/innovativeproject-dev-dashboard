@@ -18,10 +18,7 @@ namespace Dashboard.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var gitClient = NGitLab.GitLabClient.Connect("https://gitlab.com", "wL6jWfdAuqhqZ_MzERk1");
-            var clientProjects = gitClient.Projects.Accessible;
-
-            return Ok(clientProjects);
+            return Ok(_gitLabFetchService.GetAllAccessibleProjects());
         }
     }
 }
