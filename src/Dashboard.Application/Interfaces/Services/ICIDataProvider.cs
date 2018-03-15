@@ -9,5 +9,6 @@ namespace Dashboard.Application.Interfaces.Services
     public interface ICIDataProvider
     {
         Task<Pipeline> GetMasterAsync();
+        Task<IEnumerable<Pipeline>> GetAllAsync();
     }
 }

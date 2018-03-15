@@ -18,14 +18,14 @@ namespace Dashboard.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(_gitLabDataProvider.GetMasterAsync());
+            return Ok(_gitLabDataProvider.GetAllAsync().Result);
         }
 
-        ////GET api/gitlab/master
-        //[Route("[action]")]
-        //public async Task<IActionResult> Master()
-        //{
-        //    return Ok(_gitLabDataProvider.GetMasterAsync());
-        //}
+        //GET api/gitlab/master
+        [Route("[action]")]
+        public async Task<IActionResult> Master()
+        {
+            return Ok(_gitLabDataProvider.GetMasterAsync().Result);
+        }
     }
 }
