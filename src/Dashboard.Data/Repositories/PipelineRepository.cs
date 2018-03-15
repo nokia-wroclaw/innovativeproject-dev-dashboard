@@ -1,0 +1,14 @@
+﻿
+using Dashboard.Core.Entities;
+using Dashboard.Core.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+namespace Dashboard.Data.Repositories
+{
+    public class PipelineRepository : EfRepository<Pipeline>, IPipelineRepository
+    {
+        public PipelineRepository(DbContext context) : base(context)
+        {
+        }
+    }
+}

@@ -7,18 +7,25 @@ namespace Dashboard.WebApi.Controllers
     [Route("api/[controller]")]
     public class GitLabController : Controller
     {
-        private readonly IGitLabFetchService _gitLabFetchService;
+        private readonly ICIDataProvider _gitLabDataProvider;
 
-        public GitLabController(IGitLabFetchService gitLabFetchService)
+        public GitLabController(ICIDataProvider gitLabDataProvider)
         {
-            _gitLabFetchService = gitLabFetchService;
+            _gitLabDataProvider = gitLabDataProvider;
         }
 
         //GET api/gitlab
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(_gitLabFetchService.GetAllAccessibleProjects());
+            return Ok(_gitLabDataProvider.GetMasterAsync());
         }
+
+        ////GET api/gitlab/master
+        //[Route("[action]")]
+        //public async Task<IActionResult> Master()
+        //{
+        //    return Ok(_gitLabDataProvider.GetMasterAsync());
+        //}
     }
 }

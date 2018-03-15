@@ -13,10 +13,11 @@ namespace Dashboard.Application
         {
             //Register repositories
             services.AddTransient<IToDoItemRepository, ToDoItemRepository>();
+            services.AddTransient<IPipelineRepository, PipelineRepository>();
 
             //Register services
             services.AddTransient<IToDoItemsService, ToDoItemsService>();
-            services.AddTransient<IGitLabFetchService, GitLabFetchService>();
+            services.AddTransient<ICIDataProvider, GitLabDataProvider>();
         }
     }
 }
