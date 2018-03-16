@@ -10,6 +10,7 @@ using Dashboard.Core.Interfaces.Repositories;
 
 namespace Dashboard.Application.Services
 {
+    //TODO: add some validation
     public class ProjectTileService : IProjectTileService
     {
         private readonly IProjectTileRepository _projectTileRepository;
@@ -21,20 +22,62 @@ namespace Dashboard.Application.Services
             _projectTileRepository = projectTileRepository;
         }
 
-        public Task<ProjectTile> GetTileById(int id)
+        public Task<ProjectTile> GetTileByIdAsync(int id)
         {
             return _projectTileRepository.GetByIdAsync(id);
         }
 
+        public Task<IEnumerable<ProjectTile>> GetAllTilesAsync()
+        {
+            return _projectTileRepository.GetAllAsync();
+        }
+
+        public async Task DeleteTileAsync(int id)
+        {
+            var tile = await GetTileByIdAsync(id);
+            if(tile == null)
+                return;
+
+            await _projectTileRepository.DeleteAsync(tile);
+            await _projectTileRepository.SaveAsync();
+        }
+
+        public async Task<ProjectTile> UpdateTileAsync(int id, ProjectTile updatedTile)
+        {
+            var tile = await GetTileByIdAsync(id);
+            if (tile == null)
+                return null;
+
+            //TODO: change when automapper
+            tile.ApiAuthenticationToken = updatedTile.ApiAuthenticationToken;
+            tile.ApiHostUrl = updatedTile.ApiHostUrl;
+            tile.ApiProjectId = updatedTile.ApiProjectId;
+            tile.DataProviderName = updatedTile.DataProviderName;
+            tile.FrontConfig = updatedTile.FrontConfig;
+
+            var r = await _projectTileRepository.UpdateAsync(tile, id);
+            await _projectTileRepository.SaveAsync();
+
+            return r;
+        }
+
+        public async Task<ProjectTile> CreateTileAsync(ProjectTile tile)
+        {
+            var r = await _projectTileRepository.AddAsync(tile);
+            await _projectTileRepository.SaveAsync();
+
+            return r;
+        }
+
         /// <summary>
-        /// 
+        /// Downloads pipelines from CiDataProvider for given project
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns>All pipelines</returns>
         public async Task UpdatePipelinesForProjectAsync(int projectId)
         {
             //TODO: Refactor so this method returns error string and piplines, some validation
-            var project = await GetTileById(projectId);
+            var project = await GetTileByIdAsync(projectId);
             if (project == null) return;
 
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);

@@ -14,6 +14,15 @@ namespace Dashboard.Core.Entities
 
         public string DataProviderName { get; set; }
 
+        public FrontConfig FrontConfig { get; set; }
         public List<Pipeline> Pipelines { get; set; }
+    }
+
+    public class FrontConfig
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public int Position { get; set; }
+        public string JsonAdditionalConfig { get; set; }
     }
 }

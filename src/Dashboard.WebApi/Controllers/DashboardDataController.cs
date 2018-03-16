@@ -33,7 +33,7 @@ namespace Dashboard.WebApi.Controllers
         public async Task<IActionResult> ProjectTile(int projectTileId)
         {
 
-            var project = await _projectTileService.GetTileById(projectTileId);
+            var project = await _projectTileService.GetTileByIdAsync(projectTileId);
             if (project == null)
                 return NotFound();
 
@@ -44,7 +44,7 @@ namespace Dashboard.WebApi.Controllers
         [HttpPost("{projectTileId}")]
         public async Task<IActionResult> UpdatePipelinesProjectTile(int projectTileId)
         {
-            var project = await _projectTileService.GetTileById(projectTileId);
+            var project = await _projectTileService.GetTileByIdAsync(projectTileId);
             if (project == null)
                 return NotFound();
 

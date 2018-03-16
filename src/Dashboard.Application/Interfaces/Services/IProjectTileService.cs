@@ -9,7 +9,12 @@ namespace Dashboard.Application.Interfaces.Services
 {
     public interface IProjectTileService
     {
-        Task<ProjectTile> GetTileById(int id);
+        Task<ProjectTile> GetTileByIdAsync(int id);
+        Task<IEnumerable<ProjectTile>> GetAllTilesAsync();
+        Task DeleteTileAsync(int id);
+        Task<ProjectTile> UpdateTileAsync(ProjectTile updatedTile);
+        Task<ProjectTile> CreateTileAsync(ProjectTile tile);
+
         Task UpdatePipelinesForProjectAsync(int projectId);
     }
 }
