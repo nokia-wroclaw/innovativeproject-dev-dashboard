@@ -10,6 +10,7 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {DashboardAdminComponent} from './dashboard-admin/dashboard-admin.component';
 import {PanelConfigurationComponent} from './panel-configuration/panel-configuration.component';
 import {PanelCreateComponent} from './panel-create/panel-create.component';
+import {HostDirective} from "./panel-host/host.directive";
 
 const appRoutes : Routes = [
   {
@@ -32,7 +33,7 @@ const appRoutes : Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent, DashboardComponent, DashboardAdminComponent, PanelConfigurationComponent, PanelCreateComponent
+    AppComponent, DashboardComponent, DashboardAdminComponent, PanelConfigurationComponent, PanelCreateComponent, HostDirective
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),
@@ -43,6 +44,7 @@ const appRoutes : Routes = [
     HttpClientModule
   ],
   providers: [HelloWorldService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: []
 })
 export class AppModule {}
