@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, ViewChild} from '@angular/core';
 import {HostDirective} from './../host.directive';
-import {PanelManagerService} from "../../panel-manager/panel-manager.service";
+import {PanelManagerService} from "../../panel-manager/service/panel-manager.service";
 
 @Component({selector: 'app-dynamic-host-panel', templateUrl: './dynamic-host-panel.component.html', styleUrls: ['./dynamic-host-panel.component.css']})
 export class DynamicHostPanelComponent implements OnInit {

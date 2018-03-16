@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, ViewChild} from '@angular/core';
 import {HostDirective} from './../host.directive';
-import {PanelManagerService} from "../../panel-manager/panel-manager.service";
+import {PanelManagerService} from "../../panel-manager/service/panel-manager.service";
 
 @Component({selector: 'app-static-host-panel', templateUrl: './static-host-panel.component.html', styleUrls: ['./static-host-panel.component.css']})
 export class StaticHostPanelComponent implements OnInit {

@@ -13,7 +13,7 @@ import {PanelCreateComponent} from './panel-create/panel-create.component';
 import {HostDirective} from "./panel-host/host.directive";
 import {StaticHostPanelComponent} from './panel-host/static-host-panel/static-host-panel.component';
 import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic-host-panel.component';
-import {PanelManagerService} from "./panel-manager/panel-manager.service";
+import {PanelManagerService} from "./panel-manager/service/panel-manager.service";
 
 const appRoutes : Routes = [
   {
