@@ -1,0 +1,27 @@
+mat-card {
+    width: 400px;
+    height: 300px;
+    max-width: 100%;
+    margin-top: 20px;  
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block; 
+}
+.material-icons {
+    font-size: 32px;
+    color: grey;
+    position: absolute;
+    right: 20px;
+}
+.thumbnail {
+    height: 100%;
+}
+mat-card-content {
+    margin: 20%;
+}
+mat-card-actions {
+    position: absolute;
+    left: 40%;
+    margin-right: -50%;
+}

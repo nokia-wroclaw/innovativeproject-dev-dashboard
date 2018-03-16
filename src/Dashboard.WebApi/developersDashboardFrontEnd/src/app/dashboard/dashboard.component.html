@@ -1,3 +1,18 @@
-<p>
-  dashboard works!
-</p>
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="thumbnail">
+            <app-static-host-panel [panelId]="0" tileTitle="Karteczka" [adminMode]="true"></app-static-host-panel>
+    </div>
+    </div>
+    <div class="col-sm-4">
+    <div class="thumbnail">
+        <app-static-host-panel [panelId]="1" tileTitle="Karteczka" [adminMode]="false"></app-static-host-panel>
+      </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="thumbnail">
+            <app-static-host-panel [panelId]="2" tileTitle="Karteczka" [adminMode]="true"></app-static-host-panel> 
+    </div>
+    </div>
+</div>
