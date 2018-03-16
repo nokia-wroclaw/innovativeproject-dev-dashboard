@@ -42,9 +42,9 @@ namespace Dashboard.Application.Services
             await _projectTileRepository.SaveAsync();
         }
 
-        public async Task<ProjectTile> UpdateTileAsync(int id, ProjectTile updatedTile)
+        public async Task<ProjectTile> UpdateTileAsync(ProjectTile updatedTile)
         {
-            var tile = await GetTileByIdAsync(id);
+            var tile = await GetTileByIdAsync(updatedTile.Id);
             if (tile == null)
                 return null;
 
@@ -55,7 +55,7 @@ namespace Dashboard.Application.Services
             tile.DataProviderName = updatedTile.DataProviderName;
             tile.FrontConfig = updatedTile.FrontConfig;
 
-            var r = await _projectTileRepository.UpdateAsync(tile, id);
+            var r = await _projectTileRepository.UpdateAsync(tile, updatedTile.Id);
             await _projectTileRepository.SaveAsync();
 
             return r;
