@@ -36,8 +36,8 @@ namespace Dashboard.WebApi.Controllers
         }
 
         // POST api/ProjectTiles
-        [HttpPost()]
-        public async Task<IActionResult> Create(CreateProjectTile model)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody]CreateProjectTile model)
         {
             if(!ModelState.IsValid)
                 return BadRequest();
@@ -59,7 +59,7 @@ namespace Dashboard.WebApi.Controllers
 
         // PUT api/ProjectTiles/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UpdateProjectTile updatedProjectTile)
+        public async Task<IActionResult> Put(int id, [FromBody]UpdateProjectTile updatedProjectTile)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -67,7 +67,7 @@ namespace Dashboard.WebApi.Controllers
             //TODO: change when automapper
             var updatedTile = new ProjectTile()
             {
-                Id = updatedProjectTile.Id,
+                Id = id,
                 ApiAuthenticationToken = updatedProjectTile.ApiAuthenticationToken,
                 ApiHostUrl = updatedProjectTile.ApiHostUrl,
                 ApiProjectId = updatedProjectTile.ApiProjectId,

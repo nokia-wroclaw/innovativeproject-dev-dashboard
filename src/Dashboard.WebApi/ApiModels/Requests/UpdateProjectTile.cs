@@ -6,9 +6,6 @@ namespace Dashboard.WebApi.ApiModels.Requests
     public class UpdateProjectTile
     {
         [Required]
-        public int Id { get; set; }
-
-        [Required]
         public string ApiHostUrl { get; set; }
 
         [Required]
