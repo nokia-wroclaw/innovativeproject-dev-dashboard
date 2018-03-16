@@ -7,7 +7,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {AppComponent} from './app.component';
 import {HelloWorldService} from './hello-world/hello-world.service';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import {DashboardAdminComponent} from './dashboard-admin/dashboard-admin.component';
 import {PanelConfigurationComponent} from './panel-configuration/panel-configuration.component';
 import {PanelCreateComponent} from './panel-create/panel-create.component';
 import {HostDirective} from "./panel-host/host.directive";
@@ -18,10 +17,16 @@ import {PanelManagerService} from "./panel-manager/service/panel-manager.service
 const appRoutes : Routes = [
   {
     path: '',
-    component: DashboardComponent
+    component: DashboardComponent,
+    data: {
+      adminMode: false
+    }
   }, {
     path: 'admin',
-    component: DashboardAdminComponent
+    component: DashboardComponent,
+    data: {
+      adminMode: true
+    }
   }, {
     path: 'admin/create',
     component: PanelCreateComponent
@@ -38,7 +43,6 @@ const appRoutes : Routes = [
   declarations: [
     AppComponent,
     DashboardComponent,
-    DashboardAdminComponent,
     PanelConfigurationComponent,
     PanelCreateComponent,
     HostDirective,
