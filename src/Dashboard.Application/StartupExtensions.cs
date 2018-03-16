@@ -18,10 +18,9 @@ namespace Dashboard.Application
 
             //Register services
             services.AddTransient<IToDoItemsService, ToDoItemsService>();
-            services.AddTransient<ICIDataProvider, GitLabDataProvider>();
 
             services.AddScoped<ICIDataProvider, GitLabDataProvider>();
-            services.AddScoped<ICIDataProviderFactory, CIDataProviderFactory>();
+            services.AddTransient<ICIDataProviderFactory, CIDataProviderFactory>();
         }
     }
 }
