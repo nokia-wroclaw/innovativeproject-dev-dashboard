@@ -14,13 +14,11 @@ namespace Dashboard.WebApi.Controllers
     public class DashboardDataController : Controller
     {
         private readonly ICIDataProviderFactory _ciDataProviderFactory;
+        private readonly IProjectTileService _projectTileService;
 
-
-        private readonly IProjectService _projectService;
-
-        public DashboardDataController(IProjectService projectService, ICIDataProviderFactory ciDataProviderFactory)
+        public DashboardDataController(IProjectTileService projectTileService, ICIDataProviderFactory ciDataProviderFactory)
         {
-            _projectService = projectService;
+            _projectTileService = projectTileService;
             _ciDataProviderFactory = ciDataProviderFactory;
         }
 
@@ -30,18 +28,29 @@ namespace Dashboard.WebApi.Controllers
             return _ciDataProviderFactory.GetSupportedProviders.Select(p => p.Name);
         }
 
-        //api/DashboardData/Project/1
-        [HttpGet("{projectId}")]
-        public async Task<IActionResult> Project(int projectId)
+        //api/DashboardData/ProjectTile/1
+        [HttpGet("{projectTileId}")]
+        public async Task<IActionResult> ProjectTile(int projectTileId)
         {
 
-
-            var project = await _projectService.GetProjectById(projectId);
+            var project = await _projectTileService.GetTileById(projectTileId);
             if (project == null)
                 return NotFound();
 
             return Json(project);
         }
 
+        //api/DashboardData/UpdatePipelinesProjectTile
+        [HttpPost("{projectTileId}")]
+        public async Task<IActionResult> UpdatePipelinesProjectTile(int projectTileId)
+        {
+            var project = await _projectTileService.GetTileById(projectTileId);
+            if (project == null)
+                return NotFound();
+
+            await _projectTileService.UpdatePipelinesForProjectAsync(projectTileId);
+
+            return Ok();
+        }
     }
 }

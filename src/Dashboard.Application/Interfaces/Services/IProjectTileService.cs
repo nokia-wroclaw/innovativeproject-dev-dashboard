@@ -7,9 +7,9 @@ using Dashboard.Core.Interfaces;
 
 namespace Dashboard.Application.Interfaces.Services
 {
-    public interface IProjectService
+    public interface IProjectTileService
     {
-        Task<Project> GetProjectById(int projectId);
+        Task<ProjectTile> GetTileById(int id);
         Task UpdatePipelinesForProjectAsync(int projectId);
     }
 }

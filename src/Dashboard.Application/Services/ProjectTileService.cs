@@ -10,20 +10,20 @@ using Dashboard.Core.Interfaces.Repositories;
 
 namespace Dashboard.Application.Services
 {
-    public class ProjectService : IProjectService
+    public class ProjectTileService : IProjectTileService
     {
-        private readonly IProjectRepository _projectRepository;
+        private readonly IProjectTileRepository _projectTileRepository;
         private readonly ICIDataProviderFactory _ciDataProviderFactory;
 
-        public ProjectService(IProjectRepository projectRepository, ICIDataProviderFactory ciDataProviderFactory)
+        public ProjectTileService(IProjectTileRepository projectTileRepository, ICIDataProviderFactory ciDataProviderFactory)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
-            _projectRepository = projectRepository;
+            _projectTileRepository = projectTileRepository;
         }
 
-        public Task<Project> GetProjectById(int projectId)
+        public Task<ProjectTile> GetTileById(int id)
         {
-            return _projectRepository.GetByIdAsync(projectId);;
+            return _projectTileRepository.GetByIdAsync(id);
         }
 
         /// <summary>
@@ -34,14 +34,21 @@ namespace Dashboard.Application.Services
         public async Task UpdatePipelinesForProjectAsync(int projectId)
         {
             //TODO: Refactor so this method returns error string and piplines, some validation
-            var project = await GetProjectById(projectId);
+            var project = await GetTileById(projectId);
             if (project == null) return;
 
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
+
             var downloadedPiplines = await dataProvider.GetAllAsync(project.ApiHostUrl, project.ApiProjectId, project.ApiAuthenticationToken);
 
-            project.Pipelines = project.Pipelines.Union(downloadedPiplines, new PipelineEqualityComparer());
+            //Join two lists, move to LinqExtensions ?
+            var projectPipelines = project.Pipelines ?? new List<Pipeline>();
+            project.Pipelines = projectPipelines.Concat(downloadedPiplines)
+                .GroupBy(x => x.Id)
+                .Select(g => g.First())
+                .ToList();
 
+            await _projectTileRepository.SaveAsync();
         }
     }
 

@@ -13,7 +13,7 @@ namespace Dashboard.Data.Context
         {
             SeedItems.ForEach(x => ctx.Add(x));
             //SeedPipelines().ForEach(x => ctx.Add(x));
-            SeedProjects.ForEach(x => ctx.Add(x));
+            SeedProjectTiles.ForEach(x => ctx.Add(x));
 
             ctx.SaveChanges();
         }
@@ -25,9 +25,9 @@ namespace Dashboard.Data.Context
             new ToDoItem() {Id = 3, Text = "Ta"},
         };
 
-        private static List<Project> SeedProjects => new List<Project>
+        private static List<ProjectTile> SeedProjectTiles => new List<ProjectTile>
         {
-            new Project()
+            new ProjectTile()
             {
                 Id = 1,
                 ApiHostUrl = "https://gitlab.com",
@@ -38,7 +38,7 @@ namespace Dashboard.Data.Context
                 {
                     new Pipeline()
                     {
-                        Id = 19011005,
+                        Id = 1901, // fakeid
                         Ref = "master",
                         Sha = "79aa00321063daf8f650683373db29832c8e13f1",
                         Status = "running"

@@ -7,7 +7,7 @@ namespace Dashboard.Data.Context
     {
         public DbSet<ToDoItem> ToDoItems { get; set; }
         public DbSet<Pipeline> Pipelines { get; set; }
-        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectTile> Projects { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -23,7 +23,7 @@ namespace Dashboard.Data.Context
 
             builder.Entity<Pipeline>().HasKey(p => p.Id);
 
-            builder.Entity<Project>(model =>
+            builder.Entity<ProjectTile>(model =>
             {
                 model.HasKey(p => p.Id);
                 model.Property(p => p.ApiAuthenticationToken).IsRequired();

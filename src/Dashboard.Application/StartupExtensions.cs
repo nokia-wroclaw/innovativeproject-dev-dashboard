@@ -15,11 +15,11 @@ namespace Dashboard.Application
             //Register repositories
             services.AddTransient<IToDoItemRepository, ToDoItemRepository>();
             services.AddTransient<IPipelineRepository, PipelineRepository>();
-            services.AddTransient<IProjectRepository, ProjectRepository>();
+            services.AddTransient<IProjectTileRepository, ProjectTileRepository>();
 
             //Register services
             services.AddTransient<IToDoItemsService, ToDoItemsService>();
-            services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<IProjectTileService, ProjectTileService>();
 
             services.AddScoped<ICIDataProvider, GitLabDataProvider>();
             services.AddTransient<ICIDataProviderFactory, CIDataProviderFactory>();
