@@ -1,20 +1,27 @@
-
 <div class="row">
-    <div class="col-sm-4">
-      <div *ngFor="let panel of panelData.column1" class="thumbnail">
+  <div class="col-sm-4">
+    <div class="thumbnail">
+      <div *ngFor="let panel of panelData.column1">
         <app-static-host-panel *ngIf="panel.type==PanelType.Static" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="false"></app-static-host-panel>
         <app-dynamic-host-panel *ngIf="panel.type==PanelType.Dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="false"></app-dynamic-host-panel>
       </div>
     </div>
-    <div class="col-sm-4">
-      <div *ngFor="let panel of panelData.column2" class="thumbnail">
-        <app-static-host-panel *ngIf="panel.type==PanelType.Static" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="false"></app-static-host-panel>
-        <app-dynamic-host-panel *ngIf="panel.type==PanelType.Dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="false"></app-dynamic-host-panel>
-      </div>
-    <div class="col-sm-4">
-      <div *ngFor="let panel of panelData.column3" class="thumbnail">
+  </div>
+  <div class="col-sm-4">
+    <div class="thumbnail">
+      <div *ngFor="let panel of panelData.column2">
         <app-static-host-panel *ngIf="panel.type==PanelType.Static" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="false"></app-static-host-panel>
         <app-dynamic-host-panel *ngIf="panel.type==PanelType.Dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="false"></app-dynamic-host-panel>
       </div>
     </div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="thumbnail">
+      <div *ngFor="let panel of panelData.column3">
+        <app-static-host-panel *ngIf="panel.type==PanelType.Static" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="false"></app-static-host-panel>
+        <app-dynamic-host-panel *ngIf="panel.type==PanelType.Dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="false"></app-dynamic-host-panel>
+      </div>
+    </div>
+  </div>
 </div>
