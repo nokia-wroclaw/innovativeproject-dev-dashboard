@@ -20,7 +20,7 @@ namespace Dashboard.Core.Interfaces.Repositories
         Task<IEnumerable<T>> FindByAsync(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> GetAllAsync();
         IQueryable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties);
-        Task<T> GetAsync(int id);
+        Task<T> GetByIdAsync(int id);
         Task<T> UpdateAsync(T t, object key);
         Task<int> SaveAsync();
     }

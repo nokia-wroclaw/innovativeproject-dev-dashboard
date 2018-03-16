@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +15,12 @@ namespace Dashboard.WebApi.Controllers
     {
         private readonly ICIDataProviderFactory _ciDataProviderFactory;
 
-        public DashboardDataController(ICIDataProviderFactory ciDataProviderFactory)
+
+        private readonly IProjectService _projectService;
+
+        public DashboardDataController(IProjectService projectService, ICIDataProviderFactory ciDataProviderFactory)
         {
+            _projectService = projectService;
             _ciDataProviderFactory = ciDataProviderFactory;
         }
 
@@ -25,35 +30,18 @@ namespace Dashboard.WebApi.Controllers
             return _ciDataProviderFactory.GetSupportedProviders.Select(p => p.Name);
         }
 
-        //api/DashboardData/AllPipelines/GitLab
-        [HttpGet("{providerName}")]
-        public async Task<IActionResult> AllPipelines(string providerName)
+        //api/DashboardData/Project/1
+        [HttpGet("{projectId}")]
+        public async Task<IActionResult> Project(int projectId)
         {
-            var provider = _ciDataProviderFactory.CreateForProviderName(providerName);
 
-            if (provider == null)
-                return NoContent();
 
-            var allPipelines = await provider.GetAllAsync();
-            return Json(new
-            {
-                allPipelines
-            });
+            var project = await _projectService.GetProjectById(projectId);
+            if (project == null)
+                return NotFound();
+
+            return Json(project);
         }
 
-        [HttpGet("{providerName}")]
-        public async Task<IActionResult> Master(string providerName)
-        {
-            var provider = _ciDataProviderFactory.CreateForProviderName(providerName);
-
-            if (provider == null)
-                return NoContent();
-
-            var master = await provider.GetMasterAsync();
-            return Json(new
-            {
-                master
-            });
-        }
     }
 }

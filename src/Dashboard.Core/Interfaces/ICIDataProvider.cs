@@ -8,6 +8,6 @@ namespace Dashboard.Core.Interfaces
     {
         string Name { get; }
         Task<Pipeline> GetMasterAsync();
-        Task<IEnumerable<Pipeline>> GetAllAsync();
+        Task<IEnumerable<Pipeline>> GetAllAsync(string host, string projectId, string apiKey);
     }
 }

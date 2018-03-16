@@ -29,13 +29,13 @@ namespace Dashboard.Application
         /// Returns few latest pipelines
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Pipeline>> GetAllAsync()
+        public async Task<IEnumerable<Pipeline>> GetAllAsync(string host, string projectId, string apiKey)
         {
             string htmlResponse = "";
             //Prepare API call
-            string uri = @"https://gitlab.com/api/v4/projects/13083/pipelines";
+            string uri = $@"{host}/api/v4/projects/{projectId}/pipelines";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.Headers.Add("PRIVATE-TOKEN: 6h-Xjym_EFy8DBxPDR9z");
+            request.Headers.Add($"PRIVATE-TOKEN: {apiKey}");
             request.Accept = "application/json";
             request.AutomaticDecompression = DecompressionMethods.GZip;
 
