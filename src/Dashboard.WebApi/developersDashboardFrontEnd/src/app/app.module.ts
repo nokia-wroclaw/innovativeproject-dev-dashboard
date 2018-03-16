@@ -11,8 +11,9 @@ import {DashboardAdminComponent} from './dashboard-admin/dashboard-admin.compone
 import {PanelConfigurationComponent} from './panel-configuration/panel-configuration.component';
 import {PanelCreateComponent} from './panel-create/panel-create.component';
 import {HostDirective} from "./panel-host/host.directive";
-import { StaticHostPanelComponent } from './panel-host/static-host-panel/static-host-panel.component';
-import { DynamicHostPanelComponent } from './panel-host/dynamic-host-panel/dynamic-host-panel.component';
+import {StaticHostPanelComponent} from './panel-host/static-host-panel/static-host-panel.component';
+import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic-host-panel.component';
+import {PanelManagerService} from "./panel-manager/panel-manager.service";
 
 const appRoutes : Routes = [
   {
@@ -35,7 +36,14 @@ const appRoutes : Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent, DashboardComponent, DashboardAdminComponent, PanelConfigurationComponent, PanelCreateComponent, HostDirective, StaticHostPanelComponent, DynamicHostPanelComponent
+    AppComponent,
+    DashboardComponent,
+    DashboardAdminComponent,
+    PanelConfigurationComponent,
+    PanelCreateComponent,
+    HostDirective,
+    StaticHostPanelComponent,
+    DynamicHostPanelComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),
@@ -45,7 +53,9 @@ const appRoutes : Routes = [
     MatCardModule,
     HttpClientModule
   ],
-  providers: [HelloWorldService],
+  providers: [
+    HelloWorldService, PanelManagerService
+  ],
   bootstrap: [AppComponent],
   entryComponents: []
 })

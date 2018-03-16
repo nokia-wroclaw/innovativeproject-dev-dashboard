@@ -3,9 +3,13 @@
     <i *ngIf="adminMode" class="material-icons">settings</i>
   </mat-card-title>
   <mat-card-content>
-    {{title}}        
+    {{tileTitle}}
+
+    <!-- Outlet for a component loaded dynamicaly -->
+    <ng-template host></ng-template>
+
   </mat-card-content>
   <mat-card-actions>
-     <button mat-raised-button>Yay!</button>
+    <button mat-raised-button>Yay!</button>
   </mat-card-actions>
 </mat-card>
