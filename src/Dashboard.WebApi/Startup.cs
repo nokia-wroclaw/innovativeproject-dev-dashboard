@@ -32,6 +32,7 @@ namespace Dashboard.WebApi
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
 
+
             //Register app
             services.AddApplication();
 

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dashboard.WebApi.Controllers
 {
     //TODO: nazwa do zmiany
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class DashboardDataController : Controller
     {
         private readonly ICIDataProviderFactory _ciDataProviderFactory;
@@ -19,13 +19,14 @@ namespace Dashboard.WebApi.Controllers
             _ciDataProviderFactory = ciDataProviderFactory;
         }
 
+        [HttpGet]
         public IEnumerable<string> SupportedProviders()
         {
             return _ciDataProviderFactory.GetSupportedProviders.Select(p => p.Name);
         }
 
         //api/DashboardData/AllPipelines/GitLab
-        [HttpGet("[action]/{providerName}")]
+        [HttpGet("{providerName}")]
         public async Task<IActionResult> AllPipelines(string providerName)
         {
             var provider = _ciDataProviderFactory.CreateForProviderName(providerName);
@@ -40,7 +41,7 @@ namespace Dashboard.WebApi.Controllers
             });
         }
 
-        [HttpGet("[action]/{providerName}")]
+        [HttpGet("{providerName}")]
         public async Task<IActionResult> Master(string providerName)
         {
             var provider = _ciDataProviderFactory.CreateForProviderName(providerName);

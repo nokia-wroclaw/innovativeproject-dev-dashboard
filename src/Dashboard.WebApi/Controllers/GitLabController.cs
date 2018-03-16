@@ -15,18 +15,18 @@ namespace Dashboard.WebApi.Controllers
             _gitLabDataProvider = gitLabDataProvider;
         }
 
-        //GET api/gitlab
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(await _gitLabDataProvider.GetAllAsync());
-        }
+        ////GET api/gitlab
+        //[HttpGet]
+        //public async Task<IActionResult> Get()
+        //{
+        //    return Ok(await _gitLabDataProvider.GetAllAsync());
+        //}
 
-        //GET api/gitlab/master
-        [Route("[action]")]
-        public async Task<IActionResult> Master()
-        {
-            return Ok(await _gitLabDataProvider.GetMasterAsync());
-        }
+        ////GET api/gitlab/master
+        //[Route("[action]")]
+        //public async Task<IActionResult> Master()
+        //{
+        //    return Ok(await _gitLabDataProvider.GetMasterAsync());
+        //}
     }
 }
