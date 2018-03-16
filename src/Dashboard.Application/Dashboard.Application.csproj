@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NGitLab" Version="1.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Dashboard.Core\Dashboard.Core.csproj" />
     <ProjectReference Include="..\Dashboard.Data\Dashboard.Data.csproj" />
   </ItemGroup>

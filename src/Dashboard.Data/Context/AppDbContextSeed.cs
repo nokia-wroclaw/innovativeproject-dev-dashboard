@@ -11,29 +11,36 @@ namespace Dashboard.Data.Context
     {
         public static void Seed(AppDbContext ctx)
         {
-            SeedItems.ForEach(x => ctx.Add(x));
             //SeedPipelines().ForEach(x => ctx.Add(x));
-            SeedProjectTiles.ForEach(x => ctx.Add(x));
+            SeedProjects.ForEach(x => ctx.Add(x));
+            SeedPanels.ForEach(x => ctx.Add(x));
 
             ctx.SaveChanges();
         }
 
-        private static List<ToDoItem> SeedItems => new List<ToDoItem>
+        private static List<Panel> SeedPanels => new List<Panel>
         {
-            new ToDoItem() {Id = 1, Text = "Hello"},
-            new ToDoItem() {Id = 2, Text = "Cyka"},
-            new ToDoItem() {Id = 3, Text = "Ta"},
-        };
-
-        private static List<ProjectTile> SeedProjectTiles => new List<ProjectTile>
-        {
-            new ProjectTile()
+            new Panel()
             {
                 Id = 1,
+                Title = "Fancy Title",
+                Dynamic = false,
+                Position = new PanelPosition() {Column = 1, Row = 0},
+                Data = "{xd: 2}",
+                Type = PanelType.Kekkk,
+                Project = SeedProjects.ElementAt(0)
+            }
+        };
+
+        private static List<Project> SeedProjects => new List<Project>()
+        {
+            new Project()
+            {
+                Id = 1,
+                DataProviderName = "GitLab",
                 ApiHostUrl = "https://gitlab.com",
                 ApiProjectId = "13083",
                 ApiAuthenticationToken = "6h-Xjym_EFy8DBxPDR9z",
-                DataProviderName = "GitLab",
                 Pipelines = new List<Pipeline>()
                 {
                     new Pipeline()

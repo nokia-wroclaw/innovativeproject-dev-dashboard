@@ -9,15 +9,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dashboard.Data.Repositories
 {
-    public class ProjectTileRepository : EfRepository<ProjectTile>, IProjectTileRepository
+    public class ProjectRepository : EfRepository<Project>, IProjectRepository
     {
-        public ProjectTileRepository(AppDbContext context) : base(context)
+        public ProjectRepository(AppDbContext context) : base(context)
         {
         }
 
-        public override Task<ProjectTile> GetByIdAsync(int id)
+        public override Task<Project> GetByIdAsync(int id)
         {
-            return Context.Set<ProjectTile>()
+            return Context.Set<Project>()
                 .Include(p => p.Pipelines)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }

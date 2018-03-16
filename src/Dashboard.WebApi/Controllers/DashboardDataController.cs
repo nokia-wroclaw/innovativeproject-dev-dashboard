@@ -14,11 +14,11 @@ namespace Dashboard.WebApi.Controllers
     public class DashboardDataController : Controller
     {
         private readonly ICIDataProviderFactory _ciDataProviderFactory;
-        private readonly IProjectTileService _projectTileService;
+        private readonly IProjectService _projectService;
 
-        public DashboardDataController(IProjectTileService projectTileService, ICIDataProviderFactory ciDataProviderFactory)
+        public DashboardDataController(IProjectService projectService, ICIDataProviderFactory ciDataProviderFactory)
         {
-            _projectTileService = projectTileService;
+            _projectService = projectService;
             _ciDataProviderFactory = ciDataProviderFactory;
         }
 
@@ -28,27 +28,26 @@ namespace Dashboard.WebApi.Controllers
             return _ciDataProviderFactory.GetSupportedProviders.Select(p => p.Name);
         }
 
-        //api/DashboardData/ProjectTile/1
-        [HttpGet("{projectTileId}")]
-        public async Task<IActionResult> ProjectTile(int projectTileId)
+        //api/DashboardData/Project/1
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Project(int id)
         {
-
-            var project = await _projectTileService.GetTileByIdAsync(projectTileId);
+            var project = await _projectService.GetProjectByIdAsync(id);
             if (project == null)
                 return NotFound();
 
             return Json(project);
         }
 
-        //api/DashboardData/UpdatePipelinesProjectTile
-        [HttpPost("{projectTileId}")]
-        public async Task<IActionResult> UpdatePipelinesProjectTile(int projectTileId)
+        //api/DashboardData/UpdatePipelinesProject
+        [HttpPost("{id}")]
+        public async Task<IActionResult> UpdatePipelinesProject(int id)
         {
-            var project = await _projectTileService.GetTileByIdAsync(projectTileId);
+            var project = await _projectService.GetProjectByIdAsync(id);
             if (project == null)
                 return NotFound();
 
-            await _projectTileService.UpdatePipelinesForProjectAsync(projectTileId);
+            await _projectService.UpdatePipelinesForProjectAsync(id);
 
             return Ok();
         }
