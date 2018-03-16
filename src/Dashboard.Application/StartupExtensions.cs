@@ -1,5 +1,6 @@
 ﻿using Dashboard.Application.Interfaces.Services;
 using Dashboard.Application.Services;
+using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
 using Dashboard.Data.Repositories;
 using Dashboard.Infrastructure.Data.Repositories;
@@ -18,6 +19,9 @@ namespace Dashboard.Application
             //Register services
             services.AddTransient<IToDoItemsService, ToDoItemsService>();
             services.AddTransient<ICIDataProvider, GitLabDataProvider>();
+
+            services.AddScoped<ICIDataProvider, GitLabDataProvider>();
+            services.AddScoped<ICIDataProviderFactory, CIDataProviderFactory>();
         }
     }
 }

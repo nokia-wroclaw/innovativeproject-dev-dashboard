@@ -1,5 +1,6 @@
 ﻿using Dashboard.Application.Interfaces.Services;
 using System.Threading.Tasks;
+using Dashboard.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dashboard.WebApi.Controllers
@@ -18,14 +19,14 @@ namespace Dashboard.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(_gitLabDataProvider.GetAllAsync().Result);
+            return Ok(await _gitLabDataProvider.GetAllAsync());
         }
 
         //GET api/gitlab/master
         [Route("[action]")]
         public async Task<IActionResult> Master()
         {
-            return Ok(_gitLabDataProvider.GetMasterAsync().Result);
+            return Ok(await _gitLabDataProvider.GetMasterAsync());
         }
     }
 }
