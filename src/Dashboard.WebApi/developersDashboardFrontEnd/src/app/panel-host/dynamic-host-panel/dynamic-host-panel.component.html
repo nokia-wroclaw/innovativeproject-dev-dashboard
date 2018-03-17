@@ -1,15 +1,21 @@
-<mat-card>
-  <mat-card-title>
-    <i *ngIf="adminMode" class="material-icons">settings</i>
-  </mat-card-title>
-  <mat-card-content>
-    {{tileTitle}}
+<div class="thumbnail">
+  <i *ngIf="adminMode" id="toc" class="material-icons">toc</i>
+  <a [routerLink]=" ['/admin', panelId]">
+    <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
+  </a>
 
-    <!-- Outlet for a component loaded dynamicaly -->
-    <ng-template host></ng-template>
+  <mat-card>
+    <mat-card-title>
+    </mat-card-title>
+    <mat-card-content>
+      {{tileTitle}}
 
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-raised-button>Yay!</button>
-  </mat-card-actions>
-</mat-card>
+      <!-- Outlet for a component loaded dynamicaly -->
+      <ng-template host></ng-template>
+
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button>Yay!</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

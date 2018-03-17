@@ -1,13 +1,13 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
 
-@Component({selector: 'app-panel-configuration', templateUrl: './panel-configuration.component.html', styleUrls: ['./panel-configuration.component.css']})
+@Component({ selector: 'app-panel-configuration', templateUrl: './panel-configuration.component.html', styleUrls: ['./panel-configuration.component.css'] })
 export class PanelConfigurationComponent implements OnInit,
-OnDestroy {
+  OnDestroy {
 
-  constructor(private route : ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) { }
 
-  panelId : number;
+  panelId: number;
 
   private routeParamsSubscription;
 

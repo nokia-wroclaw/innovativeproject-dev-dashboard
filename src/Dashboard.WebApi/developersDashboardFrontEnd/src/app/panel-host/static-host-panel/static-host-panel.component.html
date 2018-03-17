@@ -1,6 +1,9 @@
 <mat-card>
   <mat-card-title>
-    <i *ngIf="adminMode" class="material-icons">settings</i>
+    <i *ngIf="adminMode" id="toc" class="material-icons">toc</i>
+    <a [routerLink]=" ['/admin', panelId]">
+      <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
+    </a>
   </mat-card-title>
   <mat-card-content>
     <p> Id: {{ panelId }}</p>

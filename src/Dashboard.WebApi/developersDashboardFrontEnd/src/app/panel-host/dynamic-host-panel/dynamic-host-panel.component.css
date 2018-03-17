@@ -2,20 +2,30 @@ mat-card {
     width: 400px;
     height: 300px;
     max-width: 100%;
-    margin-top: 20px;  
+    margin-top: 40px;  
     border-radius: 10px;
     margin-left: auto;
     margin-right: auto;
     display: block; 
 }
-.material-icons {
-    font-size: 32px;
-    color: grey;
+#toc {
+    margin-bottom: 20px;
+    display: block; 
+    font-size: 35px;
     position: absolute;
-    right: 20px;
+    right: 18%;
+}
+#settings {
+    margin-bottom: 20px;
+    display: block; 
+    font-size: 32px;
+    position: absolute;
+    right: 25%;
 }
 .thumbnail {
+    border: 0;
     height: 100%;
+    margin-top: 40px;
 }
 mat-card-content {
     margin: 20%;
