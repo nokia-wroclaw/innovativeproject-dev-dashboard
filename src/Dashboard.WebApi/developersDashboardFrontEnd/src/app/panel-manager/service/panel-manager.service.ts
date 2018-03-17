@@ -66,7 +66,19 @@ export class PanelManagerService {
         },
         projectId: 0,
         data: null
+      }, {
+        id: 4,
+        title: "Mock panel 4",
+        dynamic: true,
+        type: PanelType.EmptyPanel,
+        position: {
+          column: 2,
+          row: 0
+        },
+        projectId: 0,
+        data: null
       }
+
     ];
 
     return mockPanelData;

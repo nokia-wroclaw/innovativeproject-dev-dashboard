@@ -1,0 +1,34 @@
+.navbar-default {
+    font-family: 'Mina', sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+    color: black !important;
+    background-color:#4c83cc;
+    background-image: none;
+    background-repeat: no-repeat;
+   }
+
+.navbar-header {
+    font-family: 'Mina', sans-serif;
+    font-weight: bold;
+    color: black !important;
+}
+.navbar-brand {
+    font-size: 20px;
+    color: black !important;
+}
+.navbar-default .navbar-nav>li>a {
+    color: black !important;
+}
+.glyphicon  {
+    top: -3px;
+    background-color: #4c83cc;
+}
+.navbar-nav>.active>a
+{
+    background-color: #4c83cc !important;
+}
+.container-fluid {
+    border-style: solid;
+    border-width: 2px;
+}

@@ -9,16 +9,18 @@ mat-card {
     display: block; 
 }
 #toc {
+    color: black;
     margin-bottom: 20px;
     display: block; 
-    font-size: 35px;
+    font-size: 32px;
     position: absolute;
     right: 18%;
 }
 #settings {
+    color: black !important;
     margin-bottom: 20px;
     display: block; 
-    font-size: 32px;
+    font-size: 28px !important;
     position: absolute;
     right: 25%;
 }

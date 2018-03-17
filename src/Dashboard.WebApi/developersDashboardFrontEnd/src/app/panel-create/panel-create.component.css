@@ -1,0 +1,71 @@
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
+
+mat-card {
+    width: 730px;
+    height: 730px;
+    max-width: 100%;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    padding: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+
+}
+mat-card-header {
+  background-color: rgba(0, 89, 255, 0.938);
+  color: white;
+  
+  border-radius: 4px;
+}
+mat-card-content {
+    margin-top: 3%;
+    margin-right: 5%;
+    margin-left: 5%;
+    display: block;
+}
+mat-select {
+    width: 100%;   
+}
+mat-form-field {
+    margin-top: 10px;    
+    font-size: 20px;
+    width:100%;
+}
+mat-card-actions {
+    position:absolute;     
+    bottom:3%;
+    width:100%;
+    
+}
+#logo {
+   margin-top:10px;
+    margin-left:8px;
+}
+#Save {
+    display: block;
+    font-size: 24px;
+    color: gray;
+    position: absolute;
+    right: 20%;
+    bottom: 30px;
+}
+#Cancel {
+    display: block;
+    font-size: 24px;
+    color: gray;
+    position: absolute;
+    right: 5%;
+    bottom: 30px;
+}
+#clear {
+    color: white;
+    margin: 0;
+    display: block; 
+    font-size: 35px;
+    position: absolute;
+    right: 2%;
+}
+.example-full-width{
+    margin-top: 10%;
+}

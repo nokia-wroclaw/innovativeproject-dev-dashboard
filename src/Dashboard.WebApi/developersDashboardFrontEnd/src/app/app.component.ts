@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HelloWorldService } from './hello-world/hello-world.service'
+import { HelloWorldService } from './hello-world/hello-world.service';
 
 import { Todo } from './hello-world/todo';
 
@@ -13,7 +13,7 @@ export class AppComponent {
   title = 'developers-dashboard';
 
   todoList: Todo[];
-  errorMessage: String;
+  errorMessage: String; 
 
   constructor(private helloWorldService: HelloWorldService) {
     helloWorldService
