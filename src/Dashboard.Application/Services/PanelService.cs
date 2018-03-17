@@ -10,10 +10,12 @@ namespace Dashboard.Application.Services
     public class PanelService : IPanelService
     {
         private readonly IPanelRepository _panelRepository;
+        private readonly IProjectRepository _projectRepository;
 
-        public PanelService(IPanelRepository panelRepository)
+        public PanelService(IPanelRepository panelRepository, IProjectRepository projectRepository)
         {
             _panelRepository = panelRepository;
+            _projectRepository = projectRepository;
         }
 
         public Task<Panel> GetPanelByIdAsync(int id)
@@ -36,18 +38,22 @@ namespace Dashboard.Application.Services
             await _panelRepository.SaveAsync();
         }
 
-        public async Task<Panel> UpdatePanelAsync(Panel updatedPanel)
+        public async Task<Panel> UpdatePanelAsync(Panel updatedPanel, int projectId)
         {
             var model = await GetPanelByIdAsync(updatedPanel.Id);
             if (model == null)
                 return null;
 
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            model.Project = project;
+
             //TODO: change when automapper
             model.Data = updatedPanel.Data;
-            model.Position = updatedPanel.Position;
             model.Dynamic = updatedPanel.Dynamic;
             model.Title = updatedPanel.Title;
             model.Type = updatedPanel.Type;
+            model.Position.Column = updatedPanel.Position.Column;
+            model.Position.Row = updatedPanel.Position.Row;
 
             var r = await _panelRepository.UpdateAsync(model, updatedPanel.Id);
             await _panelRepository.SaveAsync();
@@ -55,8 +61,11 @@ namespace Dashboard.Application.Services
             return r;
         }
 
-        public async Task<Panel> CreatePanelAsync(Panel model)
+        public async Task<Panel> CreatePanelAsync(Panel model, int projectId)
         {
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            model.Project = project;
+
             var r = await _panelRepository.AddAsync(model);
             await _panelRepository.SaveAsync();
 
