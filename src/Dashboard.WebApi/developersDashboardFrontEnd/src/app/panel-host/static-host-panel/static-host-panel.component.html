@@ -1,17 +1,17 @@
 <mat-card>
-  <mat-card-header style="margin-top:-20px;">
+  <mat-card-header style="margin-top:-20px; ">
     <mat-card-title>
-      <h3>
-        <div style="float:left;">{{ tileTitle }}
+      <h4>
+        <div style="float:left; position: absolute; left:2%;">{{ tileTitle }}
         </div>
-        <div style="float:left; position:absolute; right:150px;">
+        <div style="float:left; position:absolute; right:25%;">
           <span class="label label-success">{{labelInput}}</span>
         </div>
         <i *ngIf="adminMode" id="toc" class="material-icons">dehaze</i>
         <a [routerLink]=" ['/admin', panelId]">
           <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
         </a>
-      </h3>
+      </h4>
     </mat-card-title>
   </mat-card-header>
 

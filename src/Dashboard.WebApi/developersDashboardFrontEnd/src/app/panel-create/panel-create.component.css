@@ -1,8 +1,8 @@
 @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
 
 mat-card {
-    width: 730px;
-    height: 730px;
+    width: 600px;
+    height: 600px;
     max-width: 100%;
     margin-top: 25px;
     margin-bottom: 25px;
@@ -14,8 +14,7 @@ mat-card {
 }
 mat-card-header {
   background-color: rgba(0, 89, 255, 0.938);
-  color: white;
-  
+  color: white;  
   border-radius: 4px;
 }
 mat-card-content {
@@ -29,7 +28,7 @@ mat-select {
 }
 mat-form-field {
     margin-top: 10px;    
-    font-size: 20px;
+    font-size: 18px;
     width:100%;
 }
 mat-card-actions {
@@ -44,7 +43,7 @@ mat-card-actions {
 }
 #Save {
     display: block;
-    font-size: 24px;
+    font-size: 20px;
     color: gray;
     position: absolute;
     right: 20%;
@@ -52,7 +51,7 @@ mat-card-actions {
 }
 #Cancel {
     display: block;
-    font-size: 24px;
+    font-size: 20px;
     color: gray;
     position: absolute;
     right: 5%;
@@ -62,7 +61,7 @@ mat-card-actions {
     color: white;
     margin: 0;
     display: block; 
-    font-size: 35px;
+    font-size: 30px;
     position: absolute;
     right: 2%;
 }

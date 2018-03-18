@@ -13,7 +13,7 @@ mat-card {
     color: black;
     margin-bottom: 20px;
     display: block; 
-    font-size: 32px;
+    font-size: 24px;
     position: absolute;
     right: 5%;
 }
@@ -21,7 +21,7 @@ mat-card {
     color: black !important;
     margin-bottom: 20px;
     display: block; 
-    font-size: 28px;
+    font-size: 20px;
     position: absolute;
     right: 15%;
 }
@@ -30,7 +30,7 @@ mat-card {
     height: 100%;
 }
 mat-card-content {
-    margin: 15%;
+    margin: 10%;
 }
 mat-card-actions {
     position: absolute;
