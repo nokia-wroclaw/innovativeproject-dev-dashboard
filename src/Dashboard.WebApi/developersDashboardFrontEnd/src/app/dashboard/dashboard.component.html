@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col-sm-4">
+    <div class="thumbnail">
+      <div *ngFor="let panel of getPanelsForColumn(0)">
+        <app-static-host-panel *ngIf="!panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-static-host-panel>
+        <app-dynamic-host-panel *ngIf="panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-dynamic-host-panel>
+      </div>
+      <a [routerLink]=" ['/admin/create']" (click)="onAddCardClick(0)">
+        <mat-card *ngIf="adminMode" id="createButton">
+          <i id="create" class="material-icons">add</i>
+        </mat-card>
+      </a>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="thumbnail">
+      <div *ngFor="let panel of getPanelsForColumn(1)">
+        <app-static-host-panel *ngIf="!panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-static-host-panel>
+        <app-dynamic-host-panel *ngIf="panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-dynamic-host-panel>
+      </div>
+      <a [routerLink]=" ['/admin/create']">
+        <mat-card *ngIf="adminMode" id="createButton" (click)="onAddCardClick(1)">
+          <i id="create" class="material-icons">add</i>
+        </mat-card>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="thumbnail">
+      <div *ngFor="let panel of getPanelsForColumn(2)">
+        <app-static-host-panel *ngIf="!panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-static-host-panel>
+        <app-dynamic-host-panel *ngIf="panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-dynamic-host-panel>
+      </div>
+      <a [routerLink]=" ['/admin/create']">
+        <mat-card *ngIf="adminMode" id="createButton" (click)="onAddCardClick(2)">
+          <i id="create" class="material-icons">add</i>
+        </mat-card>
+      </a>
+    </div>
+  </div>
+</div>

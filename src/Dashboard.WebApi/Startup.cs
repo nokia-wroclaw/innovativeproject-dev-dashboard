@@ -24,13 +24,14 @@ namespace Dashboard.WebApi
         {
             //TODO: change when database is setup
             services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase("DbNamexD"));
+                options.UseInMemoryDatabase("InMemoryDatabase"));
 
             //OpenAPI for sweet swagger documentation
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
+
 
             //Register app
             services.AddApplication();

@@ -5,7 +5,9 @@ namespace Dashboard.Data.Context
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<ToDoItem> ToDoItems { get; set; }
+        public DbSet<Pipeline> Pipelines { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Panel> Panels { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -16,8 +18,27 @@ namespace Dashboard.Data.Context
             base.OnModelCreating(builder);
 
             //Fluent API
-            builder.Entity<ToDoItem>().HasKey(t => t.Id);
-            builder.Entity<ToDoItem>().Property(t => t.Text).IsRequired();
+            builder.Entity<Pipeline>().HasKey(p => p.Id);
+
+            builder.Entity<Project>(m =>
+            {
+                m.HasKey(p => p.Id);
+                m.Property(p => p.ApiProjectId).IsRequired();
+                m.Property(p => p.ApiAuthenticationToken).IsRequired();
+                m.Property(p => p.ApiHostUrl).IsRequired();
+                m.Property(p => p.DataProviderName).IsRequired();
+                m.HasMany(p => p.Pipelines);
+            });
+
+            builder.Entity<Panel>(m =>
+            {
+                m.HasKey(p => p.Id);
+            });
+
+            builder.Entity<PanelPosition>(m =>
+            {
+                m.HasKey(p => p.Id);
+            });
         }
     }
 }

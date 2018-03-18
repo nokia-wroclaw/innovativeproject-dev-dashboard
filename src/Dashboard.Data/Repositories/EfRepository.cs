@@ -23,7 +23,7 @@ namespace Dashboard.Data.Repositories
             return await Context.Set<T>().ToListAsync();
         }
 
-        public virtual async Task<T> GetAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await Context.Set<T>().FindAsync(id);
         }

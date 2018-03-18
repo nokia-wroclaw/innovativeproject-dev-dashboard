@@ -1,0 +1,19 @@
+<mat-card>
+  <mat-card-title>
+    <i *ngIf="adminMode" id="toc" class="material-icons">dehaze</i>
+    <a [routerLink]=" ['/admin', panelId]">
+      <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
+    </a>
+  </mat-card-title>
+  <mat-card-content>
+    <p> Id: {{ panelId }}</p>
+    <p> Tytul: {{ tileTitle }} </p>
+
+    <!-- Outlet for a component loaded dynamicaly -->
+    <ng-template host></ng-template>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button>Button</button>
+  </mat-card-actions>
+</mat-card>

@@ -1,0 +1,21 @@
+<div class="thumbnail">
+  <i *ngIf="adminMode" id="toc" class="material-icons">dehaze</i>
+  <a [routerLink]=" ['/admin', panelId]">
+    <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
+  </a>
+
+  <mat-card>
+    <mat-card-title>
+    </mat-card-title>
+    <mat-card-content>
+      {{tileTitle}}
+
+      <!-- Outlet for a component loaded dynamicaly -->
+      <ng-template host></ng-template>
+
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button>Yay!</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
