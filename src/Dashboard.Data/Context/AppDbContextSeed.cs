@@ -23,11 +23,41 @@ namespace Dashboard.Data.Context
             new Panel()
             {
                 Id = 1,
-                Title = "Fancy Title",
+                Title = "Fancy Title 1",
+                Dynamic = false,
+                Position = new PanelPosition() {Column = 0, Row = 0},
+                Data = "{xd: 2}",
+                Type = PanelType.EmptyPanel,
+                Project = SeedProjects.ElementAt(0)
+            },
+            new Panel()
+            {
+                Id = 2,
+                Title = "Fancy Title 2",
+                Dynamic = false,
+                Position = new PanelPosition() {Column = 0, Row = 1},
+                Data = "{xd: 2}",
+                Type = PanelType.EmptyPanel,
+                Project = SeedProjects.ElementAt(0)
+            },
+            new Panel()
+            {
+                Id = 3,
+                Title = "Fancy Title 3",
                 Dynamic = false,
                 Position = new PanelPosition() {Column = 1, Row = 0},
                 Data = "{xd: 2}",
-                Type = PanelType.Kekkk,
+                Type = PanelType.EmptyPanel,
+                Project = SeedProjects.ElementAt(0)
+            }
+            ,new Panel()
+            {
+                Id = 4,
+                Title = "Fancy Title 4",
+                Dynamic = false,
+                Position = new PanelPosition() {Column = 2, Row = 0},
+                Data = "{xd: 2}",
+                Type = PanelType.EmptyPanel,
                 Project = SeedProjects.ElementAt(0)
             }
         };

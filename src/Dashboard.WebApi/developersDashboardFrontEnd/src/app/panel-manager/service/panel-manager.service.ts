@@ -1,8 +1,11 @@
-import {Injectable} from '@angular/core';
+import {Injectable, ComponentFactoryResolver} from '@angular/core';
 import {HostDirective} from './../../panel-host/host.directive';
 
 import {PanelType} from './../panel-type';
 import {Panel} from "../panel";
+import {Observable} from "rxjs/Observable";
+import {PanelApiService} from "./api/panel-api.service";
+import {PanelTypeMapperService} from "./panel-type-mapper/panel-type-mapper.service";
 
 @Injectable()
 export class PanelManagerService {
@@ -13,84 +16,51 @@ export class PanelManagerService {
   // TODO create service which maps PanelType to referenced component classes and
   // configuration component classes
 
-  private panelsData : any;
+  private panelsCache : Panel[];
 
-  constructor() {
-    // TODO load panelsData from backendAPI temp mock
-    this.panelsData = {}
+  constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeMapper : PanelTypeMapperService) {}
+
+  getPanelData() : Observable < Panel[] > {
+
+    // TODO save loaded data in panelsCache and return it upon next calls, remember
+    // to keep it up to date after any changes
+
+    return this
+      .panelApi
+      .getPanels();
   }
 
-  getPanelData() : Panel[] {
-    let mockPanelData : Panel[] = [
-      {
-        id: 0,
-        title: "Mock panel 0",
-        dynamic: false,
-        type: PanelType.EmptyPanel,
-        position: {
-          column: 0,
-          row: 0
-        },
-        projectId: 0,
-        data: null
-      }, {
-        id: 1,
-        title: "Mock panel 1",
-        dynamic: false,
-        type: PanelType.EmptyPanel,
-        position: {
-          column: 0,
-          row: 1
-        },
-        projectId: 0,
-        data: null
-      }, {
-        id: 2,
-        title: "Mock panel 2",
-        dynamic: false,
-        type: PanelType.EmptyPanel,
-        position: {
-          column: 1,
-          row: 0
-        },
-        projectId: 0,
-        data: null
-      }, {
-        id: 3,
-        title: "Mock panel 3",
-        dynamic: true,
-        type: PanelType.EmptyPanel,
-        position: {
-          column: 2,
-          row: 0
-        },
-        projectId: 0,
-        data: null
-      }, {
-        id: 4,
-        title: "Mock panel 4",
-        dynamic: true,
-        type: PanelType.EmptyPanel,
-        position: {
-          column: 2,
-          row: 0
-        },
-        projectId: 0,
-        data: null
-      }
-
-    ];
-
-    return mockPanelData;
-  }
+  /**
+   * Adds panel both to cached panels object and persists it to backend.
+   *
+   * @param panel panel to add
+   */
+  addPanel(panel : Panel) {}
 
   injectPanelComponent(host : HostDirective, panelId : number) {
     console.log("injectPanelComponent");
 
-    //  let viewContainerRef = host.viewContainerRef;   viewContainerRef.clear();
-    // let componentFactory =
-    // this.componentFactoryResolver.resolveComponentFactory(EmptyPanelComponent);
-    // let componentRef = viewContainerRef.createComponent(componentFactory);
+    // refactor to use panelsCache if its there
+    this
+      .getPanelData()
+      .subscribe(panelsData => {
+
+        let panelToLoad = panelsData.find(panel => panel.id == panelId);
+        let viewContainerRef = host.viewContainerRef;
+        viewContainerRef.clear();
+
+        let panelComponentType = this
+          .panelTypeMapper
+          .map(panelToLoad.type);
+
+        let componentFactory = this
+          .componentFactoryResolver
+          .resolveComponentFactory(panelComponentType);
+
+        let componentRef = viewContainerRef.createComponent(componentFactory);
+
+      });
+
   }
 
   injectPanelConfiguration(host : HostDirective, panelId : number) {

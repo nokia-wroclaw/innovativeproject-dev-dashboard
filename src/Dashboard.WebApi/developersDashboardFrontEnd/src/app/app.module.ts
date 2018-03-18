@@ -52,6 +52,10 @@ import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic
 import {PanelManagerService} from "./panel-manager/service/panel-manager.service";
 import {CdkTableModule} from '@angular/cdk/table';
 import {PanelDataService} from './panel-create/service/panel-data.service';
+import {PanelApiService} from "./panel-manager/service/api/panel-api.service";
+import {PanelComponent} from "./panels/panel.component";
+import {EmptyPanelComponent} from "./panels/empty-panel/empty-panel.component";
+import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 
 const appRoutes : Routes = [
   {
@@ -87,7 +91,8 @@ const appRoutes : Routes = [
     HostDirective,
     StaticHostPanelComponent,
     DynamicHostPanelComponent,
-    NavbarComponent
+    NavbarComponent,
+    EmptyPanelComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),
@@ -131,10 +136,10 @@ const appRoutes : Routes = [
     HttpClientModule
   ],
   providers: [
-    HelloWorldService, PanelManagerService, PanelDataService
+    HelloWorldService, PanelManagerService, PanelDataService, PanelApiService, PanelTypeMapperService
   ],
   bootstrap: [AppComponent],
-  entryComponents: []
+  entryComponents: [EmptyPanelComponent]
 })
 export class AppModule {}
 

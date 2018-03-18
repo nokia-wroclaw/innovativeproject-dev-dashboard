@@ -25,7 +25,6 @@ namespace Dashboard.Core.Entities
 
     public enum PanelType
     {
-        Xddd,
-        Kekkk
+        EmptyPanel
     }
 }

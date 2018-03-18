@@ -11,28 +11,31 @@ export class DashboardComponent implements OnInit {
 
   constructor(private panelManagerService : PanelManagerService, private route : ActivatedRoute, private _router : Router, public panelDataService : PanelDataService) {}
 
-  PanelType = PanelType;
-
   panelData : Panel[];
 
   adminMode : boolean = false;
 
   ngOnInit() {
-    this.panelData = this
+    this
       .panelManagerService
-      .getPanelData();
+      .getPanelData()
+      .subscribe(panelData => this.panelData = panelData);
 
     this.adminMode = this.route.snapshot.data.adminMode;
   }
 
   getPanelsForColumn(column : number) : Panel[] {
-    return this
-      .panelData
-      .filter(panel => panel.position.column == column)
-      .sort((aPanel, bPanel) => aPanel.position.row - bPanel.position.row);
+    if (this.panelData == undefined) {
+      return [];
+    } else {
+      return this
+        .panelData
+        .filter(panel => panel.position.column == column)
+        .sort((aPanel, bPanel) => aPanel.position.row - bPanel.position.row);
+    }
   }
 
-  onclck(inputValue : number) {
+  onAddCardClick(inputValue : number) {
     this.panelDataService.columnNumber = inputValue;
   }
 

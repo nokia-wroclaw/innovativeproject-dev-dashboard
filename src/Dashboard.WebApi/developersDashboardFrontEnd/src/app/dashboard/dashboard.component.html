@@ -5,7 +5,7 @@
         <app-static-host-panel *ngIf="!panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-static-host-panel>
         <app-dynamic-host-panel *ngIf="panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-dynamic-host-panel>
       </div>
-      <a [routerLink]=" ['/admin/create']" (click)="onclck(0)">
+      <a [routerLink]=" ['/admin/create']" (click)="onAddCardClick(0)">
         <mat-card *ngIf="adminMode" id="createButton">
           <i id="create" class="material-icons">add</i>
         </mat-card>
@@ -19,7 +19,7 @@
         <app-dynamic-host-panel *ngIf="panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-dynamic-host-panel>
       </div>
       <a [routerLink]=" ['/admin/create']">
-        <mat-card *ngIf="adminMode" id="createButton" (click)="onclck(1)">
+        <mat-card *ngIf="adminMode" id="createButton" (click)="onAddCardClick(1)">
           <i id="create" class="material-icons">add</i>
         </mat-card>
       </a>
@@ -33,7 +33,7 @@
         <app-dynamic-host-panel *ngIf="panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-dynamic-host-panel>
       </div>
       <a [routerLink]=" ['/admin/create']">
-        <mat-card *ngIf="adminMode" id="createButton" (click)="onclck(2)">
+        <mat-card *ngIf="adminMode" id="createButton" (click)="onAddCardClick(2)">
           <i id="create" class="material-icons">add</i>
         </mat-card>
       </a>
