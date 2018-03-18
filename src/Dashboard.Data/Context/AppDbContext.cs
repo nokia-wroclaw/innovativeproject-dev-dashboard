@@ -32,7 +32,12 @@ namespace Dashboard.Data.Context
 
             builder.Entity<Panel>(m =>
             {
-                
+                m.HasKey(p => p.Id);
+            });
+
+            builder.Entity<PanelPosition>(m =>
+            {
+                m.HasKey(p => p.Id);
             });
         }
     }
