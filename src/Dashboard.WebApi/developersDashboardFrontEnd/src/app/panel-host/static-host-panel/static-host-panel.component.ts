@@ -14,6 +14,12 @@ export class StaticHostPanelComponent implements OnInit {
   @Input()
   tileTitle : String;
 
+  @Input()
+  lastUpdated : string = "Last updated...";
+
+  @Input()
+  labelInput : string = "Updated";
+
   @ViewChild(HostDirective)
   panelHost : HostDirective;
 
