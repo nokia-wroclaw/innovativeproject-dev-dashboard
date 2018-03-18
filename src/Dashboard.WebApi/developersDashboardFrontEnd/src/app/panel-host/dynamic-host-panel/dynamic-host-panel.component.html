@@ -5,10 +5,14 @@
   </a>
 
   <mat-card>
-    <mat-card-title>
-    </mat-card-title>
+    <mat-card-header>
+      <mat-card-title>
+        <h3>
+          <div style="float:left;">{{ tileTitle }}</div>
+        </h3>
+      </mat-card-title>
+    </mat-card-header>
     <mat-card-content>
-      {{tileTitle}}
 
       <!-- Outlet for a component loaded dynamicaly -->
       <ng-template host></ng-template>
