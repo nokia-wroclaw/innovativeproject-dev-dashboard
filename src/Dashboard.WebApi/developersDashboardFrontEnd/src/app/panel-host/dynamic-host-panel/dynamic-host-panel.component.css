@@ -1,5 +1,5 @@
 mat-card {
-    width: 400px;
+    width: 100%;
     height: 300px;
     max-width: 100%;
     margin-top: 40px;  
@@ -30,10 +30,11 @@ mat-card {
     margin-top: 40px;
 }
 mat-card-content {
-    margin: 20%;
+    margin: 15%;
 }
 mat-card-actions {
     position: absolute;
     left: 40%;
     margin-right: -50%;
+    bottom: 30px;
 }

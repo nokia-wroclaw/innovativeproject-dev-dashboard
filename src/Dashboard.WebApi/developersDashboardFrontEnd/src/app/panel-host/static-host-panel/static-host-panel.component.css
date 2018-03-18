@@ -1,5 +1,5 @@
 mat-card {
-    width: 400px;
+    width: auto;
     height: 300px;
     max-width: 100%;
     margin-top: 20px;  
@@ -26,13 +26,15 @@ mat-card {
     right: 15%;
 }
 .thumbnail {
+    margin: 0;
     height: 100%;
 }
 mat-card-content {
-    margin: 20%;
+    margin: 15%;
 }
 mat-card-actions {
     position: absolute;
     left: 40%;
     margin-right: -50%;
+    bottom: 30px;
 }
