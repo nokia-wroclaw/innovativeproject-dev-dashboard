@@ -10,6 +10,8 @@ export class PanelTypeMapperService {
         // TODO extract as map
         if(panelType == PanelType.EmptyPanel) {
             return EmptyPanelComponent;
+        } else {
+            console.log("Error: Mapping not specified in panel-type-mapper");
         }
     }
 
@@ -18,6 +20,16 @@ export class PanelTypeMapperService {
         if(panelType == PanelType.EmptyPanel) {
             // return EmptyPanelConfigurationComponent;
             return null;
+        } else {
+            console.log("Error: Mapping not specified in panel-type-mapper");
+        }
+    }
+
+    getName(panelType : PanelType) : String {
+        if(panelType == PanelType.EmptyPanel) {
+            return "Empty Panel";
+        } else {
+            return "Name not specified in panel-type-mapper";
         }
     }
 

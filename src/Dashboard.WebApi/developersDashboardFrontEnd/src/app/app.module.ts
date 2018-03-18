@@ -55,6 +55,8 @@ import {PanelApiService} from "./panel-manager/service/api/panel-api.service";
 import {PanelComponent} from "./panels/panel.component";
 import {EmptyPanelComponent} from "./panels/empty-panel/empty-panel.component";
 import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/panel-type-mapper.service";
+import {ProjectsManagerService} from "./projects-manager/projects-manager.service";
+import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
 
 const appRoutes : Routes = [
   {
@@ -135,7 +137,12 @@ const appRoutes : Routes = [
     HttpClientModule
   ],
   providers: [
-    PanelManagerService, PanelDataService, PanelApiService, PanelTypeMapperService
+    PanelManagerService,
+    PanelDataService,
+    PanelApiService,
+    PanelTypeMapperService,
+    ProjectsManagerService,
+    ProjectsApiService
   ],
   bootstrap: [AppComponent],
   entryComponents: [EmptyPanelComponent]

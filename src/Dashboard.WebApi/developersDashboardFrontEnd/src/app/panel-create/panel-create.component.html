@@ -21,8 +21,8 @@
 
     <mat-form-field>
       <mat-select placeholder="Projects" required [(ngModel)]="selectedProjects">
-        <mat-option *ngFor="let project of projects" [value]="project.value">
-          {{ project.viewValue }}
+        <mat-option *ngFor="let project of projects" [value]="project.id">
+          {{ project.apiProjectId }}
         </mat-option>
       </mat-select>
     </mat-form-field>

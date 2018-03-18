@@ -32,9 +32,14 @@ export class PanelManagerService {
     }
   }
 
-  updatePanel(panel : Panel) {
+  updatePanel(id : number, panel : Panel) {
     console.log("Call updatePanel()");
     console.log(panel);
+
+    // 1. Post panel through panelApiService
+    // 2. If succeded - update object in cache
+    // 3. Cache Return some error otherwise
+    // - Return promise with success/failure information
   }
 
   /**
@@ -45,12 +50,14 @@ export class PanelManagerService {
   addPanel(panel : Panel) {
     console.log("Call addPanel()");
     console.log(panel);
+
+    // 1. Post panel through panelApiService
+    // 2. If succeded - add object to panels
+    // 3. Cache Return some error otherwise
+    // - Return promise with success/failure information
   }
 
   injectPanelComponent(host : HostDirective, panelId : number) {
-    console.log("injectPanelComponent");
-
-    // refactor to use panelsCache if its there
     this
       .getPanelData()
       .subscribe(panelsData => {
@@ -68,17 +75,12 @@ export class PanelManagerService {
           .resolveComponentFactory(panelComponentType);
 
         let componentRef = viewContainerRef.createComponent(componentFactory);
-
       });
 
   }
 
   injectPanelConfiguration(host : HostDirective, panelId : number) {
     console.log("injectPanelConfiguration");
-  }
-
-  updateConfiguration(panelId : number, configuration : any) {
-    console.log("updateConfiguration");
   }
 
 }
