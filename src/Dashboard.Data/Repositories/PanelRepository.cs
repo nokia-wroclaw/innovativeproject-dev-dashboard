@@ -16,6 +16,7 @@ namespace Dashboard.Data.Repositories
         {
             return  Context.Set<Panel>()
                 .Include(p => p.Project)
+                    .ThenInclude(p => p.Pipelines)
                 .Include(p => p.Position)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
