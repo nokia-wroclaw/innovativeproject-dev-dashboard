@@ -28,20 +28,9 @@ namespace Dashboard.WebApi.Controllers
             return _ciDataProviderFactory.GetSupportedProviders.Select(p => p.Name);
         }
 
-        //api/DashboardData/Project/1
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Project(int id)
-        {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
-                return NotFound();
-
-            return Json(project);
-        }
-
         //api/DashboardData/UpdatePipelinesProject
         [HttpPost("{id}")]
-        public async Task<IActionResult> UpdatePipelinesProject(int id)
+        public async Task<IActionResult> UpdatePipelinesProject(int id) //Move to project controller?
         {
             var project = await _projectService.GetProjectByIdAsync(id);
             if (project == null)

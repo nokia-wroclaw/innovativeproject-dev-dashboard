@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.WebApi.ApiModels.Requests;
+using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dashboard.WebApi.Controllers
@@ -37,11 +38,9 @@ namespace Dashboard.WebApi.Controllers
 
         // POST api/Project
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Create([FromBody]CreateProject model)
         {
-            if(!ModelState.IsValid)
-                return BadRequest();
-
             //TODO: change when automapper
             var project = new Project()
             {
@@ -57,11 +56,9 @@ namespace Dashboard.WebApi.Controllers
 
         // PUT api/Project/5
         [HttpPut("{id}")]
+        [ValidateModel]
         public async Task<IActionResult> Put(int id, [FromBody]UpdateProject model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
             //TODO: change when automapper
             var updatedProject = new Project()
             {

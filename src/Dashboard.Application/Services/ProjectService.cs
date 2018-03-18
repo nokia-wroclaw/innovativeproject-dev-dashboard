@@ -34,11 +34,11 @@ namespace Dashboard.Application.Services
 
         public async Task DeleteProjectAsync(int id)
         {
-            var project = await GetProjectByIdAsync(id);
-            if(project == null)
+            var entity = await GetProjectByIdAsync(id);
+            if(entity == null)
                 return;
 
-            await _projectRepository.DeleteAsync(project);
+            await _projectRepository.DeleteAsync(entity);
             await _projectRepository.SaveAsync();
         }
 
@@ -75,7 +75,7 @@ namespace Dashboard.Application.Services
         /// <returns>All pipelines</returns>
         public async Task UpdatePipelinesForProjectAsync(int projectId)
         {
-            //TODO: Refactor so this method returns error string and piplines, some validation
+            //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var project = await GetProjectByIdAsync(projectId);
             if (project == null) return;
 
