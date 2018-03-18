@@ -16,3 +16,11 @@
     right: 45%;
    
 }
+.thumbnail {
+    border: 0;
+    height: 100%;
+}
+div.row {
+    margin-left:100px;
+    margin-right:100px;
+}

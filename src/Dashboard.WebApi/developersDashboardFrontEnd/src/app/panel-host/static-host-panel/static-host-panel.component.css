@@ -4,7 +4,7 @@ mat-card {
     max-width: 100%;
     margin-top: 20px;  
     margin-bottom: 20px;
-    border-radius: 10px;
+    border-radius: 5px;
     margin-left: auto;
     margin-right: auto;
     display: block; 
@@ -37,4 +37,14 @@ mat-card-actions {
     left: 40%;
     margin-right: -50%;
     bottom: 30px;
+}
+mat-card-footer {
+    position: absolute;
+    left: 40px;
+    bottom: 15px;
+}
+span {
+    display: inline-block;
+    width:auto;    
+    border-radius: 15px;
 }

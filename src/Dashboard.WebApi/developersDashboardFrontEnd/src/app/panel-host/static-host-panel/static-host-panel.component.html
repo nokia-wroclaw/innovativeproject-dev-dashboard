@@ -2,7 +2,11 @@
   <mat-card-header style="margin-top:-20px;">
     <mat-card-title>
       <h3>
-        <div style="float:left;">{{ tileTitle }}</div>
+        <div style="float:left;">{{ tileTitle }}
+        </div>
+        <div style="float:left; position:absolute; right:150px;">
+          <span class="label label-success">{{labelInput}}</span>
+        </div>
         <i *ngIf="adminMode" id="toc" class="material-icons">dehaze</i>
         <a [routerLink]=" ['/admin', panelId]">
           <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
@@ -12,14 +16,14 @@
   </mat-card-header>
 
   <mat-card-content>
-    <p> Id: {{ panelId }}</p>
-
-
     <!-- Outlet for a component loaded dynamicaly -->
     <ng-template host></ng-template>
 
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button>Button</button>
+
   </mat-card-actions>
+  <mat-card-footer>
+    <p>{{lastUpdated}}</p>
+  </mat-card-footer>
 </mat-card>
