@@ -1,5 +1,11 @@
-import {PanelType} from './panel-type';
-import {PanelPosition} from "./panel-position";
+export enum PanelType {
+    EmptyPanel
+}
+
+export interface PanelPosition {
+    column : number;
+    row : number;
+}
 
 export interface Panel {
     id : number;
