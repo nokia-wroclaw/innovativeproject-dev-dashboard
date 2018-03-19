@@ -3,34 +3,24 @@ mat-card {
     height: 300px;
     max-width: 100%;
     margin-top: 20px;  
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border-radius: 5px;
     margin-left: auto;
     margin-right: auto;
     display: block; 
 }
 #toc {
-    color: black;
-    margin-bottom: 20px;
-    display: block; 
-    font-size: 32px;
-    position: absolute;
-    right: 5%;
+    color: black;   
 }
 #settings {
-    color: black !important;
-    margin-bottom: 20px;
-    display: block; 
-    font-size: 28px;
-    position: absolute;
-    right: 15%;
+    color: black !important;   
 }
 .thumbnail {
     margin: 0;
     height: 100%;
 }
 mat-card-content {
-    margin: 15%;
+    margin: 10%;
 }
 mat-card-actions {
     position: absolute;
@@ -38,13 +28,16 @@ mat-card-actions {
     margin-right: -50%;
     bottom: 30px;
 }
+mat-card-title{
+    padding: 0;
+}
 mat-card-footer {
     position: absolute;
     left: 40px;
     bottom: 15px;
 }
-span {
-    display: inline-block;
-    width:auto;    
+.label-success {   
     border-radius: 15px;
 }
+
+
