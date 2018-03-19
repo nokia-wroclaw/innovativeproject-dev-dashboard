@@ -1,2 +1,26 @@
 language: csharp
-solution: src/Dashboard.sln
+mono: none
+dotnet: 2.0.0
+sudo: required
+addons:
+    chrome: stable
+apt:
+    sources:
+        - google-chrome
+    packages:
+        - google-chrome-stable
+        - google-chrome-beta
+before_install:
+    - export CHROME_BIN=chromium-browser
+jobs:
+    include:
+        - stage: frontendBuild
+          script: 
+            - cd src/Dashboard.WebApi/developersDashboardFrontEnd
+            - npm install
+            - npm build
+            - npm test
+        - stage: backendBuild
+          script:
+            - dotnet restore ./src
+            - dotnet build ./src/Dashboard.sln

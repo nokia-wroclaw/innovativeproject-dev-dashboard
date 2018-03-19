@@ -12,17 +12,17 @@ namespace Dashboard.Data.Context
         public static void Seed(AppDbContext ctx)
         {
             //SeedPipelines().ForEach(x => ctx.Add(x));
-            SeedProjects.ForEach(x => ctx.Add(x));
-            SeedPanels.ForEach(x => ctx.Add(x));
+            ctx.AddRange(SeedProjects);
+            ctx.AddRange(SeedPanels);
 
             ctx.SaveChanges();
         }
 
-        private static List<Panel> SeedPanels => new List<Panel>
+        private static List<Panel> _seedPanels;
+        private static List<Panel> SeedPanels => _seedPanels ?? (_seedPanels = new List<Panel>()
         {
             new Panel()
             {
-                Id = 1,
                 Title = "Fancy Title 1",
                 Dynamic = false,
                 Position = new PanelPosition() {Column = 0, Row = 0},
@@ -32,7 +32,6 @@ namespace Dashboard.Data.Context
             },
             new Panel()
             {
-                Id = 2,
                 Title = "Fancy Title 2",
                 Dynamic = false,
                 Position = new PanelPosition() {Column = 0, Row = 1},
@@ -42,7 +41,6 @@ namespace Dashboard.Data.Context
             },
             new Panel()
             {
-                Id = 3,
                 Title = "Fancy Title 3",
                 Dynamic = false,
                 Position = new PanelPosition() {Column = 1, Row = 0},
@@ -52,7 +50,6 @@ namespace Dashboard.Data.Context
             }
             ,new Panel()
             {
-                Id = 4,
                 Title = "Fancy Title 4",
                 Dynamic = false,
                 Position = new PanelPosition() {Column = 2, Row = 0},
@@ -60,13 +57,13 @@ namespace Dashboard.Data.Context
                 Type = PanelType.EmptyPanel,
                 Project = SeedProjects.ElementAt(0)
             }
-        };
+        });
 
-        private static List<Project> SeedProjects => new List<Project>()
+        private static List<Project> _seedProjects;
+        private static List<Project> SeedProjects => _seedProjects ?? (_seedProjects = new List<Project>()
         {
             new Project()
             {
-                Id = 1,
                 DataProviderName = "GitLab",
                 ApiHostUrl = "https://gitlab.com",
                 ApiProjectId = "13083",
@@ -82,7 +79,7 @@ namespace Dashboard.Data.Context
                     }
                 }
             }
-        };
+        });
 
         private static List<Pipeline> SeedPipelines()
         {
@@ -93,7 +90,7 @@ namespace Dashboard.Data.Context
             request.Accept = "application/json";
             request.AutomaticDecompression = DecompressionMethods.GZip;
 
-            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new StreamReader(stream))
             {
