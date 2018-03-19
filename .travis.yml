@@ -5,6 +5,7 @@ jobs:
     include:
         - stage: frontendBuild
           script: 
+            - cd src/Dashboard.WebApi/developersDashboardFrontEnd
             - npm install
             - npm build
             - npm test
