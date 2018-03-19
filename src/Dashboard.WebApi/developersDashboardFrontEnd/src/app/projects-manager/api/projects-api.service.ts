@@ -3,17 +3,17 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
 
-import {Panel, PanelType} from "../../panel";
+import {Project, Pipeline} from "./../project";
 
 @Injectable()
-export class PanelApiService {
+export class ProjectsApiService {
 
-    private baseUrl : string = "/api/panel";
+    private baseUrl : string = "/api/project";
 
     constructor(private http : HttpClient) {}
 
-    getPanels() : Observable < Panel[] > {
-        return this.http.get < Panel[] > (this.baseUrl);
+    getProjects() : Observable < Project[] > {
+        return this.http.get < Project[] > (this.baseUrl);
     }
 
 }

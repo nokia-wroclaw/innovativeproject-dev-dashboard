@@ -2,8 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {PanelManagerService} from './../panel-manager/service/panel-manager.service';
-import {PanelType} from './../panel-manager/panel-type';
-import {Panel} from "../panel-manager/panel";
+import {Panel, PanelType} from "../panel-manager/panel";
 import {PanelDataService} from '../panel-create/service/panel-data.service';
 
 @Component({selector: 'app-dashboard', templateUrl: './dashboard.component.html', styleUrls: ['./dashboard.component.css']})

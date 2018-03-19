@@ -6,10 +6,10 @@
       <a [routerLink]=" ['/admin']">
         <i class="material-icons" id="clear">clear</i>
       </a>
-      <h3>Panel Configuration</h3>
+      <h4>Panel Configuration</h4>
     </mat-card-title>
     <mat-card-subtitle>
-      <h4>Choose options</h4>
+      <h5>Choose options</h5>
     </mat-card-subtitle>
 
   </mat-card-header>
@@ -21,8 +21,8 @@
 
     <mat-form-field>
       <mat-select placeholder="Projects" required [(ngModel)]="selectedProjects">
-        <mat-option *ngFor="let project of projects" [value]="project.value">
-          {{ project.viewValue }}
+        <mat-option *ngFor="let project of projects" [value]="project.id">
+          {{ project.apiProjectId }}
         </mat-option>
       </mat-select>
     </mat-form-field>

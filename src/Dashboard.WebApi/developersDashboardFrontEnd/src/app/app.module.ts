@@ -42,7 +42,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {RouterModule, Routes} from '@angular/router';
 
 import {AppComponent} from './app.component';
-import {HelloWorldService} from './hello-world/hello-world.service';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {PanelConfigurationComponent} from './panel-configuration/panel-configuration.component';
 import {PanelCreateComponent} from './panel-create/panel-create.component';
@@ -56,6 +55,8 @@ import {PanelApiService} from "./panel-manager/service/api/panel-api.service";
 import {PanelComponent} from "./panels/panel.component";
 import {EmptyPanelComponent} from "./panels/empty-panel/empty-panel.component";
 import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/panel-type-mapper.service";
+import {ProjectsManagerService} from "./projects-manager/projects-manager.service";
+import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
 
 const appRoutes : Routes = [
   {
@@ -136,7 +137,12 @@ const appRoutes : Routes = [
     HttpClientModule
   ],
   providers: [
-    HelloWorldService, PanelManagerService, PanelDataService, PanelApiService, PanelTypeMapperService
+    PanelManagerService,
+    PanelDataService,
+    PanelApiService,
+    PanelTypeMapperService,
+    ProjectsManagerService,
+    ProjectsApiService
   ],
   bootstrap: [AppComponent],
   entryComponents: [EmptyPanelComponent]
