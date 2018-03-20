@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dashboard.Application.Interfaces.Services;
-using Dashboard.Core.Entities;
-using Dashboard.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Dashboard.Application.Interfaces.Services;
+using Dashboard.Core.Interfaces;
 
 namespace Dashboard.WebApi.Controllers
 {
@@ -13,10 +11,10 @@ namespace Dashboard.WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class DashboardDataController : Controller
     {
-        private readonly ICIDataProviderFactory _ciDataProviderFactory;
+        private readonly ICiDataProviderFactory _ciDataProviderFactory;
         private readonly IProjectService _projectService;
 
-        public DashboardDataController(IProjectService projectService, ICIDataProviderFactory ciDataProviderFactory)
+        public DashboardDataController(IProjectService projectService, ICiDataProviderFactory ciDataProviderFactory)
         {
             _projectService = projectService;
             _ciDataProviderFactory = ciDataProviderFactory;
@@ -28,15 +26,15 @@ namespace Dashboard.WebApi.Controllers
             return _ciDataProviderFactory.GetSupportedProviders.Select(p => p.Name);
         }
 
-        //api/DashboardData/UpdatePipelinesProject
+        //api/DashboardData/UpdateCiDataForProject
         [HttpPost("{id}")]
-        public async Task<IActionResult> UpdatePipelinesProject(int id) //Move to project controller?
+        public async Task<IActionResult> UpdateCiDataForProject(int id) //Move to project controller?
         {
             var project = await _projectService.GetProjectByIdAsync(id);
             if (project == null)
                 return NotFound();
 
-            await _projectService.UpdatePipelinesForProjectAsync(id);
+            await _projectService.UpdateCiDataForProjectAsync(id);
 
             return Ok();
         }

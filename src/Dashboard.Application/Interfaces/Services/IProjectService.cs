@@ -12,6 +12,6 @@ namespace Dashboard.Application.Interfaces.Services
         Task<Project> UpdateProjectAsync(Project updatedProject);
         Task<Project> CreateProjectAsync(Project project);
 
-        Task UpdatePipelinesForProjectAsync(int projectId);
+        Task UpdateCiDataForProjectAsync(int projectId);
     }
 }

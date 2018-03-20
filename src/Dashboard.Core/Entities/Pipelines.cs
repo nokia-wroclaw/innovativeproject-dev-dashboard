@@ -11,7 +11,7 @@ namespace Dashboard.Core.Entities
 
     public class Pipeline
     {
-        public UInt32 Id { get; set; }
+        public int Id { get; set; }
         public string Sha{ get; set; }
         public string Ref { get; set; }
         public string Status { get; set; }

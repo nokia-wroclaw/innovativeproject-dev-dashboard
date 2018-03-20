@@ -1,54 +1,34 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Linq;
 using System.Threading.Tasks;
+using Dashboard.Application.GitLabApi;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
-using Newtonsoft.Json;
 
 namespace Dashboard.Application
 {
-    public class GitLabDataProvider : ICIDataProvider
+    public class GitLabDataProvider : ICiDataProvider
     {
         public string Name => "GitLab";
 
-        private readonly IPipelineRepository _pipelineRepository;
-
-        public GitLabDataProvider(IPipelineRepository pipelineRepository)
+        public Task<IEnumerable<Pipeline>> GetAllPipelines(string apiHost, string apiKey, string apiProjectId)
         {
-            _pipelineRepository = pipelineRepository;
-        }
+            var apiClient = new GitLabClient(apiHost, apiKey);
+            var apiPipelines = apiClient.GetProjectPipelines(apiProjectId);
 
-        public Task<Pipeline> GetMasterAsync()
-        {
-            return _pipelineRepository.FindOneByAsync(pipe => pipe.Ref.Equals("master"));
-        }
+            //TODO: change when automapper
+            var pipelines = apiPipelines.Select(p =>
+                new Pipeline
+                {
+                    Id = p.Id,
+                    Sha = p.Sha,
+                    Ref = p.Ref,
+                    Status = p.Status
+                }
+            );
 
-        /// <summary>
-        /// Returns few latest pipelines
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<Pipeline>> GetAllAsync(string host, string projectId, string apiKey)
-        {
-            string htmlResponse = "";
-            //Prepare API call
-            string uri = $@"{host}/api/v4/projects/{projectId}/pipelines";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.Headers.Add($"PRIVATE-TOKEN: {apiKey}");
-            request.Accept = "application/json";
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            //GET response
-            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                htmlResponse = reader.ReadToEnd();
-            }
-
-            //return response in JSON
-            return JsonConvert.DeserializeObject<List<Pipeline>>(htmlResponse);
+            return Task.FromResult(pipelines);
         }
     }
 }

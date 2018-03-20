@@ -20,8 +20,8 @@ namespace Dashboard.Application
             services.AddTransient<IPanelService, PanelService>();
             services.AddTransient<IProjectService, ProjectService>();
 
-            services.AddScoped<ICIDataProvider, GitLabDataProvider>();
-            services.AddTransient<ICIDataProviderFactory, CIDataProviderFactory>();
+            services.AddScoped<ICiDataProvider, GitLabDataProvider>();
+            services.AddTransient<ICiDataProviderFactory, CIDataProviderFactory>();
         }
     }
 }

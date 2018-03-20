@@ -4,10 +4,9 @@ using Dashboard.Core.Entities;
 
 namespace Dashboard.Core.Interfaces
 {
-    public interface ICIDataProvider
+    public interface ICiDataProvider
     {
         string Name { get; }
-        Task<Pipeline> GetMasterAsync();
-        Task<IEnumerable<Pipeline>> GetAllAsync(string host, string projectId, string apiKey);
+        Task<IEnumerable<Pipeline>> GetAllPipelines(string apiHost, string apiKey, string apiProjectId);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dashboard.Application.GitLabApi;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
@@ -14,9 +15,9 @@ namespace Dashboard.Application.Services
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
-        private readonly ICIDataProviderFactory _ciDataProviderFactory;
+        private readonly ICiDataProviderFactory _ciDataProviderFactory;
 
-        public ProjectService(IProjectRepository projectRepository, ICIDataProviderFactory ciDataProviderFactory)
+        public ProjectService(IProjectRepository projectRepository, ICiDataProviderFactory ciDataProviderFactory)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
             _projectRepository = projectRepository;
@@ -69,19 +70,19 @@ namespace Dashboard.Application.Services
         }
 
         /// <summary>
-        /// Downloads pipelines from CiDataProvider for given project
+        /// Downloads data from CiDataProvider for given project
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns>All pipelines</returns>
-        public async Task UpdatePipelinesForProjectAsync(int projectId)
+        public async Task UpdateCiDataForProjectAsync(int projectId)
         {
-            //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var project = await GetProjectByIdAsync(projectId);
             if (project == null) return;
 
+            //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var downloadedPiplines = await dataProvider.GetAllAsync(project.ApiHostUrl, project.ApiProjectId, project.ApiAuthenticationToken);
+            var downloadedPiplines = await dataProvider.GetAllPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
 
             //Join two lists, move to LinqExtensions ?
             var projectPipelines = project.Pipelines ?? new List<Pipeline>();
