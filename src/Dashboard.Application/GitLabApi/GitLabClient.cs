@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Dashboard.Application.GitLabApi.Models;
@@ -15,7 +16,7 @@ namespace Dashboard.Application.GitLabApi
 
         public GitLabClient(string apiHost, string apiKey)
         {
-            // Convert casing
+            // Convert snake_casing to CamelCasing
             SimpleJson.SimpleJson.CurrentJsonSerializerStrategy = new SnakeJsonSerializerStrategy();
 
             Client = new RestClient
@@ -25,7 +26,12 @@ namespace Dashboard.Application.GitLabApi
             };
         }
 
-        public List<Pipeline> GetProjectPipelines(string projectId, string pipelineId = "")
+        public Pipeline GetPipeline(string projectId, string pipelineId)
+        {
+            return GetPipelines(projectId, pipelineId).FirstOrDefault();
+        }
+
+        public IEnumerable<Pipeline> GetPipelines(string projectId, string pipelineId = "")
         {
             var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}", Method.GET);
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));

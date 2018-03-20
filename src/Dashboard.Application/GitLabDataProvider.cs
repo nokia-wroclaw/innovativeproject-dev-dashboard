@@ -15,7 +15,7 @@ namespace Dashboard.Application
         public Task<IEnumerable<Pipeline>> GetAllPipelines(string apiHost, string apiKey, string apiProjectId)
         {
             var apiClient = new GitLabClient(apiHost, apiKey);
-            var apiPipelines = apiClient.GetProjectPipelines(apiProjectId);
+            var apiPipelines = apiClient.GetPipelines(apiProjectId);
 
             //TODO: change when automapper
             var pipelines = apiPipelines.Select(p =>
