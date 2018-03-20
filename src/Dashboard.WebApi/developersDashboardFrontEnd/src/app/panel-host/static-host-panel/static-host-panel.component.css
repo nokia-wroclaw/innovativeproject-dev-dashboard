@@ -10,10 +10,12 @@ mat-card {
     display: block; 
 }
 #toc {
-    color: black;   
+    color: black; 
+    font-size: 2vw; 
 }
 #settings {
     color: black !important;   
+    font-size: 2vw;
 }
 .thumbnail {
     margin: 0;
@@ -21,12 +23,6 @@ mat-card {
 }
 mat-card-content {
     margin: 10%;
-}
-mat-card-actions {
-    position: absolute;
-    left: 40%;
-    margin-right: -50%;
-    bottom: 30px;
 }
 mat-card-title{
     padding: 0;
@@ -37,7 +33,7 @@ mat-card-footer {
     bottom: 15px;
 }
 .label-success {   
-    border-radius: 15px;
+    border-radius: 1vw;
 }
 
 

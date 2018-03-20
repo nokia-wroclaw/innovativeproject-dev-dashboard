@@ -1,20 +1,25 @@
 <div class="thumbnail">
-  <i *ngIf="adminMode" id="toc" class="material-icons">dehaze</i>
-  <a [routerLink]=" ['/admin', panelId]">
-    <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
-  </a>
-
+  <div class="pull-right">
+    <a [routerLink]=" ['/admin', panelId]">
+      <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
+    </a>
+    <i *ngIf="adminMode" id="toc" class="material-icons">dehaze</i>
+  </div>
   <mat-card>
-    <mat-card-header>
-      <mat-card-title>
-        <h3>
-          <div style="float:left;">{{ tileTitle }}</div>
-          <div style="float:left; position:absolute; right:150px;">
-            <span class="label label-success">{{labelInput}}</span>
-          </div>
-        </h3>
-      </mat-card-title>
-    </mat-card-header>
+    <mat-card-title style="margin-top:-20px; margin-left: -30px">
+      <div class="col-lg-6 col-xs-6 ">
+        <div class="pull-left" style="font-size: 2vw;">
+          {{ tileTitle }}
+        </div>
+      </div>
+      <div class="col-lg-2 col-xs-2">
+        <div style="font-size: 1.5vw;">
+          <span class="label label-success">{{labelInput}}</span>
+        </div>
+      </div>
+
+    </mat-card-title>
+
     <mat-card-content>
 
       <!-- Outlet for a component loaded dynamicaly -->
