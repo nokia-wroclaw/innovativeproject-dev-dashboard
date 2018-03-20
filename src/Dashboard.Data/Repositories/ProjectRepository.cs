@@ -6,19 +6,28 @@ using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces.Repositories;
 using Dashboard.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Dashboard.Data.Repositories
 {
     public class ProjectRepository : EfRepository<Project>, IProjectRepository
     {
+        private IIncludableQueryable<Project, object> EagerProjects => Context.Set<Project>()
+                                                                        .Include(p => p.Pipelines);
+
         public ProjectRepository(AppDbContext context) : base(context)
         {
         }
 
+        public override async Task<IEnumerable<Project>> GetAllAsync()
+        {
+            return await EagerProjects
+                .ToListAsync();
+        }
+
         public override Task<Project> GetByIdAsync(int id)
         {
-            return Context.Set<Project>()
-                .Include(p => p.Pipelines)
+            return EagerProjects
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
     }

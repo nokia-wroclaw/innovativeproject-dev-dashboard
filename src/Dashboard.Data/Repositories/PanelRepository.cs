@@ -10,10 +10,10 @@ namespace Dashboard.Data.Repositories
 {
     public class PanelRepository : EfRepository<Panel>, IPanelRepository
     {
-        private IIncludableQueryable<Panel, PanelPosition> EagerPanels => Context.Set<Panel>()
-                                                                            .Include(p => p.Project)
-                                                                                .ThenInclude(p => p.Pipelines)
-                                                                            .Include(p => p.Position);
+        private IIncludableQueryable<Panel, object> EagerPanels => Context.Set<Panel>()
+                                                                        .Include(p => p.Project)
+                                                                            .ThenInclude(p => p.Pipelines)
+                                                                        .Include(p => p.Position);
 
         public PanelRepository(AppDbContext context) : base(context)
         {
