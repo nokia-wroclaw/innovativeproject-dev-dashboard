@@ -2,6 +2,15 @@
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
 module.exports = function (config) {
+	if(process.env.TRAVIS){
+    configuration.browsers = ['Chrome_travis_ci'];
+    // configuration.reporters = configuration.reporters.concat(['coverage', 'coveralls']);
+    // configuration.coverageReporter = {
+    //   type : 'lcovonly',
+    //   dir : 'coverage/'
+    // };
+  }
+	
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular/cli'],
@@ -27,7 +36,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false
+    browsers: ['Chrome', 'ChromeCanary'],
+	customLaunchers: {
+		Chrome_travis_ci: {
+			base: 'Chrome',
+			flags: ['--no-sandbox']
+		}
+	},
+    singleRun: true
   });
 };
