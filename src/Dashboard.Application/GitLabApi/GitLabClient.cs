@@ -26,18 +26,22 @@ namespace Dashboard.Application.GitLabApi
             };
         }
 
-        public Pipeline GetPipeline(string projectId, string pipelineId)
+        public async Task<Pipeline> GetPipeline(string projectId, string pipelineId)
         {
-            return GetPipelines(projectId, pipelineId).FirstOrDefault();
+            var r = await GetPipelines(projectId, pipelineId);
+            return r.FirstOrDefault();
         }
 
-        public IEnumerable<Pipeline> GetPipelines(string projectId, string pipelineId = "")
+        public async Task<IEnumerable<Pipeline>> GetPipelines(string projectId, string pipelineId = "", string branchName = "")
         {
             var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}", Method.GET);
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
             request.AddUrlSegment("pipelineId", pipelineId);
 
-            var r = Client.Execute<List<Pipeline>>(request);
+            if (!string.IsNullOrEmpty(branchName))
+                request.AddQueryParameter("ref", branchName);
+
+            var r = await Client.ExecuteTaskAsync<List<Pipeline>>(request);
             return r.Data;
         }
     }
