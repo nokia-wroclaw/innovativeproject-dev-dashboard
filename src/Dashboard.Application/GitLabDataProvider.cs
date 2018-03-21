@@ -12,10 +12,10 @@ namespace Dashboard.Application
     {
         public string Name => "GitLab";
 
-        public Task<IEnumerable<Pipeline>> GetAllPipelines(string apiHost, string apiKey, string apiProjectId)
+        public async Task<IEnumerable<Pipeline>> GetAllPipelines(string apiHost, string apiKey, string apiProjectId)
         {
             var apiClient = new GitLabClient(apiHost, apiKey);
-            var apiPipelines = apiClient.GetPipelines(apiProjectId);
+            var apiPipelines = await apiClient.GetPipelines(apiProjectId);
 
             //TODO: change when automapper
             var pipelines = apiPipelines.Select(p =>
@@ -28,7 +28,7 @@ namespace Dashboard.Application
                 }
             );
 
-            return Task.FromResult(pipelines);
+            return pipelines;
         }
     }
 }
