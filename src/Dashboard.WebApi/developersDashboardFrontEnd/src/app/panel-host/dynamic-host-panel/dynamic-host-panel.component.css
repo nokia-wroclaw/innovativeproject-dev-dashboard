@@ -2,27 +2,22 @@ mat-card {
     width: 100%;
     height: 300px;
     max-width: 100%;
-    margin-top: 40px;  
+    margin-top: 2.1vw;  
     border-radius: 5px;
     margin-left: auto;
     margin-right: auto;
+    
     display: block; 
 }
 #toc {
     color: black;
-    margin-bottom: 20px;
-    display: block; 
-    font-size: 32px;
-    position: absolute;
-    right: 18%;
+    font-size: 2vw;
+    
 }
 #settings {
     color: black !important;
-    margin-bottom: 20px;
-    display: block; 
-    font-size: 28px !important;
-    position: absolute;
-    right: 25%;
+    font-size: 2vw;
+    bottom:0;
 }
 .thumbnail {
     border: 0;
@@ -32,19 +27,11 @@ mat-card {
 mat-card-content {
     margin: 15%;
 }
-mat-card-actions {
-    position: absolute;
-    left: 40%;
-    margin-right: -50%;
-    bottom: 30px;
-}
 mat-card-footer {
     position: absolute;
     left: 40px;
     bottom: 15px;
 }
-span {
-    display: inline-block;
-    width:auto;    
-    border-radius: 15px;
+.label-success {   
+    border-radius: 1vw;
 }
