@@ -38,15 +38,6 @@ module.exports = function (config) {
 		
 		singleRun: true
 	};
-	
-	if(process.env.TRAVIS){
-    configuration.browsers = ['Chrome_travis_ci'];
-    // configuration.reporters = configuration.reporters.concat(['coverage', 'coveralls']);
-    // configuration.coverageReporter = {
-    //   type : 'lcovonly',
-    //   dir : 'coverage/'
-    // };
-  }
-	
+
 	config.set(configuraion);
 };
