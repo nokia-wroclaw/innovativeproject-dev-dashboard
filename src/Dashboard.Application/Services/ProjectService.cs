@@ -102,28 +102,28 @@ namespace Dashboard.Application.Services
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
             var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
-            //Get list of static branches
-            var staticPanels = await _panelRepository.FindByAsync(p => (p.StaticBranchName != "") && (p.StaticBranchName != null));
-            List<string> staticBranches = new List<string>();
-            foreach (var panel in staticPanels)
-                staticBranches.Add(panel.StaticBranchName);
+            //Get list of static panels in this project
+            var staticPanels = await _panelRepository.FindByAsync(p => (p.StaticBranchNames.Count() > 0) && (p.Project.Id == project.Id));
+            //Get branch names from panel IEnumerable<string> StaticBranchNames
+            var staticBranches = staticPanels.SelectMany(p => p.StaticBranchNames.Select(c => c.Name));
 
-            //Update with static pipelines
-            List<Pipeline> updatedPipelines = new List<Pipeline>();
-            foreach (var item in staticBranches)
-            {
-                updatedPipelines.Add(await dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, item));
-            }
+            var updatedPipelines = staticBranches.Select(p => dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, p).Result).ToList();
+            //Arbitrary pipelines count
+            int howMany = 10 - updatedPipelines.Count;
 
-            //Fill with newest pipelines
-            foreach (var item in downloadedPipelines)
-            {
-                if (!staticBranches.Contains(item.Ref))
-                    updatedPipelines.Add(new Pipeline { Id = item.Id, Ref = item.Ref, Sha = item.Sha, Status = item.Status });
-                //Arbitrary pipelines count
-                if (updatedPipelines.Count >= 10)
-                    break;
-            }
+            updatedPipelines.AddRange(downloadedPipelines.Where(item => !updatedPipelines.Contains(item))
+                                                          .Select(i => new Pipeline { Id = i.Id, Ref = i.Ref, Sha = i.Sha, Status = i.Status })
+                                                            .Take(howMany));
+
+            ////Fill with newest pipelines
+            //foreach (var item in downloadedPipelines)
+            //{
+            //    if (!staticBranches.Contains(item.Ref))
+            //        updatedPipelines.Add(new Pipeline { Id = item.Id, Ref = item.Ref, Sha = item.Sha, Status = item.Status });
+            //    //Arbitrary pipelines count
+            //    if (updatedPipelines.Count >= 10)
+            //        break;
+            //}
             //Save updated pipelines
             project.Pipelines = updatedPipelines;
 

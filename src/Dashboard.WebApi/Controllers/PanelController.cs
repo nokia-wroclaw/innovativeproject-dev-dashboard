@@ -52,7 +52,7 @@ namespace Dashboard.WebApi.Controllers
                 Data = model.Data,
                 Type = model.Type,
                 //Static branch name not required
-                StaticBranchName = model.StaticBranchName
+                StaticBranchNames = model.StaticBranchNames
             };
 
             var created = await _panelService.CreatePanelAsync(panel, model.ProjectId);
@@ -73,7 +73,7 @@ namespace Dashboard.WebApi.Controllers
                 Data = model.Data,
                 Type = model.Type,
                 //Static branch name not required
-                StaticBranchName = model.StaticBranchName,
+                StaticBranchNames = model.StaticBranchNames,
                 Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row }
             };
 

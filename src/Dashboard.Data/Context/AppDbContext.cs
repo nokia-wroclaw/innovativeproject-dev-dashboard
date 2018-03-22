@@ -36,10 +36,16 @@ namespace Dashboard.Data.Context
                 m.HasMany(p => p.Pipelines);
             });
 
+            builder.Entity<BranchName>(m =>
+            {
+                m.HasKey(p => p.Id);
+            });
+
             builder.Entity<Panel>(model =>
             {
                 model.HasKey(p => p.Id);
                 model.Property(p => p.Id).ValueGeneratedOnAdd();
+                model.HasMany(p => p.StaticBranchNames);
 
                 model.HasOne(p => p.Project);
             });
