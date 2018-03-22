@@ -15,11 +15,13 @@ namespace Dashboard.Application.Services
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
+        private readonly IPanelRepository _panelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
 
-        public ProjectService(IProjectRepository projectRepository, ICiDataProviderFactory ciDataProviderFactory)
+        public ProjectService(IProjectRepository projectRepository, IPanelRepository panelRepository, ICiDataProviderFactory ciDataProviderFactory)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
+            _panelRepository = panelRepository;
             _projectRepository = projectRepository;
         }
 
@@ -70,6 +72,23 @@ namespace Dashboard.Application.Services
         }
 
         /// <summary>
+        /// Returns all branches (names) from web directly. Slow, but always updated and not so often used
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<string>> GetAllProjectBranchNames(int projectId)
+        {
+            var project = await GetProjectByIdAsync(projectId);
+            if (project == null) return null;
+
+            //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
+
+            var r = await dataProvider.GetAllProjectBranchNames(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
+            return r;
+        }
+
+        /// <summary>
         /// Downloads data from CiDataProvider for given project
         /// </summary>
         /// <param name="projectId"></param>
@@ -82,14 +101,38 @@ namespace Dashboard.Application.Services
             //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var downloadedPiplines = await dataProvider.GetAllPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
+            var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
+            //Get list of static branches
+            var staticPanels = await _panelRepository.FindByAsync(p => (p.StaticBranchName != "") && (p.StaticBranchName != null));
+            List<string> staticBranches = new List<string>();
+            foreach (var panel in staticPanels)
+                staticBranches.Add(panel.StaticBranchName);
 
-            //Join two lists, move to LinqExtensions ?
-            var projectPipelines = project.Pipelines ?? new List<Pipeline>();
-            project.Pipelines = projectPipelines.Concat(downloadedPiplines)
-                .GroupBy(x => x.Id)
-                .Select(g => g.First())
-                .ToList();
+            //Update with static pipelines
+            List<Pipeline> updatedPipelines = new List<Pipeline>();
+            foreach (var item in staticBranches)
+            {
+                updatedPipelines.Add(await dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, item));
+            }
+
+            //Fill with newest pipelines
+            foreach (var item in downloadedPipelines)
+            {
+                if (!staticBranches.Contains(item.Ref))
+                    updatedPipelines.Add(new Pipeline { Id = item.Id, Ref = item.Ref, Sha = item.Sha, Status = item.Status });
+                //Arbitrary pipelines count
+                if (updatedPipelines.Count >= 10)
+                    break;
+            }
+            //Save updated pipelines
+            project.Pipelines = updatedPipelines;
+
+            ////Join two lists, move to LinqExtensions ?
+            //var projectPipelines = project.Pipelines ?? new List<Pipeline>();
+            //project.Pipelines = projectPipelines.Concat(downloadedPiplines)
+            //    .GroupBy(x => x.Id)
+            //    .Select(g => g.First())
+            //    .ToList();
 
             await _projectRepository.SaveAsync();
         }

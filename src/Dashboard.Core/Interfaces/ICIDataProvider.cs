@@ -8,5 +8,7 @@ namespace Dashboard.Core.Interfaces
     {
         string Name { get; }
         Task<IEnumerable<Pipeline>> GetAllPipelines(string apiHost, string apiKey, string apiProjectId);
+        Task<Pipeline> GetBranchPipeLine(string apiHost, string apiKey, string apiProjectId, string branchName);
+        Task<IEnumerable<string>> GetAllProjectBranchNames(string apiHost, string apiKey, string apiProjectId);
     }
 }

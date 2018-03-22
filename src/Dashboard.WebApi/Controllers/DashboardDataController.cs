@@ -26,6 +26,14 @@ namespace Dashboard.WebApi.Controllers
             return _ciDataProviderFactory.GetSupportedProviders.Select(p => p.Name);
         }
 
+        //api/DashboardData/GetAllBranches/5
+        [HttpGet]
+        public async Task<IEnumerable<string>> GetAllBranches(int id)
+        {
+            var result = await _projectService.GetAllProjectBranchNames(id);
+            return result;
+        }
+
         //api/DashboardData/UpdateCiDataForProject
         [HttpPost("{id}")]
         public async Task<IActionResult> UpdateCiDataForProject(int id) //Move to project controller?

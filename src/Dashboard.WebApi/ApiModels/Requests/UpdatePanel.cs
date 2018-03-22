@@ -9,6 +9,8 @@ namespace Dashboard.WebApi.ApiModels.Requests
 {
     public class UpdatePanel
     {
+        //Validation?
+        public string StaticBranchName { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]

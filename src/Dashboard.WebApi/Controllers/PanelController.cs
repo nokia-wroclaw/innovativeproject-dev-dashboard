@@ -50,7 +50,9 @@ namespace Dashboard.WebApi.Controllers
                 Dynamic = model.Dynamic,
                 Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row },
                 Data = model.Data,
-                Type = model.Type
+                Type = model.Type,
+                //Static branch name not required
+                StaticBranchName = model.StaticBranchName
             };
 
             var created = await _panelService.CreatePanelAsync(panel, model.ProjectId);
@@ -70,6 +72,8 @@ namespace Dashboard.WebApi.Controllers
                 Dynamic = model.Dynamic,
                 Data = model.Data,
                 Type = model.Type,
+                //Static branch name not required
+                StaticBranchName = model.StaticBranchName,
                 Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row }
             };
 
