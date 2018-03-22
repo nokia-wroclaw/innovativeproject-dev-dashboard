@@ -38,7 +38,7 @@ namespace Dashboard.Application.Services
         public async Task DeleteProjectAsync(int id)
         {
             var entity = await GetProjectByIdAsync(id);
-            if(entity == null)
+            if (entity == null)
                 return;
 
             await _projectRepository.DeleteAsync(entity);
@@ -102,37 +102,27 @@ namespace Dashboard.Application.Services
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
             var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
-            //Get list of static panels in this project
-            var staticPanels = await _panelRepository.FindByAsync(p => (p.StaticBranchNames.Count() > 0) && (p.Project.Id == project.Id));
-            //Get branch names from panel IEnumerable<string> StaticBranchNames
-            var staticBranches = staticPanels.SelectMany(p => p.StaticBranchNames.Select(c => c.Name));
 
-            var updatedPipelines = staticBranches.Select(p => dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, p).Result).ToList();
-            //Arbitrary pipelines count
-            int howMany = 10 - updatedPipelines.Count;
+            var staticBranches = await _panelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
 
-            updatedPipelines.AddRange(downloadedPipelines.Where(item => !updatedPipelines.Contains(item))
-                                                          .Select(i => new Pipeline { Id = i.Id, Ref = i.Ref, Sha = i.Sha, Status = i.Status })
-                                                            .Take(howMany));
+            //Create tasks
+            var updatePiplineTasks = staticBranches
+                                    .Select(b => dataProvider.GetBranchPipeLine(
+                                        apiHost: project.ApiHostUrl,
+                                        apiKey: project.ApiAuthenticationToken,
+                                        apiProjectId: project.ApiProjectId,
+                                        branchName: b)
+                                    );
+            //Await all results async
+            var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
 
-            ////Fill with newest pipelines
-            //foreach (var item in downloadedPipelines)
-            //{
-            //    if (!staticBranches.Contains(item.Ref))
-            //        updatedPipelines.Add(new Pipeline { Id = item.Id, Ref = item.Ref, Sha = item.Sha, Status = item.Status });
-            //    //Arbitrary pipelines count
-            //    if (updatedPipelines.Count >= 10)
-            //        break;
-            //}
-            //Save updated pipelines
+            updatedPipelines
+                .AddRange(downloadedPipelines
+                            .Where(item => !updatedPipelines.Contains(item))
+                            .Select(i => new Pipeline { Id = i.Id, Ref = i.Ref, Sha = i.Sha, Status = i.Status })
+                            .Take(10 - updatedPipelines.Count));
+
             project.Pipelines = updatedPipelines;
-
-            ////Join two lists, move to LinqExtensions ?
-            //var projectPipelines = project.Pipelines ?? new List<Pipeline>();
-            //project.Pipelines = projectPipelines.Concat(downloadedPiplines)
-            //    .GroupBy(x => x.Id)
-            //    .Select(g => g.First())
-            //    .ToList();
 
             await _projectRepository.SaveAsync();
         }
