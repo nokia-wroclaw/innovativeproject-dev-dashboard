@@ -1,0 +1,22 @@
+mat-card {
+    margin: 5px;
+    height: 100%;
+    padding: 5px;
+
+    padding: 0 10px 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+mat-card .title {
+     font-size: 1.5em;
+}
+
+mat-card .panel-icon {
+    color: #585858;
+    font-size: 1.5em;
+    margin: 5px 2px 5px 5px;
+}

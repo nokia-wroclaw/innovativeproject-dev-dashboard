@@ -24,3 +24,7 @@ div.row {
     margin-left:1vw;
     margin-right:1vw;
 }
+
+gridster-item {
+    padding-top: 5px;
+}

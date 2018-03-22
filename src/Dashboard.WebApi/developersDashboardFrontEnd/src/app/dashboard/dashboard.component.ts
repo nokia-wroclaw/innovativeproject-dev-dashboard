@@ -14,6 +14,15 @@ export class DashboardComponent implements OnInit {
 
   adminMode : boolean = false;
 
+  gridsterOptions = {
+    lanes: 6, // how many lines (grid cells) dashboard has
+    direction: 'vertical', // items floating direction: vertical/horizontal/none
+    floating: true, // default=true - prevents items to float according to the direction (gravity)
+    dragAndDrop: true,
+    resizable: true, // possible to resize items by drag n drop by item edge/corner
+    useCSSTransforms: true // Uses CSS3 translate() instead of position top/left - significant performance boost.
+  };
+
   ngOnInit() {
     this
       .panelManagerService

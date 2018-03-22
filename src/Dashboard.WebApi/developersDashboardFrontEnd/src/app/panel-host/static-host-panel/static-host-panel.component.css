@@ -1,6 +1,5 @@
 mat-card {
     width: auto;
-    height: 300px;
     max-width: 100%;
     margin-top: 20px;  
     margin-bottom: 10px;
@@ -9,14 +8,7 @@ mat-card {
     margin-right: auto;
     display: block; 
 }
-#toc {
-    color: black; 
-    font-size: 2vw; 
-}
-#settings {
-    color: black !important;   
-    font-size: 2vw;
-}
+
 .thumbnail {
     margin: 0;
     height: 100%;
@@ -24,7 +16,7 @@ mat-card {
 mat-card-content {
     margin: 10%;
 }
-mat-card-title{
+mat-card-header{
     padding: 0;
 }
 mat-card-footer {

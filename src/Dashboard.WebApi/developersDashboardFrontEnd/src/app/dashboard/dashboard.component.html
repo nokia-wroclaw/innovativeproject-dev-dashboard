@@ -1,4 +1,4 @@
-<div class="row">
+<!-- <div class="row">
   <div class="col-sm-4">
     <div class="thumbnail">
       <div *ngFor="let panel of getPanelsForColumn(0)">
@@ -39,4 +39,13 @@
       </a>
     </div>
   </div>
-</div>
+</div> -->
+
+<gridster [options]="gridsterOptions" [draggableOptions]="{ handlerClass: 'dnd-handle' }">
+
+  <gridster-item *ngFor="let panel of panelData">
+    <app-static-host-panel *ngIf="!panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-static-host-panel>
+    <app-dynamic-host-panel *ngIf="panel.dynamic" [panelId]="panel.id" [tileTitle]="panel.title" [adminMode]="adminMode"></app-dynamic-host-panel>
+  </gridster-item>
+
+</gridster>

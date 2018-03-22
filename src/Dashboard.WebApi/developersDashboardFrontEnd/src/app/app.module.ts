@@ -41,6 +41,8 @@ import {
 import {HttpClientModule} from '@angular/common/http';
 import {RouterModule, Routes} from '@angular/router';
 
+import {GridsterModule} from 'angular2gridster';
+
 import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {PanelConfigurationComponent} from './panel-configuration/panel-configuration.component';
@@ -134,7 +136,8 @@ const appRoutes : Routes = [
     MatToolbarModule,
     MatTooltipModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    GridsterModule
   ],
   providers: [
     PanelManagerService,
