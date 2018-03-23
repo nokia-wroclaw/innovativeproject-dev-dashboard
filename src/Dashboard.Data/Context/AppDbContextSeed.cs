@@ -41,8 +41,8 @@ namespace Dashboard.Data.Context
             },
             new Panel()
             {
-                Title = "Fancy Title 3",
-                Dynamic = false,
+                Title = "Dynamic",
+                Dynamic = true,
                 Position = new PanelPosition() {Column = 1, Row = 0},
                 Data = "{xd: 2}",
                 Type = PanelType.EmptyPanel,

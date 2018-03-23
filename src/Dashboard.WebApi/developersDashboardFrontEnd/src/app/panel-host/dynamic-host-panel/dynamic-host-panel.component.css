@@ -1,37 +1,21 @@
-mat-card {
-    width: 100%;
-    height: 300px;
-    max-width: 100%;
-    margin-top: 2.1vw;  
-    border-radius: 5px;
-    margin-left: auto;
-    margin-right: auto;
-    
-    display: block; 
-}
-#toc {
-    color: black;
-    font-size: 2vw;
-    
-}
-#settings {
-    color: black !important;
-    font-size: 2vw;
-    bottom:0;
-}
-.thumbnail {
-    border: 0;
-    height: 100%;
-    margin-top: 40px;
-}
-mat-card-content {
-    margin: 15%;
-}
-mat-card-footer {
-    position: absolute;
-    left: 40px;
-    bottom: 15px;
-}
 .label-success {   
     border-radius: 1vw;
+}
+
+div.dynamic-panel-container {
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+
+    margin: 5px;
+    padding: 5px;
+}
+
+div.dynamic-panel-container.admin-mode {
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    border: 2px dashed #787878;
 }

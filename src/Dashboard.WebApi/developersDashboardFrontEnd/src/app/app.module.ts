@@ -1,7 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NavbarComponent} from './navbar/navbar.component';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
@@ -41,6 +40,8 @@ import {
 import {HttpClientModule} from '@angular/common/http';
 import {RouterModule, Routes} from '@angular/router';
 
+import {GridsterModule} from 'angular2gridster';
+
 import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {PanelConfigurationComponent} from './panel-configuration/panel-configuration.component';
@@ -50,27 +51,18 @@ import {StaticHostPanelComponent} from './panel-host/static-host-panel/static-ho
 import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic-host-panel.component';
 import {PanelManagerService} from "./panel-manager/service/panel-manager.service";
 import {CdkTableModule} from '@angular/cdk/table';
-import {PanelDataService} from './panel-create/service/panel-data.service';
 import {PanelApiService} from "./panel-manager/service/api/panel-api.service";
 import {PanelComponent} from "./panels/panel.component";
 import {EmptyPanelComponent} from "./panels/empty-panel/empty-panel.component";
 import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 import {ProjectsManagerService} from "./projects-manager/projects-manager.service";
 import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
+import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
 
 const appRoutes : Routes = [
   {
     path: '',
-    component: DashboardComponent,
-    data: {
-      adminMode: false
-    }
-  }, {
-    path: 'admin',
-    component: DashboardComponent,
-    data: {
-      adminMode: true
-    }
+    component: DashboardComponent
   }, {
     path: 'admin/create',
     component: PanelCreateComponent
@@ -92,7 +84,6 @@ const appRoutes : Routes = [
     HostDirective,
     StaticHostPanelComponent,
     DynamicHostPanelComponent,
-    NavbarComponent,
     EmptyPanelComponent
   ],
   imports: [
@@ -134,15 +125,16 @@ const appRoutes : Routes = [
     MatToolbarModule,
     MatTooltipModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    GridsterModule
   ],
   providers: [
     PanelManagerService,
-    PanelDataService,
     PanelApiService,
     PanelTypeMapperService,
     ProjectsManagerService,
-    ProjectsApiService
+    ProjectsApiService,
+    AdminModeService
   ],
   bootstrap: [AppComponent],
   entryComponents: [EmptyPanelComponent]
