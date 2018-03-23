@@ -122,8 +122,17 @@ namespace Dashboard.Application.Services
                             .Select(i => new Pipeline { Id = i.Id, Ref = i.Ref, Sha = i.Sha, Status = i.Status })
                             .Take(10 - updatedPipelines.Count));
 
-            project.Pipelines = updatedPipelines;
+            var updatedPipesWithFullInfoTasks = updatedPipelines
+                                            .Select(p => dataProvider.GetSpecificPipeline(
+                                                project.ApiHostUrl, 
+                                                project.ApiAuthenticationToken, 
+                                                project.ApiProjectId, 
+                                                p.Id.ToString())
+                                            );
+            var updatedPipesWithFullInfo = (await Task.WhenAll(updatedPipesWithFullInfoTasks)).ToList();
+            project.Pipelines = updatedPipesWithFullInfo;// updatedPipelines;
 
+            //Error when saving to database
             await _projectRepository.SaveAsync();
         }
     }

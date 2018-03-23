@@ -68,5 +68,21 @@ namespace Dashboard.Application.GitLabApi
             var r = await Client.ExecuteTaskAsync<List<Branch>>(request);
             return r.Data;
         }
+
+        public async Task<Commit> GetCommitBySHA(string projectId, string commitSHA)
+        {
+            var r = await GetCommits(projectId, commitSHA : commitSHA);
+            return r.FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<Commit>> GetCommits(string projectId, string commitSHA = "")
+        {
+            var request = new RestRequest("projects/{projectId}/repository/commits/{commitSHA}", Method.GET);
+            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("commitSHA", commitSHA);
+
+            var r = await Client.ExecuteTaskAsync<List<Commit>>(request);
+            return r.Data;
+        }
     }
 }

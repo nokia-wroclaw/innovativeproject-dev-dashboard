@@ -50,6 +50,27 @@ namespace Dashboard.Application
             return branches;
         }
 
-        //public async Task<IEnumerable<string>> GetAllBranchNames
+        public async Task<Pipeline> GetSpecificPipeline(string apiHost, string apiKey, string apiProjectId, string pipeId)
+        {
+            var apiClient = new GitLabClient(apiHost, apiKey);
+            var pipeline = await apiClient.GetPipelineById(apiProjectId, pipeId);
+            var pipelineCommit = await apiClient.GetCommitBySHA(apiProjectId, pipeline.Sha);
+
+            return new Pipeline
+            {
+                Id = pipeline.Id,
+                Ref = pipeline.Ref,
+                Sha = pipeline.Sha,
+                Status = pipeline.Status,
+
+                CommitTitle = pipelineCommit.Title,
+                CommiterName = pipelineCommit.CommitterName,
+                CommiterEmail = pipelineCommit.CommitterEmail,
+                CreatedAt = pipeline.CreatedAt,
+                UpdatedAt = pipeline.UpdatedAt,
+                StartedAt = pipeline.StartedAt,
+                FinishedAt = pipeline.FinishedAt
+            };
+        }
     }
 }
