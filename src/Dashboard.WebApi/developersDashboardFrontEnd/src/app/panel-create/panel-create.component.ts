@@ -1,5 +1,4 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {PanelDataService} from './service/panel-data.service';
 import {PanelType} from "../panel-manager/panel";
 import {PanelTypeMapperService} from "../panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 import {ProjectsManagerService} from "../projects-manager/projects-manager.service";
@@ -8,9 +7,7 @@ import {Project} from "../projects-manager/project";
 @Component({selector: 'app-panel-create', templateUrl: './panel-create.component.html', styleUrls: ['./panel-create.component.css']})
 export class PanelCreateComponent implements OnInit {
 
-  constructor(public panelDataService : PanelDataService, private panelTypeMapper : PanelTypeMapperService, private projectsManager : ProjectsManagerService) {
-    this.selectedColumns = this.panelDataService.columnNumber;
-  }
+  constructor(private panelTypeMapper : PanelTypeMapperService, private projectsManager : ProjectsManagerService) {}
 
   projects : Project[] = [];
 
