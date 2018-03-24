@@ -1,7 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NavbarComponent} from './navbar/navbar.component';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
@@ -45,39 +44,35 @@ import {GridsterModule} from 'angular2gridster';
 
 import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import {PanelConfigurationComponent} from './panel-configuration/panel-configuration.component';
-import {PanelCreateComponent} from './panel-create/panel-create.component';
+import {PanelConfigurationComponent} from './configuration/panel-configuration/panel-configuration.component';
+import {PanelCreateComponent} from './configuration/panel-create/panel-create.component';
 import {HostDirective} from "./panel-host/host.directive";
 import {StaticHostPanelComponent} from './panel-host/static-host-panel/static-host-panel.component';
 import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic-host-panel.component';
 import {PanelManagerService} from "./panel-manager/service/panel-manager.service";
 import {CdkTableModule} from '@angular/cdk/table';
-import {PanelDataService} from './panel-create/service/panel-data.service';
 import {PanelApiService} from "./panel-manager/service/api/panel-api.service";
 import {PanelComponent} from "./panels/panel.component";
 import {EmptyPanelComponent} from "./panels/empty-panel/empty-panel.component";
 import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 import {ProjectsManagerService} from "./projects-manager/projects-manager.service";
 import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
+import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
+import {PanelProjectsComponent} from './configuration/panel-projects/panel-projects.component';
+import {PanelDataService} from './configuration/panel-create/service/panel-data.service';
 
 const appRoutes : Routes = [
   {
     path: '',
-    component: DashboardComponent,
-    data: {
-      adminMode: false
-    }
-  }, {
-    path: 'admin',
-    component: DashboardComponent,
-    data: {
-      adminMode: true
-    }
+    component: DashboardComponent
   }, {
     path: 'admin/create',
     component: PanelCreateComponent
   }, {
-    path: 'admin/:id',
+    path: 'admin/project',
+    component: PanelProjectsComponent
+  }, {
+    path: 'admin/',
     component: PanelConfigurationComponent
   }, {
     path: '**',
@@ -91,10 +86,10 @@ const appRoutes : Routes = [
     DashboardComponent,
     PanelConfigurationComponent,
     PanelCreateComponent,
+    PanelProjectsComponent,
     HostDirective,
     StaticHostPanelComponent,
     DynamicHostPanelComponent,
-    NavbarComponent,
     EmptyPanelComponent
   ],
   imports: [
@@ -141,11 +136,12 @@ const appRoutes : Routes = [
   ],
   providers: [
     PanelManagerService,
-    PanelDataService,
     PanelApiService,
     PanelTypeMapperService,
     ProjectsManagerService,
-    ProjectsApiService
+    PanelDataService,
+    ProjectsApiService,
+    AdminModeService
   ],
   bootstrap: [AppComponent],
   entryComponents: [EmptyPanelComponent]

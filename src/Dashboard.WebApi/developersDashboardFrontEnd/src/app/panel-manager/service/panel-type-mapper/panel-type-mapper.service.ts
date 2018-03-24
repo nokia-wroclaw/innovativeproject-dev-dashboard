@@ -33,4 +33,13 @@ export class PanelTypeMapperService {
         }
     }
 
+    isDynamic(panelType : PanelType) : boolean {
+        if(panelType == PanelType.EmptyPanel) {
+            return false;
+        } else {
+            console.log("Error: Mapping not specified in panel-type-mapper");
+            return false;
+        }
+    }
+
 }

@@ -1,26 +1,15 @@
 <mat-card>
   <div style="overflow: hidden;">
+
     <div class="title pull-left">
       <p>{{tileTitle}}</p>
     </div>
-    <!-- <div class="col-lg-2 col-xs-2 ">
-        <div style="font-size: 1.5vw; ">
-          <span class="label label-success ">{{labelInput}}</span>
-        </div>
-      </div> -->
-    <!-- <div class="col-lg-4 col-xs-4 ">
-        <div class="pull-right ">
-          <a [routerLink]=" [ '/admin', panelId] ">
-            <i *ngIf="adminMode " class="material-icons settings ">settings</i>
-          </a>
-          <i *ngIf="adminMode " class="material-icons dnd-handle ">dehaze</i>
-        </div>
-      </div> -->
 
     <i *ngIf="adminMode " class="material-icons dnd-handle pull-right panel-icon">dehaze</i>
     <a [routerLink]=" [ '/admin', panelId] " class="pull-right ">
         <i *ngIf="adminMode " class="material-icons panel-icon">settings</i>
       </a>
+
   </div>
 
   <mat-card-content>

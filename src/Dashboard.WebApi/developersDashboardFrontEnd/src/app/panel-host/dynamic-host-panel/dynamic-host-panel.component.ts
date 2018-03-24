@@ -10,7 +10,6 @@ import {PanelManagerService} from "../../panel-manager/service/panel-manager.ser
 export class DynamicHostPanelComponent implements OnInit {
 
   @Input()
-
   adminMode : Boolean = true;
 
   @Input()
