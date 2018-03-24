@@ -14,8 +14,6 @@ namespace Dashboard.WebApi.ApiModels.Requests
         [Required]
         public string Title { get; set; }
         [Required]
-        public bool Dynamic { get; set; }
-        [Required]
         public PanelType Type { get; set; }
         [Required]
         public PanelPosition Position { get; set; } = new PanelPosition();

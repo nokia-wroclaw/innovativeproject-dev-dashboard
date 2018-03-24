@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.WebApi.ApiModels.Requests;
+using Dashboard.WebApi.ApiModels.Responses;
 using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,9 +23,11 @@ namespace Dashboard.WebApi.Controllers
 
         // GET api/Panel
         [HttpGet]
-        public async Task<IEnumerable<Panel>> Get()
+        public async Task<IEnumerable<PanelResponse>> Get()
         {
-            return await _panelService.GetAllPanelsAsync();
+            var allPanels = await _panelService.GetAllPanelsAsync();
+
+            return allPanels.Select(p => new PanelResponse(p));
         }
 
         // GET api/Panel/5
@@ -35,7 +38,8 @@ namespace Dashboard.WebApi.Controllers
             if (panel == null)
                 return NotFound();
 
-            return Json(panel);
+            //TODO: change when automapper
+            return Json(new PanelResponse(panel));
         }
 
         // POST api/Panel
@@ -55,7 +59,7 @@ namespace Dashboard.WebApi.Controllers
             };
 
             var created = await _panelService.CreatePanelAsync(panel, model.ProjectId);
-            return Json(created);
+            return Json(new PanelResponse(created));
         }
 
         // PUT api/Panel/5
@@ -76,7 +80,7 @@ namespace Dashboard.WebApi.Controllers
             };
 
             var r = await _panelService.UpdatePanelAsync(updatedPanel, model.ProjectId);
-            return Json(r);
+            return Json(new PanelResponse(r));
         }
 
         // DELETE api/Panel/5
@@ -103,7 +107,28 @@ namespace Dashboard.WebApi.Controllers
             var r = await _panelService.UpdatePanelPosition(id, newPosition);
             if (r == null) return NotFound();
 
-            return Json(r);
+            return Json(new PanelResponse(r));
+        }
+
+        // POST api/Panel/5/Position
+        [HttpPost("{id}/[action]")]
+        [ValidateModel]
+        public void Positions([FromBody] UpdatePanelPositions model)
+        {
+            //TODO: change when automapper
+            model.UpdatedPanelPositions.Select(m => new PanelPosition()
+            {
+                Id = m.PanelId,
+                Column = m.Column,
+                Row = m.Row,
+                Width = m.Width,
+                Hight = m.Hight
+            })
+            .ToList()
+            .ForEach(async p =>
+            {
+                await _panelService.UpdatePanelPosition(p.Id, p);
+            });
         }
     }
 }
