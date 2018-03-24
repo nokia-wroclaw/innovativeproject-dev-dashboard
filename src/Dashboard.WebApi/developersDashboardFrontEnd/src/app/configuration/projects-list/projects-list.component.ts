@@ -9,6 +9,17 @@ export class ProjectsListComponent implements OnInit {
 
   projects : Project[] = [];
 
+  gridsterOptions = {
+    lanes: 4,
+    direction: 'vertical',
+    floating: true,
+    dragAndDrop: false,
+    responsiveView: true,
+    resizable: false,
+    useCSSTransforms: true,
+    widthHeightRatio: 1.7
+  };
+
   ngOnInit() {
     this.loadProjects();
   }

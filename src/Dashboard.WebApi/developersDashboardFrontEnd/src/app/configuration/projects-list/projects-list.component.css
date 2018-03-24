@@ -1,7 +1,19 @@
 mat-card {
-    height: 250px;
-    margin-top: 4px;
-    margin-bottom: 20px;
+    margin: 5px;
+    padding: 5px;
+
+    padding: 0 10px 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+
+    
+}
+
+gridster-item {
+    padding-top: 5px;
 }
 
 
