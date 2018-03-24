@@ -44,8 +44,8 @@ import {GridsterModule} from 'angular2gridster';
 
 import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import {PanelConfigurationComponent} from './panel-configuration/panel-configuration.component';
-import {PanelCreateComponent} from './panel-create/panel-create.component';
+import {PanelConfigurationComponent} from './configuration/panel-configuration/panel-configuration.component';
+import {PanelCreateComponent} from './configuration/panel-create/panel-create.component';
 import {HostDirective} from "./panel-host/host.directive";
 import {StaticHostPanelComponent} from './panel-host/static-host-panel/static-host-panel.component';
 import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic-host-panel.component';
@@ -60,6 +60,8 @@ import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
 import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
 import {RandomMemePanelComponent} from "./panels/random-meme-panel/random-meme-panel.component";
 import {RandomMemeService} from "./panels/random-meme-panel/random-meme-service/random-meme.service";
+import {PanelProjectsComponent} from './configuration/panel-projects/panel-projects.component';
+import {PanelDataService} from './configuration/panel-create/service/panel-data.service';
 
 const appRoutes : Routes = [
   {
@@ -69,7 +71,10 @@ const appRoutes : Routes = [
     path: 'admin/create',
     component: PanelCreateComponent
   }, {
-    path: 'admin/:id',
+    path: 'admin/project',
+    component: PanelProjectsComponent
+  }, {
+    path: 'admin/',
     component: PanelConfigurationComponent
   }, {
     path: '**',
@@ -83,6 +88,7 @@ const appRoutes : Routes = [
     DashboardComponent,
     PanelConfigurationComponent,
     PanelCreateComponent,
+    PanelProjectsComponent,
     HostDirective,
     StaticHostPanelComponent,
     DynamicHostPanelComponent,
@@ -137,8 +143,9 @@ const appRoutes : Routes = [
     PanelTypeMapperService,
     ProjectsManagerService,
     ProjectsApiService,
-    AdminModeService,
-    RandomMemeService
+    RandomMemeService,
+    PanelDataService,
+    AdminModeService
   ],
   bootstrap: [AppComponent],
   entryComponents: [EmptyPanelComponent, RandomMemePanelComponent]

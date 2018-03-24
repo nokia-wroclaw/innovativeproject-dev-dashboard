@@ -1,0 +1,48 @@
+mat-card {
+    width: 40%;
+    height: 600px;
+    max-width: 100%;
+    max-height: 100%;
+    margin-top: 25px;
+    bottom: 20%;
+    padding: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+
+}
+mat-card-header {
+    height: 50px;
+    background-color: #3f51b5;
+    color: white;
+  }
+  mat-card-title {
+     margin-top: 7px;
+    
+  }
+  mat-card-content {
+      font-size:1vw;
+      margin-top: 20px;
+      margin-right: 5%;
+      margin-left: 5%;
+      display: block;
+  }
+  mat-select {
+      width: 100%;   
+  }
+  mat-form-field {
+      margin-top: 10px;    
+      font-size: 1vw;
+      width:100%;
+  }
+  mat-card-actions {
+      position:absolute;     
+      bottom:3%;
+      width:100%;    
+  }
+
+  .example-full-width{
+      margin-top: 10px;
+  }
+  
+  
