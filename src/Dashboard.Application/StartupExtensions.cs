@@ -21,7 +21,7 @@ namespace Dashboard.Application
             services.AddTransient<IProjectService, ProjectService>();
 
             services.AddScoped<ICiDataProvider, GitLabDataProvider>();
-            services.AddTransient<ICiDataProviderFactory, CIDataProviderFactory>();
+            services.AddTransient<ICiDataProviderFactory, CiDataProviderFactory>();
         }
     }
 }

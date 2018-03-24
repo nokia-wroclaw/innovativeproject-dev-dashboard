@@ -6,15 +6,15 @@ using Dashboard.Core.Interfaces;
 
 namespace Dashboard.Application
 {
-    public class CIDataProviderFactory : ICiDataProviderFactory
+    public class CiDataProviderFactory : ICiDataProviderFactory
     {
         private IEnumerable<ICiDataProvider> AllProviders { get; }
 
         /// <summary>
-        /// Id doesnt actually create providers,  its more like filter
+        /// It doesnt actually create providers,  its more like filter
         /// </summary>
         /// <param name="allProviders">All registered providers from IoC container</param>
-        public CIDataProviderFactory(IEnumerable<ICiDataProvider> allProviders)
+        public CiDataProviderFactory(IEnumerable<ICiDataProvider> allProviders)
         {
             AllProviders = allProviders;
         }

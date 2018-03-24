@@ -73,7 +73,7 @@ namespace Dashboard.Data.Context
                 {
                     new Pipeline()
                     {
-                        Id = 1901, // fakeid
+                        DataProviderId = 1901, // fakeid
                         Ref = "master",
                         Sha = "79aa00321063daf8f650683373db29832c8e13f1",
                         Status = "running"

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Dashboard.Application.GitLabApi;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
@@ -119,7 +116,7 @@ namespace Dashboard.Application.Services
             updatedPipelines
                 .AddRange(downloadedPipelines
                             .Where(item => !updatedPipelines.Contains(item))
-                            .Select(i => new Pipeline { Id = i.Id, Ref = i.Ref, Sha = i.Sha, Status = i.Status })
+                            .Select(i => new Pipeline { DataProviderId = i.DataProviderId, Ref = i.Ref, Sha = i.Sha, Status = i.Status })
                             .Take(10 - updatedPipelines.Count));
 
             var updatedPipesWithFullInfoTasks = updatedPipelines
@@ -127,12 +124,15 @@ namespace Dashboard.Application.Services
                                                 project.ApiHostUrl, 
                                                 project.ApiAuthenticationToken, 
                                                 project.ApiProjectId, 
-                                                p.Id.ToString())
+                                                p.DataProviderId.ToString())
                                             );
             var updatedPipesWithFullInfo = (await Task.WhenAll(updatedPipesWithFullInfoTasks)).ToList();
-            project.Pipelines = updatedPipesWithFullInfo;// updatedPipelines;
 
-            //Error when saving to database
+
+            project.Pipelines = updatedPipesWithFullInfo;
+
+            await _projectRepository.UpdateAsync(project, project.Id);
+
             await _projectRepository.SaveAsync();
         }
     }

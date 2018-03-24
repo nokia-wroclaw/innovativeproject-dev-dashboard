@@ -21,7 +21,7 @@ namespace Dashboard.Application
             var pipelines = apiPipelines.Select(p =>
                 new Pipeline
                 {
-                    Id = p.Id,
+                    DataProviderId = p.Id,
                     Sha = p.Sha,
                     Ref = p.Ref,
                     Status = p.Status
@@ -36,7 +36,7 @@ namespace Dashboard.Application
             var apiClient = new GitLabClient(apiHost, apiKey);
             var branchPipe = await apiClient.GetPipelineByBranch(apiProjectId, branchName);
 
-            return new Pipeline { Id = branchPipe.Id, Sha = branchPipe.Sha, Ref = branchPipe.Ref, Status = branchPipe.Status };
+            return new Pipeline { DataProviderId = branchPipe.Id, Sha = branchPipe.Sha, Ref = branchPipe.Ref, Status = branchPipe.Status };
         }
 
         public async Task<IEnumerable<string>> GetAllProjectBranchNames(string apiHost, string apiKey, string apiProjectId)
@@ -58,7 +58,7 @@ namespace Dashboard.Application
 
             return new Pipeline
             {
-                Id = pipeline.Id,
+                DataProviderId = pipeline.Id,
                 Ref = pipeline.Ref,
                 Sha = pipeline.Sha,
                 Status = pipeline.Status,
