@@ -40,7 +40,7 @@ namespace Dashboard.Data.Repositories
                                                                                         .ThenInclude(p => p.Pipelines)
                                                                                     .Include(p => p.Position);
 
-        public StaticBranchPanelRepository(DbContext context) : base(context)
+        public StaticBranchPanelRepository(AppDbContext context) : base(context)
         {
         }
 
