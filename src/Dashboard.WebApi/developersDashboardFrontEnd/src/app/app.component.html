@@ -21,8 +21,13 @@
                     </button>
                 </mat-list-item>
                 <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
-                    <button mat-icon-button color="primary" [routerLink]="['/admin/project']">
+                    <button mat-icon-button color="primary" [routerLink]="['/admin/listOfProjects']">
                         <i class="material-icons menu-icon">work</i>
+                    </button>
+                </mat-list-item>
+                <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+                    <button mat-icon-button color="primary" [routerLink]="['/admin/project']">
+                        <i class="material-icons menu-icon-small">add</i>
                     </button>
                 </mat-list-item>
             </mat-nav-list>

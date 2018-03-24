@@ -60,6 +60,7 @@ import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
 import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
 import {PanelProjectsComponent} from './configuration/panel-projects/panel-projects.component';
 import {PanelDataService} from './configuration/panel-create/service/panel-data.service';
+import {ProjectsListComponent} from './configuration/projects-list/projects-list.component';
 
 const appRoutes : Routes = [
   {
@@ -68,6 +69,9 @@ const appRoutes : Routes = [
   }, {
     path: 'admin/create',
     component: PanelCreateComponent
+  }, {
+    path: 'admin/listOfProjects',
+    component: ProjectsListComponent
   }, {
     path: 'admin/project',
     component: PanelProjectsComponent
@@ -90,7 +94,8 @@ const appRoutes : Routes = [
     HostDirective,
     StaticHostPanelComponent,
     DynamicHostPanelComponent,
-    EmptyPanelComponent
+    EmptyPanelComponent,
+    ProjectsListComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),

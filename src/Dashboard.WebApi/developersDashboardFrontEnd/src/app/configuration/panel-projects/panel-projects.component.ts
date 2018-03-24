@@ -1,7 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {Project} from '../../projects-manager/project';
 import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
-
 @Component({
   selector: 'app-panel-projects',
   templateUrl: './panel-projects.component.html',
@@ -9,13 +8,11 @@ import {ProjectsApiService} from '../../projects-manager/api/projects-api.servic
 })
 export class PanelProjectsComponent implements OnInit {
 
+  project = new Project('', '', '', '', undefined);
+
   constructor(private projectApiService : ProjectsApiService) {}
 
-  project = new Project();
-
-  ngOnInit() {
-    this.addProject()
-  }
+  ngOnInit() {}
   private addProject() {
     if (!this.project) {
       return;

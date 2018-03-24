@@ -5,30 +5,35 @@
       Projects Configuration
     </mat-card-title>
   </mat-card-header>
-  <mat-card-content>
-    <mat-form-field class=" example-full-width ">
-      <input matInput placeholder="Id " required [(ngModel)]="project.id">
-    </mat-form-field>
-    <mat-form-field class=" example-full-width ">
-      <input matInput placeholder="apiHostUrl " required [(ngModel)]="project.ApiHostUrl">
-    </mat-form-field>
-    <mat-form-field class=" example-full-width ">
-      <input matInput placeholder="apiProjectId " required [(ngModel)]="project.ApiProjectId">
-    </mat-form-field>
-    <mat-form-field class=" example-full-width ">
-      <input matInput placeholder="apiAuthenticationToken " required [(ngModel)]="project.ApiAuthenticationToken">
-    </mat-form-field>
-    <mat-form-field class=" example-full-width ">
-      <input matInput placeholder="dataProviderName " required [(ngModel)]="project.DataProviderName">
-    </mat-form-field>
+
+  <form #myForm="ngForm">
+    <mat-card-content>
+      <mat-form-field class=" example-full-width ">
+        <input type="text" matInput placeholder="apiHostUrl " required [(ngModel)]="project.apiHostUrl" name="apiHostUrl">
+      </mat-form-field>
+      <mat-form-field class=" example-full-width ">
+        <input type="text" matInput placeholder="apiProjectId " required [(ngModel)]="project.apiProjectId" name="apiProjectId">
+      </mat-form-field>
+      <mat-form-field class=" example-full-width ">
+        <input type="text" matInput placeholder="apiAuthenticationToken " required [(ngModel)]="project.apiAuthenticationToken" name="apiAuthenticationToken">
+      </mat-form-field>
+      <mat-form-field class=" example-full-width ">
+        <input type="text" matInput placeholder="dataProviderName " required [(ngModel)]="project.dataProviderName" name="dataProviderName">
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button type="submit" (click)="addProject()" [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1vw; ">SAVE</button>
+      <button type="button" [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1vw; ">CANCEL</button>
+    </mat-card-actions>
+    <pre>{{myForm.value | json}}</pre>
+  </form>
 
 
 
-  </mat-card-content>
 
-  <mat-card-actions>
-    <button (ngSubmit)="addPrject()" [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1vw; ">SAVE</button>
-    <button [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1vw; ">CANCEL</button>
-  </mat-card-actions>
+
+
+
 
 </mat-card>

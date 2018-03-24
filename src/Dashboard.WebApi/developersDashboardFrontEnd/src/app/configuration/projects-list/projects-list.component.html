@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+<mat-grid-list cols="4" rowHeight="3:2">
+  <mat-grid-tile *ngFor="let project of projects">
+    <mat-card>
+      <mat-card-title style="margin-top:-20px;">
+        <h4>Project number: {{project.id}}</h4>
+      </mat-card-title>
+      <mat-card-content style="margin-left:-30px;">
+        <mat-list>
+          <mat-list-item>
+            <p>
+              <b>apiHostUrl:</b> {{project.apiHostUrl}}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <p>
+              <b>apiProjectId:</b> {{project.apiProjectId}}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <p>
+              <b>apiAuthenticationToken:</b> {{project.apiAuthenticationToken}}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <p>
+              <b>dataProviderName:</b> {{project.dataProviderName}}</p>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
