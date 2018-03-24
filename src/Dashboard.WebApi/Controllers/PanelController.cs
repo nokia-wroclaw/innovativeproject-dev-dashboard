@@ -86,7 +86,7 @@ namespace Dashboard.WebApi.Controllers
             await _panelService.DeletePanelAsync(id);
         }
 
-        // PUT api/Panel/5/Position
+        // POST api/Panel/5/Position
         [HttpPost("{id}/[action]")]
         [ValidateModel]
         public async Task<IActionResult> Position(int id, [FromBody] UpdatePanelPosition model)
