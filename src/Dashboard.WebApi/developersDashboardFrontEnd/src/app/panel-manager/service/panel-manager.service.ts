@@ -16,7 +16,7 @@ export class PanelManagerService {
 
   constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeMapper : PanelTypeMapperService) {}
 
-  getPanelData() : Observable < Panel[] > {
+  getPanels() : Observable < Panel[] > {
     if(this.panelsCache != undefined) {
       console.log("Panels cache hit");
       return Observable.of(this.panelsCache);
@@ -59,7 +59,7 @@ export class PanelManagerService {
 
   injectPanelComponent(host : HostDirective, panelId : number) {
     this
-      .getPanelData()
+      .getPanels()
       .subscribe(panelsData => {
 
         let panelToLoad = panelsData.find(panel => panel.id == panelId);

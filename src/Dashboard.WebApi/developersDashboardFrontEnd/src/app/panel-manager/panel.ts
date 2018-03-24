@@ -17,6 +17,8 @@ export namespace PanelType {
 export interface PanelPosition {
     column : number;
     row : number;
+    width : number;
+    height : number;
 }
 
 export interface Panel {
