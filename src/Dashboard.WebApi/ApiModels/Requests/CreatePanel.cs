@@ -13,8 +13,6 @@ namespace Dashboard.WebApi.ApiModels.Requests
         [Required]
         public PanelPosition Position { get; set; }
         [Required]
-        public string Data { get; set; }
-        [Required]
         public int ProjectId { get; set; }
     }
 }
