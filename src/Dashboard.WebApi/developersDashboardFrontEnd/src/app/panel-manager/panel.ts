@@ -1,7 +1,8 @@
 import {Project} from './../projects-manager/project';
 
 export enum PanelType {
-    EmptyPanel
+    EmptyPanel,
+    RandomMemePanel
 }
 
 /**
@@ -9,7 +10,7 @@ export enum PanelType {
  */
 export namespace PanelType {
     export function getValues() : PanelType[] {
-        return [PanelType.EmptyPanel];
+        return [PanelType.EmptyPanel, PanelType.RandomMemePanel];
     }
 }
 

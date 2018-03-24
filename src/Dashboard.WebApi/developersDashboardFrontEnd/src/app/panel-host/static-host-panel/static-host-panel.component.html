@@ -1,5 +1,5 @@
-<mat-card>
-  <div style="overflow: hidden;">
+<mat-card style="padding-top: 30px;">
+  <div class="panel-header-container">
 
     <div class="title pull-left">
       <p>{{tileTitle}}</p>
@@ -11,16 +11,10 @@
       </a>
 
   </div>
-
-  <mat-card-content>
+  <div class="panel-content-container">
     <!-- Outlet for a component loaded dynamicaly -->
     <ng-template host></ng-template>
+  </div>
 
-  </mat-card-content>
-  <mat-card-actions>
 
-  </mat-card-actions>
-  <mat-card-footer>
-    <p>{{lastUpdated}}</p>
-  </mat-card-footer>
 </mat-card>

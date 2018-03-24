@@ -57,6 +57,15 @@ namespace Dashboard.Data.Context
                 Type = PanelType.EmptyPanel,
                 Project = SeedProjects.ElementAt(0)
             }
+            ,new Panel()
+            {
+                Title = "Best memes",
+                Dynamic = false,
+                Position = new PanelPosition() {Column = 2, Row = 0},
+                Data = "{xd: 3}",
+                Type = PanelType.RandomMemePanel,
+                Project = SeedProjects.ElementAt(0)
+            }
         });
 
         private static List<Project> _seedProjects;

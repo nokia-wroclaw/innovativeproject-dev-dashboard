@@ -58,6 +58,8 @@ import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/
 import {ProjectsManagerService} from "./projects-manager/projects-manager.service";
 import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
 import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
+import {RandomMemePanelComponent} from "./panels/random-meme-panel/random-meme-panel.component";
+import {RandomMemeService} from "./panels/random-meme-panel/random-meme-service/random-meme.service";
 
 const appRoutes : Routes = [
   {
@@ -84,7 +86,8 @@ const appRoutes : Routes = [
     HostDirective,
     StaticHostPanelComponent,
     DynamicHostPanelComponent,
-    EmptyPanelComponent
+    EmptyPanelComponent,
+    RandomMemePanelComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),
@@ -134,10 +137,11 @@ const appRoutes : Routes = [
     PanelTypeMapperService,
     ProjectsManagerService,
     ProjectsApiService,
-    AdminModeService
+    AdminModeService,
+    RandomMemeService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [EmptyPanelComponent]
+  entryComponents: [EmptyPanelComponent, RandomMemePanelComponent]
 })
 export class AppModule {}
 

@@ -25,6 +25,6 @@ namespace Dashboard.Core.Entities
 
     public enum PanelType
     {
-        EmptyPanel
+        EmptyPanel, RandomMemePanel
     }
 }

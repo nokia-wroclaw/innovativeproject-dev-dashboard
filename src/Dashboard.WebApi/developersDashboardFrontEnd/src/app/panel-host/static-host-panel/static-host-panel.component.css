@@ -7,4 +7,8 @@ mat-card-footer {
     border-radius: 1vw;
 }
 
-
+mat-card-content {
+  flex-direction: column ;
+  justify-content: center;
+  align-items: center;
+}
