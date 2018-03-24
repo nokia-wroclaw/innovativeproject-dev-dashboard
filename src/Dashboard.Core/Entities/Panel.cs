@@ -22,7 +22,7 @@ namespace Dashboard.Core.Entities
         public int Column { get; set; }
         public int Row { get; set; }
         public int Width { get; set; }
-        public int Hight { get; set; }
+        public int Height { get; set; }
     }
 
     public enum PanelType

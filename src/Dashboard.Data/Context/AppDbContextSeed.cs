@@ -24,7 +24,7 @@ namespace Dashboard.Data.Context
             new Panel()
             {
                 Title = "Fancy Title 1",
-                Position = new PanelPosition() {Column = 0, Row = 0, Width = 2, Hight = 2},
+                Position = new PanelPosition() {Column = 0, Row = 0, Width = 2, Height = 2},
                 Data = "{xd: 2}",
                 Type = PanelType.RandomMemePanel,
                 Project = SeedProjects.ElementAt(0)
@@ -32,7 +32,7 @@ namespace Dashboard.Data.Context
             new Panel()
             {
                 Title = "Fancy Title 2",
-                Position = new PanelPosition() {Column = 2, Row = 0, Width = 2, Hight = 1},
+                Position = new PanelPosition() {Column = 2, Row = 0, Width = 2, Height = 1},
                 Data = "{xd: 2}",
                 Type = PanelType.EmptyPanel,
                 Project = SeedProjects.ElementAt(0),

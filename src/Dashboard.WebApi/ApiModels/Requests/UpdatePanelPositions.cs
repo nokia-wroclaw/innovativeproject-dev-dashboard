@@ -23,6 +23,6 @@ namespace Dashboard.WebApi.ApiModels.Requests
         [Required]
         public int Width { get; set; }
         [Required]
-        public int Hight { get; set; }
+        public int Height { get; set; }
     }
 }

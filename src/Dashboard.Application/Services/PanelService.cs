@@ -80,7 +80,7 @@ namespace Dashboard.Application.Services
             entity.Position.Column = position.Column;
             entity.Position.Row = position.Row;
             entity.Position.Width = position.Width;
-            entity.Position.Hight = position.Hight;
+            entity.Position.Height = position.Height;
 
             var r = await _panelRepository.UpdateAsync(entity, id);
             await _panelRepository.SaveAsync();

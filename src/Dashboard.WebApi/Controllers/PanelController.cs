@@ -101,7 +101,7 @@ namespace Dashboard.WebApi.Controllers
                 Column = model.Column,
                 Row = model.Row,
                 Width = model.Width,
-                Hight = model.Hight
+                Height = model.Height
             };
 
             var r = await _panelService.UpdatePanelPosition(id, newPosition);
@@ -122,7 +122,7 @@ namespace Dashboard.WebApi.Controllers
                 Column = m.Column,
                 Row = m.Row,
                 Width = m.Width,
-                Hight = m.Hight
+                Height = m.Height
             })
             .ToList()
             .ForEach(async p =>
