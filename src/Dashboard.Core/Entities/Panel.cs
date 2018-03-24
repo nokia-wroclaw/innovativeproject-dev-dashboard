@@ -14,6 +14,7 @@ namespace Dashboard.Core.Entities
         public string Data { get; set; }
 
         public Project Project { get; set; }
+        public virtual IEnumerable<BranchName> StaticBranchNames { get; set; } = new List<BranchName>();
     }
 
     public class PanelPosition

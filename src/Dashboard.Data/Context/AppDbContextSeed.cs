@@ -28,12 +28,13 @@ namespace Dashboard.Data.Context
                 Position = new PanelPosition() {Column = 0, Row = 0},
                 Data = "{xd: 2}",
                 Type = PanelType.EmptyPanel,
+                StaticBranchNames = new List<BranchName>() {new BranchName() {Name = "master"}},
                 Project = SeedProjects.ElementAt(0)
             },
             new Panel()
             {
                 Title = "Fancy Title 2",
-                Dynamic = false,
+                Dynamic = true,
                 Position = new PanelPosition() {Column = 0, Row = 1},
                 Data = "{xd: 2}",
                 Type = PanelType.EmptyPanel,
@@ -41,7 +42,7 @@ namespace Dashboard.Data.Context
             },
             new Panel()
             {
-                Title = "Dynamic",
+                Title = "Fancy Title 3",
                 Dynamic = true,
                 Position = new PanelPosition() {Column = 1, Row = 0},
                 Data = "{xd: 2}",
@@ -51,19 +52,10 @@ namespace Dashboard.Data.Context
             ,new Panel()
             {
                 Title = "Fancy Title 4",
-                Dynamic = false,
+                Dynamic = true,
                 Position = new PanelPosition() {Column = 2, Row = 0},
                 Data = "{xd: 2}",
                 Type = PanelType.EmptyPanel,
-                Project = SeedProjects.ElementAt(0)
-            }
-            ,new Panel()
-            {
-                Title = "Best memes",
-                Dynamic = false,
-                Position = new PanelPosition() {Column = 2, Row = 0},
-                Data = "{xd: 3}",
-                Type = PanelType.RandomMemePanel,
                 Project = SeedProjects.ElementAt(0)
             }
         });
@@ -81,7 +73,7 @@ namespace Dashboard.Data.Context
                 {
                     new Pipeline()
                     {
-                        Id = 1901, // fakeid
+                        DataProviderId = 1901, // fakeid
                         Ref = "master",
                         Sha = "79aa00321063daf8f650683373db29832c8e13f1",
                         Status = "running"

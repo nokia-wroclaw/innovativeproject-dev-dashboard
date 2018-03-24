@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces.Repositories;
@@ -29,6 +30,14 @@ namespace Dashboard.Data.Repositories
         {
             return EagerPanels
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<string>> GetBranchNamesFromStaticPanelsForProject(int projectId)
+        {
+            return await EagerPanels
+                .Where(p => p.StaticBranchNames.Any() && p.Project.Id == projectId)
+                .SelectMany(p => p.StaticBranchNames.Select(b => b.Name))
+                .ToListAsync();
         }
     }
 }
