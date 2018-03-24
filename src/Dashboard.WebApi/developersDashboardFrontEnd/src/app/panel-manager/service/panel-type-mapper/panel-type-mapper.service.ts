@@ -1,30 +1,31 @@
 import {Injectable} from '@angular/core';
 import {Type} from "@angular/compiler/src/core";
 import {PanelType} from "../../panel";
-import {EmptyPanelComponent} from "../../../panels/empty-panel/empty-panel.component";
 import {RandomMemePanelComponent} from "../../../panels/random-meme-panel/random-meme-panel.component";
+import {RandomMemePanelConfigComponent} from "../../../panels/random-meme-panel/random-meme-panel-config.component";
+import {StaticBranchPanelComponent} from "../../../panels/static-branch-panel/static-branch-panel.component";
+import {StaticBranchPanelConfigComponent} from "../../../panels/static-branch-panel/static-branch-panel-config.component";
 
 @Injectable()
 export class PanelTypeMapperService {
 
-    map(panelType : PanelType) : Type {
+    map(discriminator : string) : Type {
         // TODO extract as map
-        if(panelType == PanelType.EmptyPanel) {
-            return EmptyPanelComponent;
-        } else if (panelType == PanelType.RandomMemePanel) {
+        if(discriminator === 'MemePanel') {
             return RandomMemePanelComponent;
+        } else if(discriminator === 'StaticBranchPanel') {
+            return StaticBranchPanelComponent;
         } else {
             console.log("Error: Mapping not specified in panel-type-mapper");
         }
     }
 
-    mapConfiguration(panelType : PanelType) : Type {
+    mapConfiguration(discriminator : string) : Type {
         // TODO extract as map
-        if(panelType == PanelType.EmptyPanel) {
-            // return EmptyPanelConfigurationComponent;
-            return null;
-        } else if (panelType == PanelType.RandomMemePanel) {
-            return null;
+        if(discriminator === 'MemePanel') {
+            return RandomMemePanelConfigComponent;
+        } else if(discriminator === 'StaticBranchPanel') {
+            return StaticBranchPanelConfigComponent;
         } else {
             console.log("Error: Mapping not specified in panel-type-mapper");
         }

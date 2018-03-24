@@ -1,14 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import './../panel.component';
-import {RandomMemeService} from "./random-meme-service/random-meme.service";
+import {IPanelComponent} from "./../panel.component";
+import {RandomMemePanel} from "./random-meme-panel";
+import {RandomMemeService} from "./random-meme.service";
 
-@Component({selector: 'app-random-meme-panel', templateUrl: './random-meme-panel.component.html', styleUrls: ['./random-meme-panel.component.css']})
-export class RandomMemePanelComponent implements OnInit {
+@Component({templateUrl: './random-meme-panel.component.html'})
+export class RandomMemePanelComponent implements OnInit, IPanelComponent<RandomMemePanel> {
 
-  // TODO This component should periodicaly (some interval) call for
-  // randomMemeService to load another image Loaded image should be then displayed
-  // (change src or something)
+  private panel : RandomMemePanel;
 
+  setPanel(panel : RandomMemePanel) {
+    this.panel = panel;
+  }
+  
   constructor(private randomMemeService : RandomMemeService) {}
 
   ngOnInit() {

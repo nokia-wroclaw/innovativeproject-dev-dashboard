@@ -3,11 +3,12 @@ import {PanelType} from "../panel-manager/panel";
 import {PanelTypeMapperService} from "../panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 import {ProjectsManagerService} from "../projects-manager/projects-manager.service";
 import {Project} from "../projects-manager/project";
+import {PanelManagerService} from "../panel-manager/service/panel-manager.service";
 
 @Component({selector: 'app-panel-create', templateUrl: './panel-create.component.html', styleUrls: ['./panel-create.component.css']})
 export class PanelCreateComponent implements OnInit {
 
-  constructor(private panelTypeMapper : PanelTypeMapperService, private projectsManager : ProjectsManagerService) {}
+  constructor(private panelTypeMapper : PanelTypeMapperService, private projectsManager : ProjectsManagerService, private panelManagerService : PanelManagerService) {}
 
   projects : Project[] = [];
 
@@ -22,6 +23,7 @@ export class PanelCreateComponent implements OnInit {
   ngOnInit() {
     this.loadPossiblePanelTypes();
     this.loadPossibleProjects();
+
   }
 
   private loadPossibleProjects() {

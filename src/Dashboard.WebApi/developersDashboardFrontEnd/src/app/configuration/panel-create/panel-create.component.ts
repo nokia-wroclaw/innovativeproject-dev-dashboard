@@ -1,34 +1,80 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {PanelDataService} from './service/panel-data.service';
-import {PanelType} from "../../panel-manager/panel";
+import {Component, OnInit, Input, ViewChild, OnDestroy} from '@angular/core';
+import {PanelType, Panel} from "../../panel-manager/panel";
 import {PanelTypeMapperService} from "../../panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 import {ProjectsManagerService} from "../../projects-manager/projects-manager.service";
 import {Project} from "../../projects-manager/project";
+import {HostDirective} from "../../panel-host/host.directive";
+import {PanelManagerService} from "../../panel-manager/service/panel-manager.service";
+import {IPanelConfigComponent} from "../../panels/panel.component";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-panel-create',
   templateUrl: './panel-create.component.html',
   styleUrls: ['./panel-create.component.css', './../panel.shared.css']
 })
-export class PanelCreateComponent implements OnInit {
+export class PanelCreateComponent implements OnInit,
+OnDestroy {
 
-  constructor(public panelDataService : PanelDataService, private panelTypeMapper : PanelTypeMapperService, private projectsManager : ProjectsManagerService) {
-    this.selectedColumns = this.panelDataService.columnNumber;
-  }
+  constructor(private route : ActivatedRoute, private panelTypeMapper : PanelTypeMapperService, private projectsManager : ProjectsManagerService, private panelManager : PanelManagerService) {}
+
+  @ViewChild(HostDirective)
+  configurationHost : HostDirective;
 
   projects : Project[] = [];
 
-  columns = [0, 1, 2];
+  // Temporarily ugly hardcoded TODO
+  types = ["MemePanel", "StaticBranchPanel"];
 
-  types = [];
+  panelSpecificConfiguration : IPanelConfigComponent < any >;
 
-  selectedPlugins : any;
-  selectedColumns : number;
-  selectedPanels : any;
+  panel : Panel = {
+    title: null,
+    discriminator: null,
+    projectId: null,
+    position: {
+      width: 1,
+      height: 1,
+      column: 1,
+      row: 1
+    }
+  };
+
+  panelId : number;
+
+  private routeParamsSubscription;
+
+  ngOnDestroy() {
+    this
+      .routeParamsSubscription
+      .unsubscribe();
+  }
 
   ngOnInit() {
-    this.loadPossiblePanelTypes();
     this.loadPossibleProjects();
+
+    this.routeParamsSubscription = this
+      .route
+      .params
+      .subscribe(params => {
+        if (params['id'] != null) {
+          this
+            .panelManager
+            .getPanel(params['id'])
+            .subscribe(panel => {
+              this.panel = panel
+              this.descriminatorSelectionChanged();
+            });
+        } else {
+          console.log("id was null");
+        }
+      });
+  }
+
+  descriminatorSelectionChanged() {
+    this.panelSpecificConfiguration = this
+      .panelManager
+      .injectCreatePanelConfiguration(this.configurationHost, this.panel);
   }
 
   private loadPossibleProjects() {
@@ -38,19 +84,21 @@ export class PanelCreateComponent implements OnInit {
       .subscribe(projects => this.projects = projects);
   }
 
-  private loadPossiblePanelTypes() {
-    PanelType
-      .getValues()
-      .forEach(panelType => {
-        this
-          .types
-          .push({
-            value: panelType,
-            viewValue: this
-              .panelTypeMapper
-              .getName(panelType)
-          })
-      })
+  // todo learn to chain promises instead of nesting??
+  submitPanel() {
+    if (this.panelSpecificConfiguration.isValid()) {
+      this
+        .panelSpecificConfiguration
+        .postPanel()
+        .subscribe(response => {
+          console.log(response);
+          // TODO 
+          this.panelManager.updatePanels();
+        }
+      );
+    } else {
+      console.log("Panel type specific configuration is invalid!")
+    }
   }
 
 }

@@ -52,16 +52,18 @@ import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic
 import {PanelManagerService} from "./panel-manager/service/panel-manager.service";
 import {CdkTableModule} from '@angular/cdk/table';
 import {PanelApiService} from "./panel-manager/service/api/panel-api.service";
-import {PanelComponent} from "./panels/panel.component";
-import {EmptyPanelComponent} from "./panels/empty-panel/empty-panel.component";
+import {IPanelComponent} from "./panels/panel.component";
 import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 import {ProjectsManagerService} from "./projects-manager/projects-manager.service";
 import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
 import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
 import {RandomMemePanelComponent} from "./panels/random-meme-panel/random-meme-panel.component";
-import {RandomMemeService} from "./panels/random-meme-panel/random-meme-service/random-meme.service";
 import {PanelProjectsComponent} from './configuration/panel-projects/panel-projects.component';
-import {PanelDataService} from './configuration/panel-create/service/panel-data.service';
+import {PanelsConfigApiService} from "./panels/panels-config-api.service";
+import {RandomMemePanelConfigComponent} from "./panels/random-meme-panel/random-meme-panel-config.component";
+import {RandomMemeService} from "./panels/random-meme-panel/random-meme.service";
+import {StaticBranchPanelComponent} from "./panels/static-branch-panel/static-branch-panel.component";
+import {StaticBranchPanelConfigComponent} from "./panels/static-branch-panel/static-branch-panel-config.component";
 
 const appRoutes : Routes = [
   {
@@ -76,6 +78,9 @@ const appRoutes : Routes = [
   }, {
     path: 'admin/',
     component: PanelConfigurationComponent
+  }, {
+    path: 'admin/:id',
+    component: PanelCreateComponent
   }, {
     path: '**',
     redirectTo: ''
@@ -92,8 +97,10 @@ const appRoutes : Routes = [
     HostDirective,
     StaticHostPanelComponent,
     DynamicHostPanelComponent,
-    EmptyPanelComponent,
-    RandomMemePanelComponent
+    RandomMemePanelComponent,
+    RandomMemePanelConfigComponent,
+    StaticBranchPanelComponent,
+    StaticBranchPanelConfigComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),
@@ -144,11 +151,11 @@ const appRoutes : Routes = [
     ProjectsManagerService,
     ProjectsApiService,
     RandomMemeService,
-    PanelDataService,
-    AdminModeService
+    AdminModeService,
+    PanelsConfigApiService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [EmptyPanelComponent, RandomMemePanelComponent]
+  entryComponents: [RandomMemePanelComponent, RandomMemePanelConfigComponent, StaticBranchPanelComponent, StaticBranchPanelConfigComponent]
 })
 export class AppModule {}
 
