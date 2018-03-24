@@ -10,7 +10,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(private adminModeService : AdminModeService, private panelManagerService : PanelManagerService, private route : ActivatedRoute, private _router : Router) {}
 
-  panelData : Panel[];
+  panels : Panel[];
 
   adminMode : boolean = false;
 
@@ -28,8 +28,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this
       .panelManagerService
-      .getPanelData()
-      .subscribe(panelData => this.panelData = panelData);
+      .getPanels()
+      .subscribe(panels => this.panels = panels);
 
     this
       .adminModeService
