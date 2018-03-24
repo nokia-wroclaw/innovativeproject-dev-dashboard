@@ -5,51 +5,45 @@ using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces.Repositories;
 using Dashboard.Data.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace Dashboard.Data.Repositories
 {
     public class PanelRepository : EfRepository<Panel>, IPanelRepository
     {
-        private IIncludableQueryable<Panel, object> EagerPanels => Context.Set<Panel>()
-                                                                        .Include(p => p.Project)
-                                                                            .ThenInclude(p => p.Pipelines)
-                                                                        .Include(p => p.Position);
+        private async Task<IEnumerable<Panel>> EagerPanels()
+        {
+            var panels = await Context.Set<Panel>()
+                .Include(p => p.Project)
+                    .ThenInclude(p => p.Pipelines)
+                .Include(p => p.Position)
+                .ToListAsync();
+
+            panels.ForEach(async panel =>
+            {
+                if (panel is StaticBranchPanel x)
+                {
+                    x.StaticBranchNames = await Context.Set<StaticBranchPanel>()
+                        .Where(p => p.Id == x.Id)
+                        .SelectMany(a => a.StaticBranchNames)
+                        .ToListAsync();
+                }
+            });
+
+            return panels;
+        }
 
         public PanelRepository(AppDbContext context) : base(context)
         {
         }
 
-        public override async Task<IEnumerable<Panel>> GetAllAsync()
+        public override async  Task<IEnumerable<Panel>> GetAllAsync()
         {
-            return await EagerPanels
-                .ToListAsync();
+            return await EagerPanels();
         }
 
-        public override Task<Panel> GetByIdAsync(int id)
+        public override async Task<Panel> GetByIdAsync(int id)
         {
-            return EagerPanels
-                .FirstOrDefaultAsync(x => x.Id == id);
-        }
-    }
-
-    public class StaticBranchPanelRepository : EfRepository<StaticBranchPanel>, IStaticBranchPanelRepository
-    {
-        private IIncludableQueryable<StaticBranchPanel, object> EagerPanels => Context.Set<StaticBranchPanel>()
-                                                                                    .Include(p => p.Project)
-                                                                                        .ThenInclude(p => p.Pipelines)
-                                                                                    .Include(p => p.Position);
-
-        public StaticBranchPanelRepository(AppDbContext context) : base(context)
-        {
-        }
-
-        public async Task<IEnumerable<string>> GetBranchNamesFromStaticPanelsForProject(int projectId)
-        {
-            return await EagerPanels
-                .Where(p => p.StaticBranchNames.Any() && p.Project.Id == projectId)
-                .SelectMany(p => p.StaticBranchNames.Select(b => b.Name))
-                .ToListAsync();
+            return (await EagerPanels()).FirstOrDefault(x => x.Id == id);
         }
     }
 }
