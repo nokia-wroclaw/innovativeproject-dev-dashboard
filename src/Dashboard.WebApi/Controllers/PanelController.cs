@@ -110,8 +110,8 @@ namespace Dashboard.WebApi.Controllers
             return Json(new PanelResponse(r));
         }
 
-        // POST api/Panel/5/Position
-        [HttpPost("{id}/[action]")]
+        // POST api/Panel/Positions
+        [HttpPost("[action]")]
         [ValidateModel]
         public void Positions([FromBody] UpdatePanelPositions model)
         {
