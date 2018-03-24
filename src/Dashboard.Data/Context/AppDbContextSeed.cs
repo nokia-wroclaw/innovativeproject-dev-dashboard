@@ -24,39 +24,19 @@ namespace Dashboard.Data.Context
             new Panel()
             {
                 Title = "Fancy Title 1",
-                Dynamic = false,
-                Position = new PanelPosition() {Column = 0, Row = 0},
+                Position = new PanelPosition() {Column = 0, Row = 0, Width = 2, Hight = 2},
                 Data = "{xd: 2}",
-                Type = PanelType.EmptyPanel,
-                StaticBranchNames = new List<BranchName>() {new BranchName() {Name = "master"}},
+                Type = PanelType.RandomMemePanel,
                 Project = SeedProjects.ElementAt(0)
             },
             new Panel()
             {
                 Title = "Fancy Title 2",
-                Dynamic = true,
-                Position = new PanelPosition() {Column = 0, Row = 1},
+                Position = new PanelPosition() {Column = 2, Row = 0, Width = 2, Hight = 1},
                 Data = "{xd: 2}",
                 Type = PanelType.EmptyPanel,
-                Project = SeedProjects.ElementAt(0)
-            },
-            new Panel()
-            {
-                Title = "Fancy Title 3",
-                Dynamic = true,
-                Position = new PanelPosition() {Column = 1, Row = 0},
-                Data = "{xd: 2}",
-                Type = PanelType.EmptyPanel,
-                Project = SeedProjects.ElementAt(0)
-            }
-            ,new Panel()
-            {
-                Title = "Fancy Title 4",
-                Dynamic = true,
-                Position = new PanelPosition() {Column = 2, Row = 0},
-                Data = "{xd: 2}",
-                Type = PanelType.EmptyPanel,
-                Project = SeedProjects.ElementAt(0)
+                Project = SeedProjects.ElementAt(0),
+                StaticBranchNames = new List<BranchName>() {new BranchName() {Name = "master"}},
             }
         });
 

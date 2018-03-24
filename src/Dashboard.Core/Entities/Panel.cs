@@ -8,7 +8,6 @@ namespace Dashboard.Core.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public bool Dynamic { get; set; }
         public PanelType Type { get; set; }
         public PanelPosition Position { get; set; } = new PanelPosition();
         public string Data { get; set; }
@@ -22,6 +21,8 @@ namespace Dashboard.Core.Entities
         public int Id { get; set; }
         public int Column { get; set; }
         public int Row { get; set; }
+        public int Width { get; set; }
+        public int Hight { get; set; }
     }
 
     public enum PanelType

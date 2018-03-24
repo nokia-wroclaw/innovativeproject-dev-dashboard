@@ -47,7 +47,6 @@ namespace Dashboard.WebApi.Controllers
             var panel = new Panel()
             {
                 Title = model.Title,
-                Dynamic = model.Dynamic,
                 Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row },
                 Data = model.Data,
                 Type = model.Type,
@@ -69,7 +68,6 @@ namespace Dashboard.WebApi.Controllers
             {
                 Id = id,
                 Title = model.Title,
-                Dynamic = model.Dynamic,
                 Data = model.Data,
                 Type = model.Type,
                 //Static branch name not required
@@ -86,6 +84,26 @@ namespace Dashboard.WebApi.Controllers
         public async Task Delete(int id)
         {
             await _panelService.DeletePanelAsync(id);
+        }
+
+        // PUT api/Panel/5/Position
+        [HttpPost("{id}/[action]")]
+        [ValidateModel]
+        public async Task<IActionResult> Position(int id, [FromBody] UpdatePanelPosition model)
+        {
+            //TODO: change when automapper
+            var newPosition = new PanelPosition()
+            {
+                Column = model.Column,
+                Row = model.Row,
+                Width = model.Width,
+                Hight = model.Hight
+            };
+
+            var r = await _panelService.UpdatePanelPosition(id, newPosition);
+            if (r == null) return NotFound();
+
+            return Json(r);
         }
     }
 }
