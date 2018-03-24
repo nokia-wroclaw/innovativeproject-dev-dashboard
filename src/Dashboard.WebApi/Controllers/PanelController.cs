@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.WebApi.ApiModels.Requests;
-using Dashboard.WebApi.ApiModels.Responses;
 using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,11 +22,10 @@ namespace Dashboard.WebApi.Controllers
 
         // GET api/Panel
         [HttpGet]
-        public async Task<IEnumerable<PanelResponse>> Get()
+        public async Task<IEnumerable<Panel>> Get()
         {
             var allPanels = await _panelService.GetAllPanelsAsync();
-
-            return allPanels.Select(p => new PanelResponse(p));
+            return allPanels;
         }
 
         // GET api/Panel/5
@@ -39,49 +37,82 @@ namespace Dashboard.WebApi.Controllers
                 return NotFound();
 
             //TODO: change when automapper
-            return Json(new PanelResponse(panel));
+            return Json(panel);
         }
 
-        // POST api/Panel
-        [HttpPost]
+        // POST api/Panel/CreateMemePanel
+        [HttpPost("[action]")]
         [ValidateModel]
-        public async Task<IActionResult> Create([FromBody]CreatePanel model)
+        public async Task<IActionResult> CreateMemePanel([FromBody]CreateMemePanel model)
         {
             //TODO: change when automapper
-            var panel = new Panel()
+            var entity = new MemePanel()
             {
                 Title = model.Title,
                 Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row },
-                Data = model.Data,
-                Type = model.Type,
-                //Static branch name not required
-                StaticBranchNames = model.StaticBranchNames
+                MemeApiToken = model.MemeApiToken
             };
 
-            var created = await _panelService.CreatePanelAsync(panel, model.ProjectId);
-            return Json(new PanelResponse(created));
+            var created = await _panelService.CreatePanelAsync(entity, model.ProjectId);
+            return Json(created);
         }
 
-        // PUT api/Panel/5
-        [HttpPut("{id}")]
+        // POST api/Panel/CreateStaticBranchPanel
+        [HttpPost("[action]")]
         [ValidateModel]
-        public async Task<IActionResult> Put(int id, [FromBody]UpdatePanel model)
+        public async Task<IActionResult> CreateStaticBranchPanel([FromBody]CreateStaticBranchPanel model)
         {
             //TODO: change when automapper
-            var updatedPanel = new Panel()
+            var entity = new StaticBranchPanel()
             {
-                Id = id,
                 Title = model.Title,
-                Data = model.Data,
-                Type = model.Type,
-                //Static branch name not required
-                StaticBranchNames = model.StaticBranchNames,
-                Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row }
+                Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row },
+                StaticBranchNames = model.StaticBranchNames.Select(b => new BranchName() { Name = b })
             };
 
-            var r = await _panelService.UpdatePanelAsync(updatedPanel, model.ProjectId);
-            return Json(new PanelResponse(r));
+            var created = await _panelService.CreatePanelAsync(entity, model.ProjectId);
+            return Json(created);
         }
+
+        // POST api/Panel/CreateDynamicPipelinesPanel
+        [HttpPost("[action]")]
+        [ValidateModel]
+        public async Task<IActionResult> CreateDynamicPipelinesPanel([FromBody]CreateDynamicPipelinesPanel model)
+        {
+            //TODO: change when automapper
+            var entity = new DynamicPipelinesPanel()
+            {
+                Title = model.Title,
+                Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row },
+                HowManyLastPipelinesToRead = model.HowManyLastPipelinesToRead
+            };
+
+            var created = await _panelService.CreatePanelAsync(entity, model.ProjectId);
+            return Json(created);
+        }
+
+        //// PUT api/Panel/5
+        //[HttpPut("{id}")]
+        //[ValidateModel]
+        //public async Task<IActionResult> Put(int id, [FromBody]UpdatePanel model)
+        //{
+        //    ////TODO: change when automapper
+        //    //var updatedPanel = new Panel()
+        //    //{
+        //    //    Id = id,
+        //    //    Title = model.Title,
+        //    //    Data = model.Data,
+        //    //    Type = model.Type,
+        //    //    //Static branch name not required
+        //    //    StaticBranchNames = model.StaticBranchNames,
+        //    //    Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row }
+        //    //};
+
+        //    //var r = await _panelService.UpdatePanelAsync(updatedPanel, model.ProjectId);
+        //    //return Json(new PanelViewModel(r));
+
+        //    return Ok();
+        //}
 
         // DELETE api/Panel/5
         [HttpDelete("{id}")]
@@ -107,7 +138,7 @@ namespace Dashboard.WebApi.Controllers
             var r = await _panelService.UpdatePanelPosition(id, newPosition);
             if (r == null) return NotFound();
 
-            return Json(new PanelResponse(r));
+            return Json(r);
         }
 
         // POST api/Panel/Positions
@@ -116,18 +147,19 @@ namespace Dashboard.WebApi.Controllers
         public void Positions([FromBody] UpdatePanelPositions model)
         {
             //TODO: change when automapper
-            model.UpdatedPanelPositions.Select(m => new PanelPosition()
-            {
-                Id = m.PanelId,
-                Column = m.Column,
-                Row = m.Row,
-                Width = m.Width,
-                Height = m.Height
-            })
+            model.UpdatedPanelPositions
             .ToList()
-            .ForEach(async p =>
+            .ForEach(async m =>
             {
-                await _panelService.UpdatePanelPosition(p.Id, p);
+                var pos = new PanelPosition()
+                {
+                    Column = m.Column,
+                    Row = m.Row,
+                    Width = m.Width,
+                    Height = m.Height
+                };
+
+                await _panelService.UpdatePanelPosition(m.PanelId, pos);
             });
         }
     }

@@ -13,12 +13,18 @@ namespace Dashboard.Application.Services
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IPanelRepository _panelRepository;
+        private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
 
-        public ProjectService(IProjectRepository projectRepository, IPanelRepository panelRepository, ICiDataProviderFactory ciDataProviderFactory)
+        public ProjectService(
+            IProjectRepository projectRepository, 
+            IPanelRepository panelRepository,
+            IStaticBranchPanelRepository staticBranchPanelRepository,
+            ICiDataProviderFactory ciDataProviderFactory)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
             _panelRepository = panelRepository;
+            _staticBranchPanelRepository = staticBranchPanelRepository;
             _projectRepository = projectRepository;
         }
 
@@ -100,7 +106,7 @@ namespace Dashboard.Application.Services
 
             var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
 
-            var staticBranches = await _panelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+            var staticBranches = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
 
             //Create tasks
             var updatePiplineTasks = staticBranches

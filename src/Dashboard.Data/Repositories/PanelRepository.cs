@@ -31,6 +31,18 @@ namespace Dashboard.Data.Repositories
             return EagerPanels
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+    }
+
+    public class StaticBranchPanelRepository : EfRepository<StaticBranchPanel>, IStaticBranchPanelRepository
+    {
+        private IIncludableQueryable<StaticBranchPanel, object> EagerPanels => Context.Set<StaticBranchPanel>()
+                                                                                    .Include(p => p.Project)
+                                                                                        .ThenInclude(p => p.Pipelines)
+                                                                                    .Include(p => p.Position);
+
+        public StaticBranchPanelRepository(DbContext context) : base(context)
+        {
+        }
 
         public async Task<IEnumerable<string>> GetBranchNamesFromStaticPanelsForProject(int projectId)
         {
