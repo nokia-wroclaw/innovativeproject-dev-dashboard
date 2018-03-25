@@ -22,7 +22,7 @@ export class PanelApiService {
         const wrappedObject : any = { 
             updatedPanelPositions: panelPositions
         };
-        return this.http.post<any>(this.updatePositionsUrl, wrappedObject).map(wrapped => wrapped.updatedPanelPositions);
+        return this.http.post<any>(this.updatePositionsUrl, wrappedObject).filter(result => result != undefined).map(wrapped => wrapped.updatedPanelPositions);
     }
 
 }
