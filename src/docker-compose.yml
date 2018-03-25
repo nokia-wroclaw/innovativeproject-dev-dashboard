@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  dashboard.webapi:
+    image: dashboardwebapi
+    build:
+      context: .
+      dockerfile: Dashboard.WebApi/Dockerfile
