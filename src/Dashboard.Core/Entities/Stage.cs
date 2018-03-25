@@ -8,6 +8,6 @@ namespace Dashboard.Core.Entities
     {
         public int Id { get; set; }
         public string StageName { get; set; }
-        public virtual IEnumerable<Job> Jobs { get; set; } = new List<Job>();
+        public List<Job> Jobs { get; set; }
     }
 }

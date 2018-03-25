@@ -74,7 +74,7 @@ namespace Dashboard.Application
                 StartedAt = pipeline.StartedAt,
                 FinishedAt = pipeline.FinishedAt,
 
-                Stages = stages
+                Stages = stages.ToList()
             };
         }
 
@@ -88,7 +88,7 @@ namespace Dashboard.Application
                                 new Stage()
                                 {
                                     StageName = s.Key,
-                                    Jobs = s.Select(p => new Job() { Name = p.Name, Status = p.Status })
+                                    Jobs = s.Select(p => new Job() { Name = p.Name, Status = p.Status }).ToList()
                                 });
             return stages;
         }

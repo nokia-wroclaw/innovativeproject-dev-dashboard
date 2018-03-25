@@ -26,6 +26,6 @@ namespace Dashboard.Core.Entities
         public DateTime? StartedAt { get; set; }
         public DateTime? FinishedAt { get; set; }
 
-        public virtual IEnumerable<Stage> Stages { get; set; } = new List<Stage>();
+        public  List<Stage> Stages { get; set; }
     }
 }
