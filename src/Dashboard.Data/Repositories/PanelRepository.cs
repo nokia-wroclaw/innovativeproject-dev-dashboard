@@ -14,6 +14,8 @@ namespace Dashboard.Data.Repositories
         private IIncludableQueryable<Panel, object> EagerPanels => Context.Set<Panel>()
                                                                         .Include(p => p.Project)
                                                                             .ThenInclude(p => p.Pipelines)
+                                                                                .ThenInclude(p => p.Stages)
+                                                                                    .ThenInclude(p => p.Jobs)
                                                                         .Include(p => p.Position);
 
         public PanelRepository(AppDbContext context) : base(context)
