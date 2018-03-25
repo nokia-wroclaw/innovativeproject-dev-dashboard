@@ -2,7 +2,6 @@
 
 # We label our stage as 'builder'
 FROM node:8-alpine as builder
-WORKDIR /src/Dashboard.WebApi/developersDashboardFrontEnd
 
 COPY package.json package-lock.json ./
 
@@ -16,7 +15,7 @@ WORKDIR /ng-app
 COPY . .
 
 ## Build the angular app in production mode and store the artifacts in dist folder
-RUN $(npm bin)/ng build --prod --build-optimizer
+RUN $(npm bin)/ng build
 
 
 ### STAGE 2: Setup ###

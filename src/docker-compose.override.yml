@@ -6,3 +6,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "5001:5001"
+
+  dashboard.frontend:
+    environment:
+      - PORT=4200
+    ports:
+      - "4200:4200"
