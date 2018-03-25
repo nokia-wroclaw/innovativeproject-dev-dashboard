@@ -30,11 +30,7 @@ export interface Panel {
     projectId : number;
 }
 
-// it could be panelId + PanelPosition reference
 export interface PanelPositionUpdateItem {
     panelId : number,
-    column : number,
-    row : number,
-    width: number,
-    height: number
+    position : PanelPosition
 }

@@ -16,6 +16,8 @@ export class DashboardComponent implements OnInit {
 
   private positionUpdateThrottle : any;
 
+  private updatePositionsRequestThrottle : number = 1000;
+
   gridsterOptions = {
     lanes: 6,
     direction: 'vertical',
@@ -41,8 +43,16 @@ export class DashboardComponent implements OnInit {
 
   updatePositionsThrottled() {
     if(!this.positionUpdateThrottle) {
-      this.positionUpdateThrottle = setTimeout( () => {console.log("Throttled!") ; this.positionUpdateThrottle = null}, 1000);
+      this.positionUpdateThrottle = setTimeout( () => {this.updatePositions(); this.positionUpdateThrottle = null}, this.updatePositionsRequestThrottle);
     } 
+  }
+
+  updatePositions() {
+    const panelPositions = this.panels.map<PanelPositionUpdateItem>(panel => {
+      return {panelId : panel.id, position: panel.position};
+    });
+
+    this.panelManagerService.updatePanelPositions(panelPositions).subscribe(response => null, error => console.log(error));
   }
 
   onGridsterItemChange($event, panel : Panel) {
