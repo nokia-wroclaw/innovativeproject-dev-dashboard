@@ -33,7 +33,7 @@ namespace Dashboard.Data.Context
                 Title = "Fancy Title 2",
                 Position = new PanelPosition() {Column = 2, Row = 0, Width = 2, Height = 1},
                 Project = SeedProjects.ElementAt(0),
-                StaticBranchNames = new List<BranchName>() {new BranchName() {Name = "master"}},
+                StaticBranchName = "master",
             }
         });
 

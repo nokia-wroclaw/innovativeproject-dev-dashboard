@@ -61,7 +61,7 @@ namespace Dashboard.Data.Context
             });
             builder.Entity<StaticBranchPanel>(model =>
             {
-                model.HasMany(p => p.StaticBranchNames);
+                model.HasBaseType<Panel>();
             });
             builder.Entity<DynamicPipelinesPanel>(model =>
             {

@@ -48,7 +48,7 @@ namespace Dashboard.Core.Entities
         public override bool IsDynamic => false;
         public override string Discriminator => nameof(StaticBranchPanel);
 
-        public List<BranchName> StaticBranchNames { get; set; } = new List<BranchName>();
+        public string StaticBranchName { get; set; }
     }
 
     public class DynamicPipelinesPanel : Panel
