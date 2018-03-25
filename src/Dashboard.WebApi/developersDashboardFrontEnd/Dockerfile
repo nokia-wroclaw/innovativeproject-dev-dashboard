@@ -2,6 +2,7 @@
 
 # We label our stage as 'builder'
 FROM node:8-alpine as builder
+WORKDIR /src/Dashboard.WebApi/developersDashboardFrontEnd
 
 COPY package.json package-lock.json ./
 

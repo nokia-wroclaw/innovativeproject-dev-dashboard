@@ -6,3 +6,9 @@ services:
     build:
       context: .
       dockerfile: Dashboard.WebApi/Dockerfile
+    networks:
+      - local
+
+networks:
+  local:
+    driver: bridge
