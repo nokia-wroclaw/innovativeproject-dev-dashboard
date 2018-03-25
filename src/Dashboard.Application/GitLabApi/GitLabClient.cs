@@ -84,5 +84,17 @@ namespace Dashboard.Application.GitLabApi
             var r = await Client.ExecuteTaskAsync<List<Commit>>(request);
             return r.Data;
         }
+
+        public async Task<IEnumerable<Job>> GetJobs(string projectId, string pipelineId)
+        {
+            var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}/jobs", Method.GET);
+            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("pipelineId", pipelineId);
+
+            request.AddQueryParameter("per_page", "10000");//Arbitrary value
+
+            var r = await Client.ExecuteTaskAsync<IEnumerable<Job>>(request);
+            return r.Data;
+        }
     }
 }

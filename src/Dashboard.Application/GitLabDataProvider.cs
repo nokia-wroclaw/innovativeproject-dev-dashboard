@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.GitLabApi;
@@ -55,6 +57,7 @@ namespace Dashboard.Application
             var apiClient = new GitLabClient(apiHost, apiKey);
             var pipeline = await apiClient.GetPipelineById(apiProjectId, pipeId);
             var pipelineCommit = await apiClient.GetCommitBySHA(apiProjectId, pipeline.Sha);
+            var stages = await GetStagesWithJobs(apiHost, apiKey, apiProjectId, pipeId);
 
             return new Pipeline
             {
@@ -69,8 +72,25 @@ namespace Dashboard.Application
                 CreatedAt = pipeline.CreatedAt,
                 UpdatedAt = pipeline.UpdatedAt,
                 StartedAt = pipeline.StartedAt,
-                FinishedAt = pipeline.FinishedAt
+                FinishedAt = pipeline.FinishedAt,
+
+                Stages = stages
             };
+        }
+
+        private async Task<IEnumerable<Stage>> GetStagesWithJobs(string apiHost, string apiKey, string apiProjectId, string pipeId)
+        {
+            var apiClient = new GitLabClient(apiHost, apiKey);
+            var jobs = await apiClient.GetJobs(apiProjectId, pipeId);
+
+            var stages = jobs.GroupBy(j => j.Stage)
+                                .Select(s => 
+                                new Stage()
+                                {
+                                    StageName = s.Key,
+                                    Jobs = s.Select(p => new Job() { Name = p.Name, Status = p.Status })
+                                });
+            return stages;
         }
     }
 }
