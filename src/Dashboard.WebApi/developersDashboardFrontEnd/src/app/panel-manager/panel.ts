@@ -22,12 +22,19 @@ export interface PanelPosition {
 }
 
 export interface Panel {
-    id : number;
+    id? : number;
     title : string;
-    dynamic : boolean;
-    type : PanelType;
-    position : PanelPosition;
-    project : Project;
+    isDynamic? : boolean;
+    discriminator : string;
+    position? : PanelPosition;
+    projectId : number;
+}
 
-    data : any;
+// it could be panelId + PanelPosition reference
+export interface PanelPositionUpdateItem {
+    panelId : number,
+    column : number,
+    row : number,
+    width: number,
+    height: number
 }

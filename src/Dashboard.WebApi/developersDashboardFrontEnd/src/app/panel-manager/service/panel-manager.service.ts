@@ -8,6 +8,7 @@ import {PanelTypeMapperService} from "./panel-type-mapper/panel-type-mapper.serv
 
 import 'rxjs/add/operator/mergeMap';
 import "rxjs/add/observable/of";
+import {IPanelComponent, IPanelConfigComponent} from "../../panels/panel.component";
 
 @Injectable()
 export class PanelManagerService {
@@ -30,6 +31,18 @@ export class PanelManagerService {
           return panelsData;
         });
     }
+  }
+  getPanel(id : number) : Observable<Panel> {
+    return this.getPanels().map(panels => panels.find(panel => panel.id == id));
+  } 
+
+  updatePanels() {
+     return this
+        .panelApi
+        .getPanels()
+        .subscribe(panelsData => 
+          this.panelsCache = panelsData
+        );
   }
 
   updatePanel(id : number, panel : Panel) {
@@ -57,26 +70,44 @@ export class PanelManagerService {
     // - Return promise with success/failure information
   }
 
-  injectPanelComponent(host : HostDirective, panelId : number) {
+  injectPanelComponent(host : HostDirective, panel : Panel) {
     this
       .getPanels()
       .subscribe(panelsData => {
 
-        let panelToLoad = panelsData.find(panel => panel.id == panelId);
-        let viewContainerRef = host.viewContainerRef;
+        const viewContainerRef = host.viewContainerRef;
+        viewContainerRef.clear();
+
+        const panelComponentType = this
+          .panelTypeMapper
+          .map(panel.discriminator);
+
+        const componentFactory = this
+          .componentFactoryResolver
+          .resolveComponentFactory(panelComponentType);
+
+        const componentRef = viewContainerRef.createComponent<IPanelComponent<any>>(componentFactory);
+        componentRef.instance.setPanel(panel);
+      });
+
+  }
+
+  injectCreatePanelConfiguration(host : HostDirective, panel: Panel) : IPanelConfigComponent<any> {
+    let viewContainerRef = host.viewContainerRef;
         viewContainerRef.clear();
 
         let panelComponentType = this
           .panelTypeMapper
-          .map(panelToLoad.type);
+          .mapConfiguration(panel.discriminator);
 
         let componentFactory = this
           .componentFactoryResolver
           .resolveComponentFactory(panelComponentType);
 
-        let componentRef = viewContainerRef.createComponent(componentFactory);
-      });
+        let componentRef =viewContainerRef.createComponent<IPanelConfigComponent<any>>(componentFactory);
+        componentRef.instance.setPanel(panel);
 
+        return componentRef.instance;
   }
 
   injectPanelConfiguration(host : HostDirective, panelId : number) {

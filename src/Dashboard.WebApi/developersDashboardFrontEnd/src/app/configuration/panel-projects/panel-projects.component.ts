@@ -14,7 +14,7 @@ export class PanelProjectsComponent implements OnInit {
   project = new Project();
 
   ngOnInit() {
-    this.addProject()
+    // this.addProject()
   }
   private addProject() {
     if (!this.project) {

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {PanelManagerService} from './../panel-manager/service/panel-manager.service';
-import {Panel, PanelType} from "../panel-manager/panel";
+import {Panel, PanelType, PanelPositionUpdateItem} from "../panel-manager/panel";
 import {AdminModeService} from "./admin-mode-service/admin-mode.service";
 
 @Component({selector: 'app-dashboard', templateUrl: './dashboard.component.html', styleUrls: ['./dashboard.component.css']})
@@ -13,6 +13,8 @@ export class DashboardComponent implements OnInit {
   panels : Panel[];
 
   adminMode : boolean = false;
+
+  private positionUpdateThrottle : any;
 
   gridsterOptions = {
     lanes: 6,
@@ -35,6 +37,16 @@ export class DashboardComponent implements OnInit {
       .adminModeService
       .adminMode
       .subscribe(adminMode => this.adminMode = adminMode);
+  }
+
+  updatePositionsThrottled() {
+    if(!this.positionUpdateThrottle) {
+      this.positionUpdateThrottle = setTimeout( () => {console.log("Throttled!") ; this.positionUpdateThrottle = null}, 1000);
+    } 
+  }
+
+  onGridsterItemChange($event, panel : Panel) {
+    this.updatePositionsThrottled();
   }
 
 }
