@@ -5,8 +5,10 @@ import {Observable} from "rxjs/Observable";
 import {StaticBranchPanel} from "./static-branch";
 
 @Component({template: `
-    <p> static branch config </p>
-`})
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Branch name" required [(ngModel)]="panel.staticBranchName" name="token">
+    </mat-form-field>
+`, styleUrls: ['./../../configuration/panel.shared.css']})
 export class StaticBranchPanelConfigComponent implements OnInit, IPanelConfigComponent<StaticBranchPanel> {
 
     createPanelUrl : string = "/api/Panel/CreateStaticBranchPanel";
@@ -21,8 +23,6 @@ export class StaticBranchPanelConfigComponent implements OnInit, IPanelConfigCom
 
     setPanel(panel : any) {
         this.panel = panel;
-        // temp // btw shouldnt it be one branch name? static card --> one static branch?
-        this.panel.staticBranchNames = ["master"];
     }
     postPanel() : Observable<StaticBranchPanel> {
         return this.panelsConfigApi.savePanel<StaticBranchPanel>(this.createPanelUrl, this.panel)

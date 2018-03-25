@@ -5,6 +5,9 @@ import {Observable} from 'rxjs/Observable';
 import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
 import {catchError, retry} from 'rxjs/operators';
 
+/**
+ * Generic service to post panels data to specified api url.
+ */
 @Injectable()
 export class PanelsConfigApiService {
 

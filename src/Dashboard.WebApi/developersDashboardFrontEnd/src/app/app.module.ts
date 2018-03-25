@@ -45,7 +45,6 @@ import {GridsterModule} from 'angular2gridster';
 import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {PanelConfigurationComponent} from './configuration/panel-configuration/panel-configuration.component';
-import {PanelCreateComponent} from './configuration/panel-create/panel-create.component';
 import {HostDirective} from "./panel-host/host.directive";
 import {StaticHostPanelComponent} from './panel-host/static-host-panel/static-host-panel.component';
 import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic-host-panel.component';
@@ -71,16 +70,13 @@ const appRoutes : Routes = [
     component: DashboardComponent
   }, {
     path: 'admin/create',
-    component: PanelCreateComponent
+    component: PanelConfigurationComponent
   }, {
     path: 'admin/project',
     component: PanelProjectsComponent
   }, {
-    path: 'admin/',
-    component: PanelConfigurationComponent
-  }, {
     path: 'admin/:id',
-    component: PanelCreateComponent
+    component: PanelConfigurationComponent
   }, {
     path: '**',
     redirectTo: ''
@@ -92,7 +88,6 @@ const appRoutes : Routes = [
     AppComponent,
     DashboardComponent,
     PanelConfigurationComponent,
-    PanelCreateComponent,
     PanelProjectsComponent,
     HostDirective,
     StaticHostPanelComponent,

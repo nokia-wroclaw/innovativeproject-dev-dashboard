@@ -1,3 +1,45 @@
-<p>
-  Configuring panel of id: {{panelId}}
-</p>
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic"> -->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title style="font-size: 1.5em">
+      Panel configuration
+    </mat-card-title>
+  </mat-card-header>
+
+  <form #panelForm="ngForm" (ngSubmit)="submitPanel()">
+    <mat-card-content>
+      <mat-form-field class=" example-full-width ">
+        <input matInput placeholder="Panel title" required [(ngModel)]="panel.title" name="title">
+      </mat-form-field>
+
+      
+     <mat-form-field>
+      <mat-select (selectionChange)="descriminatorSelectionChanged()" placeholder="Types" required [(ngModel)]="panel.discriminator" name="discriminator">
+        <mat-option *ngFor="let type of types" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> 
+
+      
+     <mat-form-field>
+      <mat-select placeholder="Projects" required [(ngModel)]="panel.projectId" name="project">
+        <mat-option *ngFor="let project of projects" [value]="project.id">
+          {{project.apiProjectId}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> 
+
+    <ng-template host></ng-template>
+
+    </mat-card-content>
+
+
+    <mat-card-actions>
+      <button  type="submit" [disabled]="!panelForm.form.valid" mat-button class="pull-right " style=" font-size: 1vw; ">SAVE</button>
+      <button  mat-button class="pull-right " style=" font-size: 1vw; ">CANCEL</button>
+    </mat-card-actions>
+
+  </form>
+
+</mat-card>

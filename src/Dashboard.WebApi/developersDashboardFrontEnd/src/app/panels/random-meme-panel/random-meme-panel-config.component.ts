@@ -8,7 +8,7 @@ import {Observable} from "rxjs/Observable";
     <mat-form-field class="example-full-width">
         <input matInput placeholder="Imgur token" required [(ngModel)]="panel.memeApiToken" name="token">
     </mat-form-field>
-`})
+`, styleUrls: ['./../../configuration/panel.shared.css']})
 export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigComponent<RandomMemePanel> {
 
     createPanelUrl : string = "/api/Panel/CreateMemePanel";

@@ -6,7 +6,7 @@ import {StaticBranchPanel} from "./static-branch";
 @Component({templateUrl: './static-branch-panel.component.html'})
 export class StaticBranchPanelComponent implements OnInit, IPanelComponent<StaticBranchPanel> {
 
-  private panel : StaticBranchPanel;
+  panel : StaticBranchPanel;
 
   setPanel(panel : StaticBranchPanel) {
     this.panel = panel;
