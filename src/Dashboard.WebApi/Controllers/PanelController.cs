@@ -49,7 +49,13 @@ namespace Dashboard.WebApi.Controllers
             var entity = new MemePanel()
             {
                 Title = model.Title,
-                Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row },
+                Position = new PanelPosition()
+                {
+                    Column = model.Position.Column,
+                    Row = model.Position.Row,
+                    Width = model.Position.Width,
+                    Height = model.Position.Height
+                },
                 MemeApiToken = model.MemeApiToken
             };
 
@@ -66,8 +72,14 @@ namespace Dashboard.WebApi.Controllers
             var entity = new StaticBranchPanel()
             {
                 Title = model.Title,
-                Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row },
-                StaticBranchNames = model.StaticBranchNames.Select(b => new BranchName() { Name = b })
+                Position = new PanelPosition()
+                {
+                    Column = model.Position.Column,
+                    Row = model.Position.Row,
+                    Width = model.Position.Width,
+                    Height = model.Position.Height
+                },
+                StaticBranchNames = model.StaticBranchNames.Select(b => new BranchName() { Name = b }).ToList(),
             };
 
             var created = await _panelService.CreatePanelAsync(entity, model.ProjectId);
@@ -83,7 +95,13 @@ namespace Dashboard.WebApi.Controllers
             var entity = new DynamicPipelinesPanel()
             {
                 Title = model.Title,
-                Position = new PanelPosition() { Column = model.Position.Column, Row = model.Position.Row },
+                Position = new PanelPosition()
+                {
+                    Column = model.Position.Column,
+                    Row = model.Position.Row,
+                    Width = model.Position.Width,
+                    Height = model.Position.Height
+                },
                 HowManyLastPipelinesToRead = model.HowManyLastPipelinesToRead
             };
 
