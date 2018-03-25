@@ -1,4 +1,4 @@
-version: '3'
+dversion: '3'
 
 services:
   dashboard.webapi:
@@ -6,9 +6,3 @@ services:
     build:
       context: .
       dockerfile: Dashboard.WebApi/Dockerfile
-    networks:
-      - local
-
-networks:
-  local:
-    driver: bridge

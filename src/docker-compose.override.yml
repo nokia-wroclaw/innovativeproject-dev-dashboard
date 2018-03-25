@@ -6,5 +6,3 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "5001:5001"
-    networks:
-      - default
