@@ -9,6 +9,6 @@ namespace Dashboard.WebApi.ApiModels.Requests
     public class CreateStaticBranchPanel : CreatePanel
     {
         [Required]
-        public IEnumerable<string> StaticBranchNames { get; set; }
+        public string StaticBranchName { get; set; }
     }
 }

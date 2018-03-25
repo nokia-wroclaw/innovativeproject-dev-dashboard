@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Dashboard.Core.Entities;
 
 namespace Dashboard.WebApi.ApiModels.Requests
 {
@@ -16,13 +17,8 @@ namespace Dashboard.WebApi.ApiModels.Requests
     {
         [Required]
         public int PanelId { get; set; }
+
         [Required]
-        public int Column { get; set; }
-        [Required]
-        public int Row { get; set; }
-        [Required]
-        public int Width { get; set; }
-        [Required]
-        public int Height { get; set; }
+        public PanelPosition Position { get; set; }
     }
 }

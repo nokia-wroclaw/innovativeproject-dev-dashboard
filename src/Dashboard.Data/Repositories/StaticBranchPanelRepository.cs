@@ -14,7 +14,6 @@ namespace Dashboard.Data.Repositories
         private IIncludableQueryable<StaticBranchPanel, object> EagerPanels => Context.Set<StaticBranchPanel>()
             .Include(p => p.Project)
                 .ThenInclude(p => p.Pipelines)
-            .Include(p => p.StaticBranchNames)
             .Include(p => p.Position);
 
         public StaticBranchPanelRepository(AppDbContext context) : base(context)
@@ -24,8 +23,8 @@ namespace Dashboard.Data.Repositories
         public async Task<IEnumerable<string>> GetBranchNamesFromStaticPanelsForProject(int projectId)
         {
             return await EagerPanels
-                .Where(p => p.StaticBranchNames.Any() && p.Project.Id == projectId)
-                .SelectMany(p => p.StaticBranchNames.Select(b => b.Name))
+                .Where(p => p.Project.Id == projectId)
+                .Select(p => p.StaticBranchName)
                 .ToListAsync();
         }
     }

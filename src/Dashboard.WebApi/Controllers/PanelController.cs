@@ -79,7 +79,7 @@ namespace Dashboard.WebApi.Controllers
                     Width = model.Position.Width,
                     Height = model.Position.Height
                 },
-                StaticBranchNames = model.StaticBranchNames.Select(b => new BranchName() { Name = b }).ToList(),
+                StaticBranchName = model.StaticBranchName,
             };
 
             var created = await _panelService.CreatePanelAsync(entity, model.ProjectId);
@@ -171,10 +171,10 @@ namespace Dashboard.WebApi.Controllers
             {
                 var pos = new PanelPosition()
                 {
-                    Column = m.Column,
-                    Row = m.Row,
-                    Width = m.Width,
-                    Height = m.Height
+                    Column = m.Position.Column,
+                    Row = m.Position.Row,
+                    Width = m.Position.Width,
+                    Height = m.Position.Height
                 };
 
                 await _panelService.UpdatePanelPosition(m.PanelId, pos);
