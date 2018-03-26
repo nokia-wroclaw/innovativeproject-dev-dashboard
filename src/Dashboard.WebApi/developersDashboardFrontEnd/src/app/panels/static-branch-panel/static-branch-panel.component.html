@@ -1,1 +1,11 @@
-<p>This static branch was configured to display last pipeline of "{{panel.staticBranchName}}" branch</p>
+<p style="margin-top: 5px;">Pipeline of: "{{panel.staticBranchName}}"</p>
+
+
+<svg *ngFor="let stage of stages; let i = index" height="75" width="80">
+    <text text-anchor="middle" x="40" y="15" font-family="Verdana" font-size="15">
+            {{stage.name}}
+            </text>
+    <circle cx="40" cy="40" r="20" stroke="black" stroke-width="1" [attr.fill]="stage.color" />
+    <line *ngIf="i != 0" x1="0" y1="40" x2="20" y2="40" style="stroke:black;stroke-width:1" />
+    <line *ngIf="i != stages.length - 1" x1="60" y1="40" x2="80" y2="40" style="stroke:black;stroke-width:1" />
+</svg>

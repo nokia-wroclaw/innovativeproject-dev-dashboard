@@ -16,6 +16,11 @@ export class ProjectsApiService {
         return this.http.get < Project[] > (this.baseUrl);
     }
 
+    // it is called individualy from every panel. could be opt with ReplaySubject TODO
+    getProject(id : number) : Observable < Project > {
+        return this.http.get < Project > (this.baseUrl + "/" + id);
+    }
+
     addProject(project : Project) : Observable < Project > {
         return this.http.post < Project > (this.baseUrl, project);
     }
