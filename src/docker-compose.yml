@@ -6,9 +6,31 @@ services:
     build:
       context: .
       dockerfile: Dashboard.WebApi/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5001:5001"
+    networks:
+      - aspnetcoreapp-network
 
   dashboard.frontend:
     image: dashboardfrontend
+    command: npm start
+    environment:
+      NODE_ENV: production
     build:
       context: Dashboard.WebApi/developersDashboardFrontEnd
       dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+      - "80:80"
+    networks:
+      - aspnetcoreapp-network
+    depends_on:
+      - dashboard.webapi
+    links:
+      - dashboard.webapi
+
+networks:
+  aspnetcoreapp-network:
+    driver: bridge
