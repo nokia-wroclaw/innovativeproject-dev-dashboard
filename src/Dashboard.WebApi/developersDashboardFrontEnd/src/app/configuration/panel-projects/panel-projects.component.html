@@ -2,11 +2,11 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title style="font-size:1.4vw;">
-      Projects Configuration
+      Creating Project
     </mat-card-title>
   </mat-card-header>
 
-  <form #myForm="ngForm">
+  <form #projectForm="ngForm" (ngSubmit)="addProject()">
     <mat-card-content>
       <mat-form-field class=" example-full-width ">
         <input type="text" matInput placeholder="apiHostUrl " required [(ngModel)]="project.apiHostUrl" name="apiHostUrl">
@@ -23,10 +23,10 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <button type="submit" (click)="addProject()" [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1vw; ">SAVE</button>
-      <button type="button" [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1vw; ">CANCEL</button>
+      <button type="submit" [disabled]="!projectForm.form.valid" mat-button class="pull-right " style=" font-size: 1vw; ">SAVE</button>
+      <button [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1vw; ">CANCEL</button>
     </mat-card-actions>
-    <pre>{{myForm.value | json}}</pre>
+    <pre>{{projectForm.value | json}}</pre>
   </form>
 
 
