@@ -70,10 +70,6 @@ export class PanelManagerService {
     const viewContainerRef = host.viewContainerRef;
     viewContainerRef.clear();
 
-    if(!panel.panelType) {
-      panel.panelType = this.panelTypeService.getPanelType(panel);
-    }
-
     const componentFactory = this
       .componentFactoryResolver
       .resolveComponentFactory(panel.panelType.configComponent);

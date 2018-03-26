@@ -73,6 +73,8 @@ OnDestroy {
   }
 
   descriminatorSelectionChanged() {
+    this.panel.panelType = this.panelTypeService.getPanelType(this.panel);
+
     this.panelSpecificConfiguration = this
       .panelManager
       .injectPanelConfiguration(this.configurationHost, this.panel);
@@ -92,6 +94,12 @@ OnDestroy {
   // todo learn to chain promises instead of nesting??
   submitPanel() {
     if (this.panelSpecificConfiguration.isValid()) {
+
+      this.panel.position.height = this.panel.panelType.bounds.defaultHeight;
+      this.panel.position.width = this.panel.panelType.bounds.defaultWidth;
+
+      // TODO find empty slot on grid (calculate)
+
       this
         .panelSpecificConfiguration
         .postPanel()

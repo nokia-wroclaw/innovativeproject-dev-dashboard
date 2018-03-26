@@ -5,6 +5,9 @@ export interface PanelBounds {
     maxWidth: number;
     minHeight: number;
     maxHeight: number;
+    defaultWidth: number;
+    defaultHeight: number;
+    // make it compatible with gridster options
 }
 
 export interface PanelType {

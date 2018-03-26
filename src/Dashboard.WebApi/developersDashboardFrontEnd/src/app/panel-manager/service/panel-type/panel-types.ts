@@ -13,7 +13,9 @@ export const panelTypes : PanelType[] = [
             minWidth: 2,
             minHeight: 2,
             maxWidth: 3,
-            maxHeight: 3
+            maxHeight: 3,
+            defaultWidth: 2,
+            defaultHeight: 2
         },
         component: RandomMemePanelComponent,
         configComponent: RandomMemePanelConfigComponent
@@ -25,7 +27,9 @@ export const panelTypes : PanelType[] = [
             minWidth: 2,
             minHeight: 1,
             maxWidth: 2,
-            maxHeight: 1
+            maxHeight: 1,
+            defaultWidth: 2,
+            defaultHeight: 1
         },
         component: StaticBranchPanelComponent,
         configComponent: StaticBranchPanelConfigComponent
