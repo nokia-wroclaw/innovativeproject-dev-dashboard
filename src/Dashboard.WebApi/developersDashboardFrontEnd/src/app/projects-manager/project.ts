@@ -5,11 +5,8 @@ export interface Pipeline {
     status : string;
 }
 
-export interface Project {
+export class Project {
     id : number;
-    apiHostUrl : string;
-    apiProjectId : string;
-    apiAuthenticationToken : string;
-    dataProviderName : string;
-    pipelines : Pipeline[];
+    constructor(apiHostUrl : string, apiProjectId : string, apiAuthenticationToken : string, dataProviderName : string, pipelines : Pipeline[]) {}
+
 }

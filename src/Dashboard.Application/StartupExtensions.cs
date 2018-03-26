@@ -13,6 +13,7 @@ namespace Dashboard.Application
         {
             //Register repositories
             services.AddTransient<IPanelRepository, PanelRepository>();
+            services.AddTransient<IStaticBranchPanelRepository, StaticBranchPanelRepository>();
             services.AddTransient<IPipelineRepository, PipelineRepository>();
             services.AddTransient<IProjectRepository, ProjectRepository>();
 

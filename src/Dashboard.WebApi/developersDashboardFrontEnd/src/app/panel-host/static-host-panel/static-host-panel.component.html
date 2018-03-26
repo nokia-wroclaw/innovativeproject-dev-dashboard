@@ -1,36 +1,20 @@
 <mat-card>
-  <mat-card-title style="margin-top:-20px; margin-left: -15px">
-    <div class="row">
-      <div class="col-lg-6 col-xs-6 ">
-        <div class="pull-left" style="font-size: 1.6vw;">
-          {{ tileTitle }}
-        </div>
-      </div>
-      <div class="col-lg-2 col-xs-2">
-        <div style="font-size: 1.5vw;">
-          <span class="label label-success">{{labelInput}}</span>
-        </div>
-      </div>
-      <div class="col-lg-4 col-xs-4">
-        <div class="pull-right" style="font-size: 2vw;">
-          <a [routerLink]=" ['/admin', panelId]">
-            <i *ngIf="adminMode" id="settings" class="material-icons">settings</i>
-          </a>
-          <i *ngIf="adminMode" id="toc" class="material-icons">dehaze</i>
-        </div>
-      </div>
-    </div>
-  </mat-card-title>
+  <div class="panel-header-container">
 
-  <mat-card-content>
+    <div class="title pull-left">
+      <p>{{tileTitle}}</p>
+    </div>
+
+    <i *ngIf="adminMode " class="material-icons dnd-handle pull-right panel-icon">dehaze</i>
+    <a [routerLink]=" [ '/admin', panel.id] " class="pull-right ">
+        <i *ngIf="adminMode " class="material-icons panel-icon">settings</i>
+      </a>
+
+  </div>
+  <div class="panel-content-container">
     <!-- Outlet for a component loaded dynamicaly -->
     <ng-template host></ng-template>
+  </div>
 
-  </mat-card-content>
-  <mat-card-actions>
 
-  </mat-card-actions>
-  <mat-card-footer>
-    <p>{{lastUpdated}}</p>
-  </mat-card-footer>
 </mat-card>

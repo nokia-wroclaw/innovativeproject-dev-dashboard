@@ -1,5 +1,6 @@
 ﻿using Dashboard.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Dashboard.Data.Context
 {
@@ -7,7 +8,11 @@ namespace Dashboard.Data.Context
     {
         public DbSet<Pipeline> Pipelines { get; set; }
         public DbSet<Project> Projects { get; set; }
+
         public DbSet<Panel> Panels { get; set; }
+        public DbSet<MemePanel> MemePanels { get; set; }
+        public DbSet<StaticBranchPanel> StaticBranchPanels { get; set; }
+        public DbSet<DynamicPipelinesPanel> DynamicPipelinesPanels { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -51,20 +56,28 @@ namespace Dashboard.Data.Context
                 m.HasKey(p => p.Id);
             });
 
+            #region Panels
             builder.Entity<Panel>(model =>
             {
                 model.HasKey(p => p.Id);
                 model.Property(p => p.Id).ValueGeneratedOnAdd();
-                model.HasMany(p => p.StaticBranchNames);
-
                 model.HasOne(p => p.Project);
-            });
 
-            builder.Entity<PanelPosition>(m =>
-            {
-                m.HasKey(p => p.Id);
-                m.Property(p => p.Id).ValueGeneratedOnAdd();
+                model.OwnsOne(p => p.Position);
             });
+            builder.Entity<MemePanel>(model =>
+            {
+                model.HasBaseType<Panel>();
+            });
+            builder.Entity<StaticBranchPanel>(model =>
+            {
+                model.HasBaseType<Panel>();
+            });
+            builder.Entity<DynamicPipelinesPanel>(model =>
+            {
+                model.HasBaseType<Panel>();
+            });
+            #endregion
         }
     }
 }

@@ -1,13 +1,14 @@
 import {Injectable, ComponentFactoryResolver} from '@angular/core';
 import {HostDirective} from './../../panel-host/host.directive';
 
-import {Panel} from "../panel";
+import {Panel, PanelPositionUpdateItem} from "../panel";
 import {Observable} from "rxjs/Observable";
 import {PanelApiService} from "./api/panel-api.service";
 import {PanelTypeMapperService} from "./panel-type-mapper/panel-type-mapper.service";
 
 import 'rxjs/add/operator/mergeMap';
 import "rxjs/add/observable/of";
+import {IPanelComponent, IPanelConfigComponent} from "../../panels/panel.component";
 
 @Injectable()
 export class PanelManagerService {
@@ -16,7 +17,7 @@ export class PanelManagerService {
 
   constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeMapper : PanelTypeMapperService) {}
 
-  getPanelData() : Observable < Panel[] > {
+  getPanels() : Observable < Panel[] > {
     if(this.panelsCache != undefined) {
       console.log("Panels cache hit");
       return Observable.of(this.panelsCache);
@@ -30,6 +31,18 @@ export class PanelManagerService {
           return panelsData;
         });
     }
+  }
+  getPanel(id : number) : Observable<Panel> {
+    return this.getPanels().map(panels => panels.find(panel => panel.id == id));
+  } 
+
+  updatePanels() {
+     return this
+        .panelApi
+        .getPanels()
+        .subscribe(panelsData => 
+          this.panelsCache = panelsData
+        );
   }
 
   updatePanel(id : number, panel : Panel) {
@@ -57,30 +70,51 @@ export class PanelManagerService {
     // - Return promise with success/failure information
   }
 
-  injectPanelComponent(host : HostDirective, panelId : number) {
+  injectPanelComponent(host : HostDirective, panel : Panel) {
     this
-      .getPanelData()
+      .getPanels()
       .subscribe(panelsData => {
 
-        let panelToLoad = panelsData.find(panel => panel.id == panelId);
-        let viewContainerRef = host.viewContainerRef;
+        const viewContainerRef = host.viewContainerRef;
+        viewContainerRef.clear();
+
+        const panelComponentType = this
+          .panelTypeMapper
+          .map(panel.discriminator);
+
+        const componentFactory = this
+          .componentFactoryResolver
+          .resolveComponentFactory(panelComponentType);
+
+        const componentRef = viewContainerRef.createComponent<IPanelComponent<any>>(componentFactory);
+        componentRef.instance.setPanel(panel);
+      });
+
+  }
+
+  injectCreatePanelConfiguration(host : HostDirective, panel: Panel) : IPanelConfigComponent<any> {
+    let viewContainerRef = host.viewContainerRef;
         viewContainerRef.clear();
 
         let panelComponentType = this
           .panelTypeMapper
-          .map(panelToLoad.type);
+          .mapConfiguration(panel.discriminator);
 
         let componentFactory = this
           .componentFactoryResolver
           .resolveComponentFactory(panelComponentType);
 
-        let componentRef = viewContainerRef.createComponent(componentFactory);
-      });
+        let componentRef =viewContainerRef.createComponent<IPanelConfigComponent<any>>(componentFactory);
+        componentRef.instance.setPanel(panel);
 
+        return componentRef.instance;
   }
 
   injectPanelConfiguration(host : HostDirective, panelId : number) {
     console.log("injectPanelConfiguration");
   }
 
+  updatePanelPositions(panelPositions : PanelPositionUpdateItem[]) : Observable<PanelPositionUpdateItem[]>{
+    return this.panelApi.updatePanelPositions(panelPositions);
+  }
 }

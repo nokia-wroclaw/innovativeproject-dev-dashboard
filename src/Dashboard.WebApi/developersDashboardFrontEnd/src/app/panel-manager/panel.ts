@@ -1,7 +1,8 @@
 import {Project} from './../projects-manager/project';
 
 export enum PanelType {
-    EmptyPanel
+    EmptyPanel,
+    RandomMemePanel
 }
 
 /**
@@ -9,22 +10,27 @@ export enum PanelType {
  */
 export namespace PanelType {
     export function getValues() : PanelType[] {
-        return [PanelType.EmptyPanel];
+        return [PanelType.EmptyPanel, PanelType.RandomMemePanel];
     }
 }
 
 export interface PanelPosition {
     column : number;
     row : number;
+    width : number;
+    height : number;
 }
 
 export interface Panel {
-    id : number;
+    id? : number;
     title : string;
-    dynamic : boolean;
-    type : PanelType;
-    position : PanelPosition;
-    project : Project;
+    isDynamic? : boolean;
+    discriminator : string;
+    position? : PanelPosition;
+    projectId : number;
+}
 
-    data : any;
+export interface PanelPositionUpdateItem {
+    panelId : number,
+    position : PanelPosition
 }

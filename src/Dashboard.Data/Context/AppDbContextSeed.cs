@@ -21,42 +21,19 @@ namespace Dashboard.Data.Context
         private static List<Panel> _seedPanels;
         private static List<Panel> SeedPanels => _seedPanels ?? (_seedPanels = new List<Panel>()
         {
-            new Panel()
+            new MemePanel()
             {
                 Title = "Fancy Title 1",
-                Dynamic = false,
-                Position = new PanelPosition() {Column = 0, Row = 0},
-                Data = "{xd: 2}",
-                Type = PanelType.EmptyPanel,
-                StaticBranchNames = new List<BranchName>() {new BranchName() {Name = "master"}},
-                Project = SeedProjects.ElementAt(0)
+                Position = new PanelPosition() {Column = 0, Row = 0, Width = 2, Height = 2},
+                Project = SeedProjects.ElementAt(0),
+                MemeApiToken = "JakisAPiTokenZ"
             },
-            new Panel()
+            new StaticBranchPanel()
             {
                 Title = "Fancy Title 2",
-                Dynamic = true,
-                Position = new PanelPosition() {Column = 0, Row = 1},
-                Data = "{xd: 2}",
-                Type = PanelType.EmptyPanel,
-                Project = SeedProjects.ElementAt(0)
-            },
-            new Panel()
-            {
-                Title = "Fancy Title 3",
-                Dynamic = true,
-                Position = new PanelPosition() {Column = 1, Row = 0},
-                Data = "{xd: 2}",
-                Type = PanelType.EmptyPanel,
-                Project = SeedProjects.ElementAt(0)
-            }
-            ,new Panel()
-            {
-                Title = "Fancy Title 4",
-                Dynamic = true,
-                Position = new PanelPosition() {Column = 2, Row = 0},
-                Data = "{xd: 2}",
-                Type = PanelType.EmptyPanel,
-                Project = SeedProjects.ElementAt(0)
+                Position = new PanelPosition() {Column = 2, Row = 0, Width = 2, Height = 1},
+                Project = SeedProjects.ElementAt(0),
+                StaticBranchName = "master",
             }
         });
 

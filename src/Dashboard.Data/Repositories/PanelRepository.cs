@@ -18,6 +18,7 @@ namespace Dashboard.Data.Repositories
                                                                                     .ThenInclude(p => p.Jobs)
                                                                         .Include(p => p.Position);
 
+
         public PanelRepository(AppDbContext context) : base(context)
         {
         }
@@ -28,18 +29,10 @@ namespace Dashboard.Data.Repositories
                 .ToListAsync();
         }
 
-        public override Task<Panel> GetByIdAsync(int id)
-        {
-            return EagerPanels
-                .FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        public async Task<IEnumerable<string>> GetBranchNamesFromStaticPanelsForProject(int projectId)
+        public override async Task<Panel> GetByIdAsync(int id)
         {
             return await EagerPanels
-                .Where(p => p.StaticBranchNames.Any() && p.Project.Id == projectId)
-                .SelectMany(p => p.StaticBranchNames.Select(b => b.Name))
-                .ToListAsync();
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

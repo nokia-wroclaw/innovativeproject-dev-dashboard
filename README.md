@@ -1,1 +1,1 @@
-# innovativeproject-dev-dashboard
+# innovativeproject-dev-dashboard [![Build Status](https://travis-ci.org/nokia-wroclaw/innovativeproject-dev-dashboard.svg?branch=develop)](https://travis-ci.org/nokia-wroclaw/innovativeproject-dev-dashboard)
