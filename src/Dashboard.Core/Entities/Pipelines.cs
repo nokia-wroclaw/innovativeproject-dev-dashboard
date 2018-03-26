@@ -25,5 +25,7 @@ namespace Dashboard.Core.Entities
         public DateTime? UpdatedAt { get; set; }
         public DateTime? StartedAt { get; set; }
         public DateTime? FinishedAt { get; set; }
+
+        public  List<Stage> Stages { get; set; }
     }
 }
