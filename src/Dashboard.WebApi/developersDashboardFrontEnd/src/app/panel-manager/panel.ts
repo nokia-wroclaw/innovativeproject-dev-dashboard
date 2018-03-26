@@ -1,4 +1,5 @@
 import {Project} from './../projects-manager/project';
+import { PanelType } from './service/panel-type/panel-type';
 
 export interface PanelPosition {
     column : number;
@@ -14,6 +15,8 @@ export interface Panel {
     discriminator : string;
     position? : PanelPosition;
     projectId : number;
+
+    panelType?: PanelType;
 }
 
 export interface PanelPositionUpdateItem {

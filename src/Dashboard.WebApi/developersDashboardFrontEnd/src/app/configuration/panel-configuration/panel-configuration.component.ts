@@ -23,11 +23,11 @@ OnDestroy {
 
   projects : Project[] = [];
 
-  // Temporarily ugly hardcoded TODO
   panelTypes : PanelType[];
 
   panelSpecificConfiguration : IPanelConfigComponent < any >;
 
+  // try null positions
   panel : Panel = {
     title: null,
     discriminator: null,

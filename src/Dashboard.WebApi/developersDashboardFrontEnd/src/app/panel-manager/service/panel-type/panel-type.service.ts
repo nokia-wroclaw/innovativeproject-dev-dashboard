@@ -6,20 +6,17 @@ import {RandomMemePanelConfigComponent} from "../../../panels/random-meme-panel/
 import {StaticBranchPanelComponent} from "../../../panels/static-branch-panel/static-branch-panel.component";
 import {StaticBranchPanelConfigComponent} from "../../../panels/static-branch-panel/static-branch-panel-config.component";
 import { PanelType } from './panel-type';
+import { Panel } from '../../panel';
 
 @Injectable()
 export class PanelTypeService {
-
-    map(discriminator : string) : Type {
-        return panelTypes.find(panelType => panelType.discriminator == discriminator).component;
-    }
-
-    mapConfiguration(discriminator : string) : Type {
-        return panelTypes.find(panelType => panelType.discriminator == discriminator).configComponent;
-    }
-
+    
     getPanelTypes() : PanelType[] {
         return panelTypes;
+    }
+
+    getPanelType(panel: Panel) : PanelType {
+        return panelTypes.find(panelType => panelType.discriminator == panel.discriminator);
     }
 
 }

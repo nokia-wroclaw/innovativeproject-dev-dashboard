@@ -13,7 +13,7 @@ import { PanelTypeService } from './panel-type/panel-type.service';
 @Injectable()
 export class PanelManagerService {
 
-  constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeMapper : PanelTypeService) {}
+  constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeService : PanelTypeService) {}
 
   /**
    * Gets panels data from backend endpoint.
@@ -21,7 +21,11 @@ export class PanelManagerService {
   getPanels() : Observable < Panel[] > {
     return this
       .panelApi
-      .getPanels();
+      .getPanels()
+      .map(panels => {
+        panels.forEach(panel => panel.panelType = this.panelTypeService.getPanelType(panel));
+        return panels;
+      });
   }
 
   /**
@@ -45,13 +49,9 @@ export class PanelManagerService {
     const viewContainerRef = host.viewContainerRef;
     viewContainerRef.clear();
 
-    const panelComponentType = this
-      .panelTypeMapper
-      .map(panel.discriminator);
-
     const componentFactory = this
       .componentFactoryResolver
-      .resolveComponentFactory(panelComponentType);
+      .resolveComponentFactory(panel.panelType.component);
 
     const componentRef = viewContainerRef.createComponent <IPanelConfigComponent < any >> (componentFactory);
     componentRef
@@ -70,13 +70,13 @@ export class PanelManagerService {
     const viewContainerRef = host.viewContainerRef;
     viewContainerRef.clear();
 
-    const panelComponentType = this
-      .panelTypeMapper
-      .mapConfiguration(panel.discriminator);
+    if(!panel.panelType) {
+      panel.panelType = this.panelTypeService.getPanelType(panel);
+    }
 
     const componentFactory = this
       .componentFactoryResolver
-      .resolveComponentFactory(panelComponentType);
+      .resolveComponentFactory(panel.panelType.configComponent);
 
     const componentRef = viewContainerRef.createComponent < IPanelConfigComponent < any >> (componentFactory);
     componentRef
