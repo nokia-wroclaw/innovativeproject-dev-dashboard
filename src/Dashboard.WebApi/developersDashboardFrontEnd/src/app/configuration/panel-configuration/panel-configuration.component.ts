@@ -5,7 +5,7 @@ import {Project} from "../../projects-manager/project";
 import {HostDirective} from "../../panel-host/host.directive";
 import {PanelManagerService} from "../../panel-manager/service/panel-manager.service";
 import {IPanelConfigComponent} from "../../panels/panel.component";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsApiService} from "../../projects-manager/api/projects-api.service";
 
 @Component({
@@ -15,7 +15,7 @@ import {ProjectsApiService} from "../../projects-manager/api/projects-api.servic
 export class PanelConfigurationComponent implements OnInit,
 OnDestroy {
 
-  constructor(private route : ActivatedRoute, private panelTypeMapper : PanelTypeMapperService, private projectsApi : ProjectsApiService, private panelManager : PanelManagerService) {}
+  constructor(private router : Router, private route : ActivatedRoute, private panelTypeMapper : PanelTypeMapperService, private projectsApi : ProjectsApiService, private panelManager : PanelManagerService) {}
 
   @ViewChild(HostDirective)
   configurationHost : HostDirective;
@@ -73,7 +73,7 @@ OnDestroy {
   descriminatorSelectionChanged() {
     this.panelSpecificConfiguration = this
       .panelManager
-      .injectCreatePanelConfiguration(this.configurationHost, this.panel);
+      .injectPanelConfiguration(this.configurationHost, this.panel);
   }
 
   private loadPossibleProjects() {
@@ -92,9 +92,11 @@ OnDestroy {
         .subscribe(response => {
           console.log(response);
           // TODO 
-          this.panelManager.updatePanels();
+          // this.panelManager.updatePanels();
+          this.router.navigate(['/']);
         }
       );
+
     } else {
       console.log("Panel type specific configuration is invalid!")
     }
