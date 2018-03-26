@@ -1,12 +1,12 @@
 import {Component, OnInit, Input, ViewChild, OnDestroy} from '@angular/core';
 import {PanelType, Panel} from "../../panel-manager/panel";
 import {PanelTypeMapperService} from "../../panel-manager/service/panel-type-mapper/panel-type-mapper.service";
-import {ProjectsManagerService} from "../../projects-manager/projects-manager.service";
 import {Project} from "../../projects-manager/project";
 import {HostDirective} from "../../panel-host/host.directive";
 import {PanelManagerService} from "../../panel-manager/service/panel-manager.service";
 import {IPanelConfigComponent} from "../../panels/panel.component";
 import {ActivatedRoute} from "@angular/router";
+import {ProjectsApiService} from "../../projects-manager/api/projects-api.service";
 
 @Component({
   templateUrl: './panel-configuration.component.html',
@@ -15,7 +15,7 @@ import {ActivatedRoute} from "@angular/router";
 export class PanelConfigurationComponent implements OnInit,
 OnDestroy {
 
-  constructor(private route : ActivatedRoute, private panelTypeMapper : PanelTypeMapperService, private projectsManager : ProjectsManagerService, private panelManager : PanelManagerService) {}
+  constructor(private route : ActivatedRoute, private panelTypeMapper : PanelTypeMapperService, private projectsApi : ProjectsApiService, private panelManager : PanelManagerService) {}
 
   @ViewChild(HostDirective)
   configurationHost : HostDirective;
@@ -78,7 +78,7 @@ OnDestroy {
 
   private loadPossibleProjects() {
     this
-      .projectsManager
+      .projectsApi
       .getProjects()
       .subscribe(projects => this.projects = projects);
   }
