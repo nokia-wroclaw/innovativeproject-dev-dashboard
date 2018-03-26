@@ -51,7 +51,6 @@ import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic
 import {PanelManagerService} from "./panel-manager/service/panel-manager.service";
 import {CdkTableModule} from '@angular/cdk/table';
 import {PanelApiService} from "./panel-manager/service/api/panel-api.service";
-import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 import {ProjectsManagerService} from "./projects-manager/projects-manager.service";
 import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
 import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
@@ -63,6 +62,7 @@ import {RandomMemePanelConfigComponent} from "./panels/random-meme-panel/random-
 import {RandomMemeService} from "./panels/random-meme-panel/random-meme.service";
 import {StaticBranchPanelComponent} from "./panels/static-branch-panel/static-branch-panel.component";
 import {StaticBranchPanelConfigComponent} from "./panels/static-branch-panel/static-branch-panel-config.component";
+import { PanelTypeService } from './panel-manager/service/panel-type/panel-type.service';
 
 const appRoutes : Routes = [
   {
@@ -146,7 +146,7 @@ const appRoutes : Routes = [
   providers: [
     PanelManagerService,
     PanelApiService,
-    PanelTypeMapperService,
+    PanelTypeService,
     ProjectsManagerService,
     ProjectsApiService,
     RandomMemeService,

@@ -3,7 +3,7 @@ import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
 
-import {Panel, PanelType, PanelPositionUpdateItem} from "../../panel";
+import {Panel, PanelPositionUpdateItem} from "../../panel";
 
 @Injectable()
 export class PanelApiService {
