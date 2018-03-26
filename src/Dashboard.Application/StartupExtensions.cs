@@ -13,6 +13,7 @@ namespace Dashboard.Application
         {
             //Register repositories
             services.AddTransient<IPanelRepository, PanelRepository>();
+            services.AddTransient<IStaticBranchPanelRepository, StaticBranchPanelRepository>();
             services.AddTransient<IPipelineRepository, PipelineRepository>();
             services.AddTransient<IProjectRepository, ProjectRepository>();
 
@@ -20,8 +21,8 @@ namespace Dashboard.Application
             services.AddTransient<IPanelService, PanelService>();
             services.AddTransient<IProjectService, ProjectService>();
 
-            services.AddScoped<ICIDataProvider, GitLabDataProvider>();
-            services.AddTransient<ICIDataProviderFactory, CIDataProviderFactory>();
+            services.AddScoped<ICiDataProvider, GitLabDataProvider>();
+            services.AddTransient<ICiDataProviderFactory, CiDataProviderFactory>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces.Repositories;
@@ -11,9 +12,9 @@ namespace Dashboard.Data.Repositories
     public class PanelRepository : EfRepository<Panel>, IPanelRepository
     {
         private IIncludableQueryable<Panel, object> EagerPanels => Context.Set<Panel>()
-                                                                        .Include(p => p.Project)
-                                                                            .ThenInclude(p => p.Pipelines)
-                                                                        .Include(p => p.Position);
+            .Include(p => p.Project)
+            .ThenInclude(p => p.Pipelines)
+            .Include(p => p.Position);
 
         public PanelRepository(AppDbContext context) : base(context)
         {
@@ -25,9 +26,9 @@ namespace Dashboard.Data.Repositories
                 .ToListAsync();
         }
 
-        public override Task<Panel> GetByIdAsync(int id)
+        public override async Task<Panel> GetByIdAsync(int id)
         {
-            return EagerPanels
+            return await EagerPanels
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
     }

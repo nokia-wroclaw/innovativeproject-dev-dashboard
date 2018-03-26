@@ -1,26 +1,20 @@
 <mat-card>
-  <div style="overflow: hidden;">
+  <div class="panel-header-container">
 
     <div class="title pull-left">
       <p>{{tileTitle}}</p>
     </div>
 
     <i *ngIf="adminMode " class="material-icons dnd-handle pull-right panel-icon">dehaze</i>
-    <a [routerLink]=" [ '/admin', panelId] " class="pull-right ">
+    <a [routerLink]=" [ '/admin', panel.id] " class="pull-right ">
         <i *ngIf="adminMode " class="material-icons panel-icon">settings</i>
       </a>
 
   </div>
-
-  <mat-card-content>
+  <div class="panel-content-container">
     <!-- Outlet for a component loaded dynamicaly -->
     <ng-template host></ng-template>
+  </div>
 
-  </mat-card-content>
-  <mat-card-actions>
 
-  </mat-card-actions>
-  <mat-card-footer>
-    <p>{{lastUpdated}}</p>
-  </mat-card-footer>
 </mat-card>

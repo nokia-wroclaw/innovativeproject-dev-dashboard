@@ -1,6 +1,7 @@
 import {Component, OnInit, Input, ViewChild} from '@angular/core';
 import {HostDirective} from './../host.directive';
 import {PanelManagerService} from "../../panel-manager/service/panel-manager.service";
+import {Panel} from "../../panel-manager/panel";
 
 @Component({
   selector: 'app-dynamic-host-panel',
@@ -13,7 +14,7 @@ export class DynamicHostPanelComponent implements OnInit {
   adminMode : Boolean = true;
 
   @Input()
-  panelId : number;
+  panel : Panel;
 
   @Input()
   tileTitle : string;
@@ -32,7 +33,7 @@ export class DynamicHostPanelComponent implements OnInit {
   ngOnInit() {
     this
       .panelManagerService
-      .injectPanelComponent(this.panelHost, this.panelId);
+      .injectPanelComponent(this.panelHost, this.panel);
   }
 
 }

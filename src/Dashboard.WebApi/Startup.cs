@@ -1,11 +1,17 @@
-﻿using Dashboard.Application;
+﻿using System.Linq;
+using Dashboard.Application;
 using Dashboard.Data.Context;
+using Dashboard.WebApi.ApiModels.Requests;
+using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Dashboard.WebApi
@@ -32,11 +38,13 @@ namespace Dashboard.WebApi
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
 
-
             //Register app
             services.AddApplication();
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+            });
+            //services.AddMvcCore().AddJsonFormatters(f => f.Converters.Add(new StringEnumConverter()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

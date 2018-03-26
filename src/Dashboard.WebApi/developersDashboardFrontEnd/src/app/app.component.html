@@ -10,18 +10,18 @@
             <mat-nav-list>
                 <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
                     <button mat-icon-button color="primary" [routerLink]="['/']">
-                    <i class="material-icons menu-icon">dashboard</i>
-                </button>
+                        <i class="material-icons menu-icon">dashboard</i>
+                    </button>
                 </mat-list-item>
                 <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
                     <button mat-icon-button color="primary" [routerLink]="['/admin/create']">
-                    <i class="material-icons menu-icon-small">add_box</i>
-                </button>
+                        <i class="material-icons menu-icon-small">add_box</i>
+                    </button>
                 </mat-list-item>
                 <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
-                    <button mat-icon-button color="primary">
-                    <i class="material-icons menu-icon">work</i>
-                </button>
+                    <button mat-icon-button color="primary" [routerLink]="['/admin/project']">
+                        <i class="material-icons menu-icon">work</i>
+                    </button>
                 </mat-list-item>
             </mat-nav-list>
         </mat-sidenav>

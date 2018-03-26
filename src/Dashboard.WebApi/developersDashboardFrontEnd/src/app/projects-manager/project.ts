@@ -5,7 +5,7 @@ export interface Pipeline {
     status : string;
 }
 
-export interface Project {
+export class Project {
     id : number;
     apiHostUrl : string;
     apiProjectId : string;

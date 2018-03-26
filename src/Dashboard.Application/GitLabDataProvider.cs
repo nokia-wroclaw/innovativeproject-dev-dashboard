@@ -1,54 +1,76 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Linq;
 using System.Threading.Tasks;
+using Dashboard.Application.GitLabApi;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
-using Newtonsoft.Json;
 
 namespace Dashboard.Application
 {
-    public class GitLabDataProvider : ICIDataProvider
+    public class GitLabDataProvider : ICiDataProvider
     {
         public string Name => "GitLab";
 
-        private readonly IPipelineRepository _pipelineRepository;
-
-        public GitLabDataProvider(IPipelineRepository pipelineRepository)
+        public async Task<IEnumerable<Pipeline>> GetAllPipelines(string apiHost, string apiKey, string apiProjectId)
         {
-            _pipelineRepository = pipelineRepository;
+            var apiClient = new GitLabClient(apiHost, apiKey);
+            var apiPipelines = await apiClient.GetPipelines(apiProjectId, numberOfPipelines : 100);//Number of pipelines to download
+
+            //TODO: change when automapper
+            var pipelines = apiPipelines.Select(p =>
+                new Pipeline
+                {
+                    DataProviderId = p.Id,
+                    Sha = p.Sha,
+                    Ref = p.Ref,
+                    Status = p.Status
+                }
+            );
+
+            return pipelines;
         }
 
-        public Task<Pipeline> GetMasterAsync()
+        public async Task<Pipeline> GetBranchPipeLine(string apiHost, string apiKey, string apiProjectId, string branchName)
         {
-            return _pipelineRepository.FindOneByAsync(pipe => pipe.Ref.Equals("master"));
+            var apiClient = new GitLabClient(apiHost, apiKey);
+            var branchPipe = await apiClient.GetPipelineByBranch(apiProjectId, branchName);
+
+            return new Pipeline { DataProviderId = branchPipe.Id, Sha = branchPipe.Sha, Ref = branchPipe.Ref, Status = branchPipe.Status };
         }
 
-        /// <summary>
-        /// Returns few latest pipelines
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<Pipeline>> GetAllAsync(string host, string projectId, string apiKey)
+        public async Task<IEnumerable<string>> GetAllProjectBranchNames(string apiHost, string apiKey, string apiProjectId)
         {
-            string htmlResponse = "";
-            //Prepare API call
-            string uri = $@"{host}/api/v4/projects/{projectId}/pipelines";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.Headers.Add($"PRIVATE-TOKEN: {apiKey}");
-            request.Accept = "application/json";
-            request.AutomaticDecompression = DecompressionMethods.GZip;
+            var apiClient = new GitLabClient(apiHost, apiKey);
+            var apiBranches = await apiClient.GetBranches(apiProjectId);
 
-            //GET response
-            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            //Get list of branch names
+            var branches = apiBranches.Select(b => b.Name );
+
+            return branches;
+        }
+
+        public async Task<Pipeline> GetSpecificPipeline(string apiHost, string apiKey, string apiProjectId, string pipeId)
+        {
+            var apiClient = new GitLabClient(apiHost, apiKey);
+            var pipeline = await apiClient.GetPipelineById(apiProjectId, pipeId);
+            var pipelineCommit = await apiClient.GetCommitBySHA(apiProjectId, pipeline.Sha);
+
+            return new Pipeline
             {
-                htmlResponse = reader.ReadToEnd();
-            }
+                DataProviderId = pipeline.Id,
+                Ref = pipeline.Ref,
+                Sha = pipeline.Sha,
+                Status = pipeline.Status,
 
-            //return response in JSON
-            return JsonConvert.DeserializeObject<List<Pipeline>>(htmlResponse);
+                CommitTitle = pipelineCommit.Title,
+                CommiterName = pipelineCommit.CommitterName,
+                CommiterEmail = pipelineCommit.CommitterEmail,
+                CreatedAt = pipeline.CreatedAt,
+                UpdatedAt = pipeline.UpdatedAt,
+                StartedAt = pipeline.StartedAt,
+                FinishedAt = pipeline.FinishedAt
+            };
         }
     }
 }

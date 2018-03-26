@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="RestSharp" Version="106.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Dashboard.Core\Dashboard.Core.csproj" />
     <ProjectReference Include="..\Dashboard.Data\Dashboard.Data.csproj" />
   </ItemGroup>
