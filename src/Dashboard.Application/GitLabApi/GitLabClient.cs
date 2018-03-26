@@ -103,6 +103,8 @@ namespace Dashboard.Application.GitLabApi
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
             request.AddUrlSegment("branchPartialName", branchPartialName);
 
+            request.AddQueryParameter("per_page", "10000");
+
             var r = await Client.ExecuteTaskAsync<List<Branch>>(request);
             return r.Data;
         }
