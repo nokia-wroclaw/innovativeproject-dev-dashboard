@@ -1,12 +1,13 @@
 import {Component, OnInit, Input, ViewChild, OnDestroy} from '@angular/core';
-import {PanelType, Panel} from "../../panel-manager/panel";
-import {PanelTypeMapperService} from "../../panel-manager/service/panel-type-mapper/panel-type-mapper.service";
+import {Panel} from "../../panel-manager/panel";
 import {Project} from "../../projects-manager/project";
 import {HostDirective} from "../../panel-host/host.directive";
 import {PanelManagerService} from "../../panel-manager/service/panel-manager.service";
 import {IPanelConfigComponent} from "../../panels/panel.component";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsApiService} from "../../projects-manager/api/projects-api.service";
+import { PanelTypeService } from '../../panel-manager/service/panel-type/panel-type.service';
+import { PanelType } from '../../panel-manager/service/panel-type/panel-type';
 
 @Component({
   templateUrl: './panel-configuration.component.html',
@@ -15,7 +16,7 @@ import {ProjectsApiService} from "../../projects-manager/api/projects-api.servic
 export class PanelConfigurationComponent implements OnInit,
 OnDestroy {
 
-  constructor(private router : Router, private route : ActivatedRoute, private panelTypeMapper : PanelTypeMapperService, private projectsApi : ProjectsApiService, private panelManager : PanelManagerService) {}
+  constructor(private router : Router, private route : ActivatedRoute, private panelTypeService : PanelTypeService, private projectsApi : ProjectsApiService, private panelManager : PanelManagerService) {}
 
   @ViewChild(HostDirective)
   configurationHost : HostDirective;
@@ -23,7 +24,7 @@ OnDestroy {
   projects : Project[] = [];
 
   // Temporarily ugly hardcoded TODO
-  types = ["MemePanel", "StaticBranchPanel"];
+  panelTypes : PanelType[];
 
   panelSpecificConfiguration : IPanelConfigComponent < any >;
 
@@ -51,6 +52,7 @@ OnDestroy {
 
   ngOnInit() {
     this.loadPossibleProjects();
+    this.loadPossiblePanelTypes();
 
     this.routeParamsSubscription = this
       .route
@@ -81,6 +83,10 @@ OnDestroy {
       .projectsApi
       .getProjects()
       .subscribe(projects => this.projects = projects);
+  }
+
+  private loadPossiblePanelTypes() {
+    this.panelTypes = this.panelTypeService.getPanelTypes();
   }
 
   // todo learn to chain promises instead of nesting??

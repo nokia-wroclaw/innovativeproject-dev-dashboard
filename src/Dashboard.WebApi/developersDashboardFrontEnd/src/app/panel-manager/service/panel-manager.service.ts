@@ -4,16 +4,16 @@ import {HostDirective} from './../../panel-host/host.directive';
 import {Panel, PanelPositionUpdateItem} from "../panel";
 import {Observable} from "rxjs/Observable";
 import {PanelApiService} from "./api/panel-api.service";
-import {PanelTypeMapperService} from "./panel-type-mapper/panel-type-mapper.service";
 
 import 'rxjs/add/operator/mergeMap';
 import "rxjs/add/observable/of";
 import {IPanelComponent, IPanelConfigComponent} from "../../panels/panel.component";
+import { PanelTypeService } from './panel-type/panel-type.service';
 
 @Injectable()
 export class PanelManagerService {
 
-  constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeMapper : PanelTypeMapperService) {}
+  constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeMapper : PanelTypeService) {}
 
   /**
    * Gets panels data from backend endpoint.
@@ -53,7 +53,7 @@ export class PanelManagerService {
       .componentFactoryResolver
       .resolveComponentFactory(panelComponentType);
 
-    const componentRef = viewContainerRef.createComponent < IPanelComponent < any >> (componentFactory);
+    const componentRef = viewContainerRef.createComponent <IPanelConfigComponent < any >> (componentFactory);
     componentRef
       .instance
       .setPanel(panel);
