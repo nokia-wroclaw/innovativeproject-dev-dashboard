@@ -15,6 +15,7 @@ export class PanelProjectsComponent implements OnInit {
   constructor(private projectApiService : ProjectsApiService, private router : Router, private zone : NgZone,) {}
 
   ngOnInit() {}
+  
   addProject() {
     console.log('XD');
     if (!this.project) {

@@ -2,6 +2,8 @@ language: csharp
 mono: none
 dotnet: 2.0.0
 sudo: required
+notifications:
+   slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
 addons:
     chrome: stable
 apt:

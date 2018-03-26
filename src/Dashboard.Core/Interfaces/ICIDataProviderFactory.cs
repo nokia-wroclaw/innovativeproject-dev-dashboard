@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Dashboard.Core.Interfaces
 {
-    public interface ICIDataProviderFactory
+    public interface ICiDataProviderFactory
     {
-        IEnumerable<ICIDataProvider> GetSupportedProviders { get; }
+        IEnumerable<ICiDataProvider> GetSupportedProviders { get; }
 
-        ICIDataProvider CreateForProviderName(string name);
+        ICiDataProvider CreateForProviderName(string name);
     }
 }

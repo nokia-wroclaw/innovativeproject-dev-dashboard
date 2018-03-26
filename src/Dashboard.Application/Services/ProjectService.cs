@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
@@ -14,11 +12,19 @@ namespace Dashboard.Application.Services
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
-        private readonly ICIDataProviderFactory _ciDataProviderFactory;
+        private readonly IPanelRepository _panelRepository;
+        private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
+        private readonly ICiDataProviderFactory _ciDataProviderFactory;
 
-        public ProjectService(IProjectRepository projectRepository, ICIDataProviderFactory ciDataProviderFactory)
+        public ProjectService(
+            IProjectRepository projectRepository, 
+            IPanelRepository panelRepository,
+            IStaticBranchPanelRepository staticBranchPanelRepository,
+            ICiDataProviderFactory ciDataProviderFactory)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
+            _panelRepository = panelRepository;
+            _staticBranchPanelRepository = staticBranchPanelRepository;
             _projectRepository = projectRepository;
         }
 
@@ -35,7 +41,7 @@ namespace Dashboard.Application.Services
         public async Task DeleteProjectAsync(int id)
         {
             var entity = await GetProjectByIdAsync(id);
-            if(entity == null)
+            if (entity == null)
                 return;
 
             await _projectRepository.DeleteAsync(entity);
@@ -69,26 +75,69 @@ namespace Dashboard.Application.Services
         }
 
         /// <summary>
-        /// Downloads pipelines from CiDataProvider for given project
+        /// Returns all branches (names) from web directly. Slow, but always updated and not so often used
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<string>> GetAllProjectBranchNames(int projectId)
+        {
+            var project = await GetProjectByIdAsync(projectId);
+            if (project == null) return null;
+
+            //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
+
+            var r = await dataProvider.GetAllProjectBranchNames(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
+            return r;
+        }
+
+        /// <summary>
+        /// Downloads data from CiDataProvider for given project
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns>All pipelines</returns>
-        public async Task UpdatePipelinesForProjectAsync(int projectId)
+        public async Task UpdateCiDataForProjectAsync(int projectId)
         {
-            //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var project = await GetProjectByIdAsync(projectId);
             if (project == null) return;
 
+            //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var downloadedPiplines = await dataProvider.GetAllAsync(project.ApiHostUrl, project.ApiProjectId, project.ApiAuthenticationToken);
+            var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
 
-            //Join two lists, move to LinqExtensions ?
-            var projectPipelines = project.Pipelines ?? new List<Pipeline>();
-            project.Pipelines = projectPipelines.Concat(downloadedPiplines)
-                .GroupBy(x => x.Id)
-                .Select(g => g.First())
-                .ToList();
+            var staticBranches = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+
+            //Create tasks
+            var updatePiplineTasks = staticBranches
+                                    .Select(b => dataProvider.GetBranchPipeLine(
+                                        apiHost: project.ApiHostUrl,
+                                        apiKey: project.ApiAuthenticationToken,
+                                        apiProjectId: project.ApiProjectId,
+                                        branchName: b)
+                                    );
+            //Await all results async
+            var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
+
+            updatedPipelines
+                .AddRange(downloadedPipelines
+                            .Where(item => !updatedPipelines.Contains(item))
+                            .Select(i => new Pipeline { DataProviderId = i.DataProviderId, Ref = i.Ref, Sha = i.Sha, Status = i.Status })
+                            .Take(10 - updatedPipelines.Count));
+
+            var updatedPipesWithFullInfoTasks = updatedPipelines
+                                            .Select(p => dataProvider.GetSpecificPipeline(
+                                                project.ApiHostUrl, 
+                                                project.ApiAuthenticationToken, 
+                                                project.ApiProjectId, 
+                                                p.DataProviderId.ToString())
+                                            );
+            var updatedPipesWithFullInfo = (await Task.WhenAll(updatedPipesWithFullInfoTasks)).ToList();
+
+
+            project.Pipelines = updatedPipesWithFullInfo;
+
+            await _projectRepository.UpdateAsync(project, project.Id);
 
             await _projectRepository.SaveAsync();
         }

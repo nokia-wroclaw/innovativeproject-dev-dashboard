@@ -11,5 +11,7 @@ namespace Dashboard.Application.Interfaces.Services
         Task DeletePanelAsync(int id);
         Task<Panel> UpdatePanelAsync(Panel updatedPanel, int projectId);
         Task<Panel> CreatePanelAsync(Panel model, int projectId);
+
+        Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position);
     }
 }

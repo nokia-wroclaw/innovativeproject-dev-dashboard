@@ -8,10 +8,13 @@ mat-card {
     left: 0;
     right: 0;
     top: 0;
+
+    overflow: hidden;
 }
 
 mat-card .title {
      font-size: 1.5em;
+     margin-left: 5px; 
 }
 
 .panel-icon {
@@ -22,4 +25,15 @@ mat-card .title {
 
 .dnd-handle {
     cursor: grab;
+}
+
+.panel-header-container {
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    right:0;
+}
+
+.panel-content-container {
+    text-align: center; position: absolute; top: 30px; left: 0; right: 0; bottom: 10px;
 }

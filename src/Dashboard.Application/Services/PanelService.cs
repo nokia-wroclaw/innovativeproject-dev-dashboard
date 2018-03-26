@@ -48,10 +48,7 @@ namespace Dashboard.Application.Services
             model.Project = project;
 
             //TODO: change when automapper
-            model.Data = updatedPanel.Data;
-            model.Dynamic = updatedPanel.Dynamic;
             model.Title = updatedPanel.Title;
-            model.Type = updatedPanel.Type;
             model.Position.Column = updatedPanel.Position.Column;
             model.Position.Row = updatedPanel.Position.Row;
 
@@ -67,6 +64,23 @@ namespace Dashboard.Application.Services
             model.Project = project;
 
             var r = await _panelRepository.AddAsync(model);
+            await _panelRepository.SaveAsync();
+
+            return r;
+        }
+
+        public async Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position)
+        {
+            var entity = await GetPanelByIdAsync(panelId);
+            if (entity == null) return null;
+
+            //TODO: change when automaper
+            entity.Position.Column = position.Column;
+            entity.Position.Row = position.Row;
+            entity.Position.Width = position.Width;
+            entity.Position.Height = position.Height;
+
+            var r = await _panelRepository.UpdateAsync(entity, panelId);
             await _panelRepository.SaveAsync();
 
             return r;
