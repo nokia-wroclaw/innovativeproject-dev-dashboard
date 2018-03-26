@@ -13,7 +13,7 @@ export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigCompo
 
     createPanelUrl : string = "/api/Panel/CreateMemePanel";
 
-    private panel : RandomMemePanel;
+    panel : RandomMemePanel;
 
     constructor(private panelsConfigApi : PanelsConfigApiService) {}
 

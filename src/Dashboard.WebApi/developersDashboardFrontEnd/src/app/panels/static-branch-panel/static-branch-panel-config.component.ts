@@ -13,7 +13,7 @@ export class StaticBranchPanelConfigComponent implements OnInit, IPanelConfigCom
 
     createPanelUrl : string = "/api/Panel/CreateStaticBranchPanel";
 
-    private panel : StaticBranchPanel;
+    panel : StaticBranchPanel;
 
     constructor(private panelsConfigApi : PanelsConfigApiService) {}
 
