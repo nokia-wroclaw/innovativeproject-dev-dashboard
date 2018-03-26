@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, NgZone} from '@angular/core';
 import {Project} from '../../projects-manager/project';
 import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-panel-projects',
@@ -9,20 +10,29 @@ import {ProjectsApiService} from '../../projects-manager/api/projects-api.servic
 })
 export class PanelProjectsComponent implements OnInit {
 
-  constructor(private projectApiService : ProjectsApiService) {}
+  project = new Project('', '', '', '', undefined);
 
-  project = new Project();
+  constructor(private projectApiService : ProjectsApiService, private router : Router, private zone : NgZone,) {}
 
-  ngOnInit() {
-    // this.addProject()
-  }
-  private addProject() {
+  ngOnInit() {}
+  
+  addProject() {
+    console.log('XD');
     if (!this.project) {
       return;
     }
     this
       .projectApiService
       .addProject(this.project)
-      .subscribe(project => this.project);
+      .subscribe(project => {
+        this.project = project;
+      }, err => {
+        console.error('Error msg: ', err);
+      }, () => {
+        this
+          .zone
+          .run(() => this.router.navigate(['/admin/listOfProjects']))
+
+      });
   }
 }
