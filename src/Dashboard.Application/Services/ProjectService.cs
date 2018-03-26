@@ -116,14 +116,17 @@ namespace Dashboard.Application.Services
                                         apiProjectId: project.ApiProjectId,
                                         branchName: b)
                                     );
+
             //Await all results async
             var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
 
-            updatedPipelines
-                .AddRange(downloadedPipelines
-                            .Where(item => !updatedPipelines.Contains(item))
-                            .Select(i => new Pipeline { DataProviderId = i.DataProviderId, Ref = i.Ref, Sha = i.Sha, Status = i.Status })
-                            .Take(10 - updatedPipelines.Count));
+            //Apparently faster way than LINQ, merge collections, discard duplicates
+            var dict = updatedPipelines.ToDictionary(p => p.Sha);
+            foreach (var pipe in downloadedPipelines)
+            {
+                dict[pipe.Sha] = pipe;
+            }
+            updatedPipelines = dict.Values.Take(11 - updatedPipelines.Count).ToList();
 
             var updatedPipesWithFullInfoTasks = updatedPipelines
                                             .Select(p => dataProvider.GetSpecificPipeline(
