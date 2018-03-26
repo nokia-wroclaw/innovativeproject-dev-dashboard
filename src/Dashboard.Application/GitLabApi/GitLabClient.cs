@@ -96,5 +96,15 @@ namespace Dashboard.Application.GitLabApi
             var r = await Client.ExecuteTaskAsync<IEnumerable<Job>>(request);
             return r.Data;
         }
+
+        public async Task<IEnumerable<Branch>> SearchForBranchInProject(string projectId, string branchPartialName)
+        {
+            var request = new RestRequest("projects/{projectId}/repository/branches?search={branchPartialName}", Method.GET);
+            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("branchPartialName", branchPartialName);
+
+            var r = await Client.ExecuteTaskAsync<List<Branch>>(request);
+            return r.Data;
+        }
     }
 }

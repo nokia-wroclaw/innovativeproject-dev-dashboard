@@ -41,10 +41,10 @@ namespace Dashboard.Application
             return new Pipeline { DataProviderId = branchPipe.Id, Sha = branchPipe.Sha, Ref = branchPipe.Ref, Status = branchPipe.Status };
         }
 
-        public async Task<IEnumerable<string>> GetAllProjectBranchNames(string apiHost, string apiKey, string apiProjectId)
+        public async Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue)
         {
             var apiClient = new GitLabClient(apiHost, apiKey);
-            var apiBranches = await apiClient.GetBranches(apiProjectId);
+            var apiBranches = await apiClient.SearchForBranchInProject(apiProjectId, searchValue);
 
             //Get list of branch names
             var branches = apiBranches.Select(b => b.Name );

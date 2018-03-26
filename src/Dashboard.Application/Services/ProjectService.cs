@@ -73,7 +73,7 @@ namespace Dashboard.Application.Services
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<string>> GetAllProjectBranchNames(int projectId)
+        public async Task<IEnumerable<string>> SearchForBranchInProject(int projectId, string searchValue)
         {
             var project = await GetProjectByIdAsync(projectId);
             if (project == null) return null;
@@ -81,7 +81,7 @@ namespace Dashboard.Application.Services
             //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var r = await dataProvider.GetAllProjectBranchNames(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId);
+            var r = await dataProvider.SearchBranchInProject(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, searchValue);
             return r;
         }
 
