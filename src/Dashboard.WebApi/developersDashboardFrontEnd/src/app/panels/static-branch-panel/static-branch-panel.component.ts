@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, ElementRef} from '@angular/core';
 import './../panel.component';
 import {IPanelComponent} from "./../panel.component";
 import {StaticBranchPanel} from "./static-branch";
@@ -34,15 +34,13 @@ export class StaticBranchPanelComponent implements OnInit, IPanelComponent<Stati
     color: "white"
   }];
 
-  stages : any[] = [{name: "pre-test", color:"#5cb85c"}, {name: "test", color:"#d9534f"}, {name: "deploy", color:"white"}, {name: "xd", color:"white"}];
-
   setPanel(panel : StaticBranchPanel) {
     this.panel = panel;
     
     this.updateData();
 
-    // temp pooling every 2s
-    setInterval(() => this.updateData(), 2000);
+    // temp pooling every 10s
+    setInterval(() => this.updateData(), 10000);
   }
 
   updateData() {
@@ -51,7 +49,10 @@ export class StaticBranchPanelComponent implements OnInit, IPanelComponent<Stati
     })
   }
   
-  constructor(private projectsApi : ProjectsApiService) {
+  constructor(private projectsApi : ProjectsApiService, private elementRef : ElementRef) {
+    console.log(elementRef);
+    // TODO scale visualisation based on actual dimensions of component
+    //elementRef.nativeElement.clientWidth;
   }
 
   getColorOfStage(stage : Stage) {
@@ -60,7 +61,7 @@ export class StaticBranchPanelComponent implements OnInit, IPanelComponent<Stati
   }
 
   getStateOfStage(stage : Stage) : string {
-    const finalStatuses : string[] = ["canceled", "failed"];
+    const finalStatuses : string[] = ["canceled", "failed", "running"];
     const finalJob = stage.jobs.find(job => finalStatuses.findIndex(status => job.status == status) != -1);
 
     if(finalJob != null) {
@@ -83,13 +84,11 @@ export class StaticBranchPanelComponent implements OnInit, IPanelComponent<Stati
 
       // check other conditions
       // temp
-      return "running";
+      return "created";
     }
 
   }
 
-  ngOnInit() {
-    console.log("StaticBranchPanelComponent onInit()");
-  }
+  ngOnInit() { }
 
 }
