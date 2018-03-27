@@ -10,13 +10,13 @@ export interface Stage {
     jobs : Job[];
 }
 
-export enum JobStatus {
-    created, manual, success, prepare, canceled, failed, running
-}
+// export enum JobStatus {
+//     created, manual, success, prepare, canceled, failed, running
+// }
 
 export interface Job {
     name : string;
-    status : JobStatus;
+    status : string;
 }
 
 export class Project {

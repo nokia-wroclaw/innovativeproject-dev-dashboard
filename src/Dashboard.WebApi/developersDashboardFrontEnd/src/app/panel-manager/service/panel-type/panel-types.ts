@@ -26,7 +26,7 @@ export const panelTypes : PanelType[] = [
         bounds: {
             minWidth: 2,
             minHeight: 1,
-            maxWidth: 2,
+            maxWidth: 4,
             maxHeight: 1,
             defaultWidth: 2,
             defaultHeight: 1
