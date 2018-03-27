@@ -10,10 +10,20 @@ export class ProjectsApiService {
 
     private baseUrl : string = "/api/project";
 
-    constructor(private http : HttpClient) {}
+    constructor(private http : HttpClient) {
+        // temp interval poking backend to update data
+        setInterval(() => {
+            http.post("/api/DashboardData/UpdateCiDataForProject/1", null).subscribe(() => console.log('temp pooling'));
+        }, 30000)
+    }
 
     getProjects() : Observable < Project[] > {
         return this.http.get < Project[] > (this.baseUrl);
+    }
+
+    // it is called individualy from every panel. could be opt with ReplaySubject TODO
+    getProject(id : number) : Observable < Project > {
+        return this.http.get < Project > (this.baseUrl + "/" + id);
     }
 
     addProject(project : Project) : Observable < Project > {
