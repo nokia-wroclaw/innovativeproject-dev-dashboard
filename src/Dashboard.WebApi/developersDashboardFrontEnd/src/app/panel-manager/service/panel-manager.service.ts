@@ -4,117 +4,92 @@ import {HostDirective} from './../../panel-host/host.directive';
 import {Panel, PanelPositionUpdateItem} from "../panel";
 import {Observable} from "rxjs/Observable";
 import {PanelApiService} from "./api/panel-api.service";
-import {PanelTypeMapperService} from "./panel-type-mapper/panel-type-mapper.service";
 
 import 'rxjs/add/operator/mergeMap';
 import "rxjs/add/observable/of";
 import {IPanelComponent, IPanelConfigComponent} from "../../panels/panel.component";
+import { PanelTypeService } from './panel-type/panel-type.service';
 
 @Injectable()
 export class PanelManagerService {
 
-  private panelsCache : Panel[];
+  constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeService : PanelTypeService) {}
 
-  constructor(private panelApi : PanelApiService, private componentFactoryResolver : ComponentFactoryResolver, private panelTypeMapper : PanelTypeMapperService) {}
-
+  /**
+   * Gets panels data from backend endpoint.
+   */
   getPanels() : Observable < Panel[] > {
-    if(this.panelsCache != undefined) {
-      console.log("Panels cache hit");
-      return Observable.of(this.panelsCache);
-    } else {
-      console.log("Panels cache miss");
-      return this
-        .panelApi
-        .getPanels()
-        .map(panelsData => {
-          this.panelsCache = panelsData;
-          return panelsData;
-        });
-    }
-  }
-  getPanel(id : number) : Observable<Panel> {
-    return this.getPanels().map(panels => panels.find(panel => panel.id == id));
-  } 
-
-  updatePanels() {
-     return this
-        .panelApi
-        .getPanels()
-        .subscribe(panelsData => 
-          this.panelsCache = panelsData
-        );
-  }
-
-  updatePanel(id : number, panel : Panel) {
-    console.log("Call updatePanel()");
-    console.log(panel);
-
-    // 1. Post panel through panelApiService
-    // 2. If succeded - update object in cache
-    // 3. Cache Return some error otherwise
-    // - Return promise with success/failure information
+    return this
+      .panelApi
+      .getPanels()
+      .map(panels => {
+        panels.forEach(panel => panel.panelType = this.panelTypeService.getPanelType(panel));
+        return panels;
+      });
   }
 
   /**
-   * Adds panel both to cached panels object and persists it to backend.
-   *
-   * @param panel panel to add
+   * Gets panel data from backend endpoint for panel of specified id.
+   *  
+   * @param id id of panel to get data  of
    */
-  addPanel(panel : Panel) {
-    console.log("Call addPanel()");
-    console.log(panel);
-
-    // 1. Post panel through panelApiService
-    // 2. If succeded - add object to panels
-    // 3. Cache Return some error otherwise
-    // - Return promise with success/failure information
-  }
-
-  injectPanelComponent(host : HostDirective, panel : Panel) {
-    this
+  getPanel(id : number) : Observable < Panel > {
+    return this
       .getPanels()
-      .subscribe(panelsData => {
+      .map(panels => panels.find(panel => panel.id == id));
+  }
 
-        const viewContainerRef = host.viewContainerRef;
-        viewContainerRef.clear();
+  /**
+   * Injects a panel component of proper type depending on given panel
+   * 
+   * @param host host reference, place where the component should be injected
+   * @param panel panel that corresponding component of should be injected
+   */
+  injectPanelComponent(host : HostDirective, panel : Panel) {
+    const viewContainerRef = host.viewContainerRef;
+    viewContainerRef.clear();
 
-        const panelComponentType = this
-          .panelTypeMapper
-          .map(panel.discriminator);
+    const componentFactory = this
+      .componentFactoryResolver
+      .resolveComponentFactory(panel.panelType.component);
 
-        const componentFactory = this
-          .componentFactoryResolver
-          .resolveComponentFactory(panelComponentType);
-
-        const componentRef = viewContainerRef.createComponent<IPanelComponent<any>>(componentFactory);
-        componentRef.instance.setPanel(panel);
-      });
+    const componentRef = viewContainerRef.createComponent <IPanelConfigComponent < any >> (componentFactory);
+    componentRef
+      .instance
+      .setPanel(panel);
 
   }
 
-  injectCreatePanelConfiguration(host : HostDirective, panel: Panel) : IPanelConfigComponent<any> {
-    let viewContainerRef = host.viewContainerRef;
-        viewContainerRef.clear();
+  /**
+   * Injects a panel configuration component of proper type depending on given panel
+   * 
+   * @param host host reference, place where the component should be injected
+   * @param panel panel that corresponding configuration component of should be injected
+   */
+  injectPanelConfiguration(host : HostDirective, panel : Panel) : IPanelConfigComponent < any > {
+    const viewContainerRef = host.viewContainerRef;
+    viewContainerRef.clear();
 
-        let panelComponentType = this
-          .panelTypeMapper
-          .mapConfiguration(panel.discriminator);
+    const componentFactory = this
+      .componentFactoryResolver
+      .resolveComponentFactory(panel.panelType.configComponent);
 
-        let componentFactory = this
-          .componentFactoryResolver
-          .resolveComponentFactory(panelComponentType);
+    const componentRef = viewContainerRef.createComponent < IPanelConfigComponent < any >> (componentFactory);
+    componentRef
+      .instance
+      .setPanel(panel);
 
-        let componentRef =viewContainerRef.createComponent<IPanelConfigComponent<any>>(componentFactory);
-        componentRef.instance.setPanel(panel);
-
-        return componentRef.instance;
+    return componentRef.instance;
   }
 
-  injectPanelConfiguration(host : HostDirective, panelId : number) {
-    console.log("injectPanelConfiguration");
-  }
-
-  updatePanelPositions(panelPositions : PanelPositionUpdateItem[]) : Observable<PanelPositionUpdateItem[]>{
-    return this.panelApi.updatePanelPositions(panelPositions);
+  /**
+   * Cals API to update panel positions on dashboard.
+   * 
+   * @param panelPositions array of objects that represent current positions of panels on dashboard.
+   */
+  updatePanelPositions(panelPositions : PanelPositionUpdateItem[]) : Observable < PanelPositionUpdateItem[] > {
+    return this
+      .panelApi
+      .updatePanelPositions(panelPositions);
   }
 }

@@ -15,8 +15,8 @@
       
      <mat-form-field>
       <mat-select (selectionChange)="descriminatorSelectionChanged()" placeholder="Types" required [(ngModel)]="panel.discriminator" name="discriminator">
-        <mat-option *ngFor="let type of types" [value]="type">
-          {{type}}
+        <mat-option *ngFor="let type of panelTypes" [value]="type.discriminator">
+          {{type.name}}
         </mat-option>
       </mat-select>
     </mat-form-field> 

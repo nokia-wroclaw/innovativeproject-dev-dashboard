@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {PanelManagerService} from './../panel-manager/service/panel-manager.service';
-import {Panel, PanelType, PanelPositionUpdateItem} from "../panel-manager/panel";
+import {Panel, PanelPositionUpdateItem} from "../panel-manager/panel";
 import {AdminModeService} from "./admin-mode-service/admin-mode.service";
 
 @Component({selector: 'app-dashboard', templateUrl: './dashboard.component.html', styleUrls: ['./dashboard.component.css']})
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(private adminModeService : AdminModeService, private panelManagerService : PanelManagerService, private route : ActivatedRoute, private _router : Router) {}
 
@@ -39,6 +39,14 @@ export class DashboardComponent implements OnInit {
       .adminModeService
       .adminMode
       .subscribe(adminMode => this.adminMode = adminMode);
+  }
+
+  
+  ngOnDestroy(): void {
+    if(this.positionUpdateThrottle) {
+      clearTimeout(this.positionUpdateThrottle);
+      this.updatePositions();
+    }
   }
 
   updatePositionsThrottled() {
