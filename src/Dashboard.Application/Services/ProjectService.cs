@@ -121,7 +121,11 @@ namespace Dashboard.Application.Services
             var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
 
             //Apparently faster way than LINQ, merge collections, discard duplicates
-            var dict = updatedPipelines.ToDictionary(p => p.Sha);
+            Dictionary<string, Pipeline> dict = new Dictionary<string, Pipeline>();
+            foreach (var pipe in updatedPipelines)
+            {
+                dict[pipe.Sha] = pipe;
+            }
             foreach (var pipe in downloadedPipelines)
             {
                 dict[pipe.Sha] = pipe;
