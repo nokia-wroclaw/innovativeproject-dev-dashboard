@@ -26,11 +26,11 @@ namespace Dashboard.WebApi.Controllers
             return _ciDataProviderFactory.GetSupportedProviders.Select(p => p.Name);
         }
 
-        //api/DashboardData/GetAllBranches/5
+        //GET api/DashboardData/SearchForBranch?projectId=int&searchValue=string
         [HttpGet]
-        public async Task<IEnumerable<string>> GetAllBranches(int id)
+        public async Task<IEnumerable<string>> SearchForBranch(int projectId, string searchValue)
         {
-            var result = await _projectService.GetAllProjectBranchNames(id);
+            var result = await _projectService.SearchForBranchInProject(projectId, searchValue);
             return result;
         }
 

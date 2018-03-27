@@ -13,7 +13,9 @@ namespace Dashboard.Data.Repositories
     public class ProjectRepository : EfRepository<Project>, IProjectRepository
     {
         private IIncludableQueryable<Project, object> EagerProjects => Context.Set<Project>()
-                                                                        .Include(p => p.Pipelines);
+                                                                        .Include(proj => proj.Pipelines)
+                                                                            .ThenInclude(pipes => pipes.Stages)
+                                                                                .ThenInclude(stag => stag.Jobs);
 
         public ProjectRepository(AppDbContext context) : base(context)
         {

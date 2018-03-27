@@ -51,13 +51,13 @@ import {DynamicHostPanelComponent} from './panel-host/dynamic-host-panel/dynamic
 import {PanelManagerService} from "./panel-manager/service/panel-manager.service";
 import {CdkTableModule} from '@angular/cdk/table';
 import {PanelApiService} from "./panel-manager/service/api/panel-api.service";
-import {IPanelComponent} from "./panels/panel.component";
 import {PanelTypeMapperService} from "./panel-manager/service/panel-type-mapper/panel-type-mapper.service";
 import {ProjectsManagerService} from "./projects-manager/projects-manager.service";
 import {ProjectsApiService} from "./projects-manager/api/projects-api.service";
 import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
 import {RandomMemePanelComponent} from "./panels/random-meme-panel/random-meme-panel.component";
 import {PanelProjectsComponent} from './configuration/panel-projects/panel-projects.component';
+import {ProjectsListComponent} from './configuration/projects-list/projects-list.component';
 import {PanelsConfigApiService} from "./panels/panels-config-api.service";
 import {RandomMemePanelConfigComponent} from "./panels/random-meme-panel/random-meme-panel-config.component";
 import {RandomMemeService} from "./panels/random-meme-panel/random-meme.service";
@@ -71,6 +71,9 @@ const appRoutes : Routes = [
   }, {
     path: 'admin/create',
     component: PanelConfigurationComponent
+  }, {
+    path: 'admin/listOfProjects',
+    component: ProjectsListComponent
   }, {
     path: 'admin/project',
     component: PanelProjectsComponent
@@ -92,6 +95,7 @@ const appRoutes : Routes = [
     HostDirective,
     StaticHostPanelComponent,
     DynamicHostPanelComponent,
+    ProjectsListComponent,
     RandomMemePanelComponent,
     RandomMemePanelConfigComponent,
     StaticBranchPanelComponent,

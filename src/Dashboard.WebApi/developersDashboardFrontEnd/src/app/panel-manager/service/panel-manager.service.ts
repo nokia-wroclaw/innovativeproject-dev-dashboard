@@ -1,7 +1,7 @@
 import {Injectable, ComponentFactoryResolver} from '@angular/core';
 import {HostDirective} from './../../panel-host/host.directive';
 
-import {Panel} from "../panel";
+import {Panel, PanelPositionUpdateItem} from "../panel";
 import {Observable} from "rxjs/Observable";
 import {PanelApiService} from "./api/panel-api.service";
 import {PanelTypeMapperService} from "./panel-type-mapper/panel-type-mapper.service";
@@ -114,4 +114,7 @@ export class PanelManagerService {
     console.log("injectPanelConfiguration");
   }
 
+  updatePanelPositions(panelPositions : PanelPositionUpdateItem[]) : Observable<PanelPositionUpdateItem[]>{
+    return this.panelApi.updatePanelPositions(panelPositions);
+  }
 }
