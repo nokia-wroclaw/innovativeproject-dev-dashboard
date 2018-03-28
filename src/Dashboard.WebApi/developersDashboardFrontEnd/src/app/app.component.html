@@ -1,0 +1,39 @@
+<div class="app-container">
+    <mat-toolbar color="primary" class="toolbar">
+        <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+        <h1 class="app-name">{{title}}</h1>
+    </mat-toolbar>
+
+    <mat-sidenav-container class="sidenav-container">
+        <mat-sidenav #snav (openedStart)="onOpenedStart()" (closedStart)="onClosedStart()" mode="side" [fixedInViewport]="false"
+            fixedTopGap="56">
+            <mat-nav-list>
+                <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+                    <button mat-icon-button color="primary" [routerLink]="['/']">
+                        <i class="material-icons menu-icon">dashboard</i>
+                    </button>
+                </mat-list-item>
+                <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+                    <button mat-icon-button color="primary" [routerLink]="['/admin/create']">
+                        <i class="material-icons menu-icon-small">add_box</i>
+                    </button>
+                </mat-list-item>
+                <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+                    <button mat-icon-button color="primary" [routerLink]="['/admin/listOfProjects']">
+                        <i class="material-icons menu-icon">work</i>
+                    </button>
+                </mat-list-item>
+                <mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+                    <button mat-icon-button color="primary" [routerLink]="['/admin/project']">
+                        <i class="material-icons menu-icon-small">add</i>
+                    </button>
+                </mat-list-item>
+            </mat-nav-list>
+        </mat-sidenav>
+
+        <mat-sidenav-content id="sidenavContent" [class.no-overflows]="navOpened == false" #sidenavContent [style.padding-left]="navOpened ? '15px' : '50px'"
+            style="padding-right: 50px; margin-top:10px; ">
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

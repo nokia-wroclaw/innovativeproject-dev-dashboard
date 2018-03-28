@@ -1,0 +1,38 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title style="font-size:1.5em;">
+      Creating Project
+    </mat-card-title>
+  </mat-card-header>
+
+  <form #projectForm="ngForm" (ngSubmit)="addProject()">
+    <mat-card-content>
+      <mat-form-field class=" example-full-width ">
+        <input type="text" matInput placeholder="apiHostUrl " required [(ngModel)]="project.apiHostUrl" name="apiHostUrl">
+      </mat-form-field>
+      <mat-form-field class=" example-full-width ">
+        <input type="text" matInput placeholder="apiProjectId " required [(ngModel)]="project.apiProjectId" name="apiProjectId">
+      </mat-form-field>
+      <mat-form-field class=" example-full-width ">
+        <input type="text" matInput placeholder="apiAuthenticationToken " required [(ngModel)]="project.apiAuthenticationToken" name="apiAuthenticationToken">
+      </mat-form-field>
+      <mat-form-field class=" example-full-width ">
+        <input type="text" matInput placeholder="dataProviderName " required [(ngModel)]="project.dataProviderName" name="dataProviderName">
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button type="submit" [disabled]="!projectForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
+      <button [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
+    </mat-card-actions>
+    <pre>{{projectForm.value | json}}</pre>
+  </form>
+
+
+
+
+
+
+
+
+</mat-card>

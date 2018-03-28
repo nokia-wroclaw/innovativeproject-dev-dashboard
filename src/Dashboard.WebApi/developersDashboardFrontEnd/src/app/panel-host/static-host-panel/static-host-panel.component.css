@@ -1,0 +1,14 @@
+mat-card-footer {
+    position: absolute;
+    left: 40px;
+    bottom: 15px;
+}
+.label-success {   
+    border-radius: 1vw;
+}
+
+mat-card-content {
+  flex-direction: column ;
+  justify-content: center;
+  align-items: center;
+}

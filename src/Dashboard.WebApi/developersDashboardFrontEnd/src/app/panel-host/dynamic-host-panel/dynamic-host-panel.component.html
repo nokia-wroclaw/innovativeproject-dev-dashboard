@@ -1,0 +1,11 @@
+<div class="dynamic-panel-container" [ngClass]="{'admin-mode': adminMode==true}">
+  <div class="pull-right">
+    <a [routerLink]=" ['/admin', panel.id]">
+      <i *ngIf="adminMode" class="material-icons panel-icon">settings</i>
+    </a>
+    <i *ngIf="adminMode" class="material-icons panel-icon dnd-handle">dehaze</i>
+  </div>
+
+  <!-- Outlet for a component loaded dynamicaly -->
+  <ng-template host></ng-template>
+</div>

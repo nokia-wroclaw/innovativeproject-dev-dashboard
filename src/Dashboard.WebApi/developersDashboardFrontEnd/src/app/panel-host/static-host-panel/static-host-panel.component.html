@@ -1,0 +1,20 @@
+<mat-card>
+  <div class="panel-header-container">
+
+    <div class="title pull-left">
+      <p>{{tileTitle}}</p>
+    </div>
+
+    <i *ngIf="adminMode " class="material-icons dnd-handle pull-right panel-icon">dehaze</i>
+    <a [routerLink]=" [ '/admin', panel.id] " class="pull-right ">
+        <i *ngIf="adminMode " class="material-icons panel-icon">settings</i>
+      </a>
+
+  </div>
+  <div class="panel-content-container">
+    <!-- Outlet for a component loaded dynamicaly -->
+    <ng-template host></ng-template>
+  </div>
+
+
+</mat-card>

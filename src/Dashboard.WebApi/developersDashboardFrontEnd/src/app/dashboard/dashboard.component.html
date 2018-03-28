@@ -1,0 +1,8 @@
+<gridster  [options]="gridsterOptions" [draggableOptions]="{ handlerClass: 'dnd-handle', scroll:false }">
+
+  <gridster-item (change)="onGridsterItemChange($event, panel)" *ngFor="let panel of panels" [resizable]="adminMode" [(w)]="panel.position.width" [(h)]="panel.position.height"
+    [(x)]="panel.position.column" [(y)]="panel.position.row" [options]="panel.panelType.bounds"> 
+    <app-static-host-panel *ngIf="!panel.panelType.dynamic" [panel]="panel" [tileTitle]="panel.title" [adminMode]="adminMode"></app-static-host-panel>
+    <app-dynamic-host-panel *ngIf="panel.panelType.dynamic" [panel]="panel" [tileTitle]="panel.title" [adminMode]="adminMode"></app-dynamic-host-panel>
+  </gridster-item>
+</gridster>

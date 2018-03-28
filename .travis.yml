@@ -1,0 +1,30 @@
+language: csharp
+mono: none
+dotnet: 2.0.0
+sudo: required
+notifications:
+   slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
+addons:
+    chrome: stable
+apt:
+    sources:
+        - google-chrome
+    packages:
+        - google-chrome-stable
+        - google-chrome-beta
+before_install:
+    - export CHROME_BIN=chromium-browser
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+jobs:
+    include:
+        - stage: frontendBuild
+          script: 
+            - cd src/Dashboard.WebApi/developersDashboardFrontEnd
+            - npm install
+            - npm build
+            - npm test
+        - stage: backendBuild
+          script:
+            - dotnet restore ./src
+            - dotnet build ./src/Dashboard.sln

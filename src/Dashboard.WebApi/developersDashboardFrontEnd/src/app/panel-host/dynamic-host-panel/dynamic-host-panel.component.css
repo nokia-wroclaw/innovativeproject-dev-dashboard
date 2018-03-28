@@ -1,0 +1,21 @@
+.label-success {   
+    border-radius: 1vw;
+}
+
+div.dynamic-panel-container {
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+
+    margin: 5px;
+    padding: 5px;
+}
+
+div.dynamic-panel-container.admin-mode {
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    border: 2px dashed #787878;
+}
