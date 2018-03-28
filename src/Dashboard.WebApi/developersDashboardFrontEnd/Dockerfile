@@ -34,5 +34,4 @@ COPY --from=builder /ng-app/dist /usr/share/nginx/html
 
 EXPOSE 4200
 
-#ENTRYPOINT ["npm", "start"]
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
