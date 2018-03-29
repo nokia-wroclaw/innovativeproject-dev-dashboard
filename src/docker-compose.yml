@@ -5,7 +5,7 @@ services:
     image: dashboardwebapi
     build:
       context: .
-      dockerfile: Dockerfile.worker
+      dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
@@ -17,7 +17,7 @@ services:
       - PORT=4200
     build:
       context: Dashboard.WebApi/developersDashboardFrontEnd
-      dockerfile: Dockerfile.web
+      dockerfile: Dockerfile
     ports:
       - "4200:4200"
     depends_on:
