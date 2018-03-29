@@ -156,4 +156,5 @@ const appRoutes : Routes = [
 })
 export class AppModule {}
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+// Commenting code below fixed problem with duplicated DashboardComponent, while app still works
+// platformBrowserDynamic().bootstrapModule(AppModule);
