@@ -3,6 +3,6 @@ version: '3.6'
 services:
   dashboard.webapi:
 
-  dashboard.frontend:
+  dashboard.web:
 
 

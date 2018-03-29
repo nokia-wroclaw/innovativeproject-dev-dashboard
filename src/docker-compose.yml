@@ -5,19 +5,19 @@ services:
     image: dashboardwebapi
     build:
       context: .
-      dockerfile: Dashboard.WebApi/Dockerfile
+      dockerfile: Dockerfile.worker
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "5001:5001"
 
-  dashboard.frontend:
+  dashboard.web:
     image: dashboardfrontend
     environment:
-      NODE_ENV: production
+      - PORT=4200
     build:
       context: Dashboard.WebApi/developersDashboardFrontEnd
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.web
     ports:
       - "4200:4200"
     depends_on:
