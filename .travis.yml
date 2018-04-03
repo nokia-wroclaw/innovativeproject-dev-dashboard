@@ -16,7 +16,6 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
-  - docker-compose -f ./src/docker-compose.yml pull
   - docker ps
 jobs:
     include:
