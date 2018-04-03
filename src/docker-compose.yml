@@ -8,17 +8,13 @@ services:
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "5001:5001"
 
   dashboard.web:
     image: dashboardfrontend
     environment:
-      - PORT=4200
+      - API_HOST=cidasherapi.herokuapp.com
     build:
       context: Dashboard.WebApi/developersDashboardFrontEnd
       dockerfile: Dockerfile
-    ports:
-      - "4200:4200"
     depends_on:
       - dashboard.webapi
