@@ -3,14 +3,16 @@
 # We label our stage as 'builder'
 FROM node:8-alpine as builder
 
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 RUN npm set progress=false && npm config set depth 0 && npm cache clean --force
 
 ## Storing node modules on a separate layer will prevent unnecessary npm installs at each build
-RUN npm i && mkdir /ng-app && cp -R ./node_modules ./ng-app
+RUN npm install --verbose && mkdir /ng-app && cp -R ./node_modules ./ng-app
 
 WORKDIR /ng-app
+
+ENV PORT 3000
 
 RUN npm install --silent
 
@@ -20,11 +22,15 @@ COPY . .
 RUN $(npm bin)/ng build
 
 
+#
 #### STAGE 2: Setup ###
 FROM nginx:1.13.3-alpine
 #
+
 ### Copy our default nginx config
 COPY nginx/default.conf /etc/nginx/conf.d/
+
+
 #
 ### Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
@@ -34,4 +40,6 @@ COPY --from=builder /ng-app/dist /usr/share/nginx/html
 
 EXPOSE 4200
 
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+COPY nginx/serve.sh /usr/local/bin
+
+CMD ["/usr/local/bin/serve.sh"]

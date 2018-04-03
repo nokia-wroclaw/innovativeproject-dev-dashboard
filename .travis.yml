@@ -4,27 +4,29 @@ dotnet: 2.0.0
 sudo: required
 notifications:
    slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
-addons:
-    chrome: stable
-apt:
-    sources:
-        - google-chrome
-    packages:
-        - google-chrome-stable
-        - google-chrome-beta
+stages:
+  - "frontendBuild"
+  - "backendBuild"
+env:
+  - DOCKER_COMPOSE_VERSION=1.20.1
 before_install:
-    - export CHROME_BIN=chromium-browser
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
+  - docker ps
 jobs:
     include:
         - stage: frontendBuild
           script: 
-            - cd src/Dashboard.WebApi/developersDashboardFrontEnd
-            - npm install
-            - npm build
-            - npm test
+            - docker-compose -f ./src/docker-compose.yml build dashboard.web
         - stage: backendBuild
           script:
-            - dotnet restore ./src
-            - dotnet build ./src/Dashboard.sln
+            - docker-compose -f ./src/docker-compose.yml build dashboard.webapi
+
+after_success:
+  - if [[ "$TRAVIS_BRANCH" == "develop" ]]; then
+      docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD ;
+      docker-compose push ;
+    fi

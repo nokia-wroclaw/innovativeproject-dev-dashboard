@@ -1,4 +1,5 @@
-﻿using Dashboard.Data.Context;
+﻿using System;
+using Dashboard.Data.Context;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ namespace Dashboard.WebApi
         private static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-		        .UseUrls("http://*:5001/")
+		        .UseUrls($"http://*:{ Environment.GetEnvironmentVariable("PORT") ?? "5001" }/")
                 .Build();
     }
 }

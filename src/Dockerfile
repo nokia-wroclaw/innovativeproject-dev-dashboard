@@ -20,4 +20,4 @@ RUN dotnet publish -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Dashboard.WebApi.dll"]
+CMD ["dotnet", "Dashboard.WebApi.dll"]
