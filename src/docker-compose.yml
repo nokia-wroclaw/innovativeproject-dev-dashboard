@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   dashboard.webapi:
-    image: dashboardwebapi
+    image: randomdocker729/cidashboard-webapi:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,7 +10,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
 
   dashboard.web:
-    image: dashboardfrontend
+    image: randomdocker729/cidashboard-frontend:latest
     environment:
       - API_HOST=cidasherapi.herokuapp.com
     build:

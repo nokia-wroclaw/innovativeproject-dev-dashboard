@@ -7,7 +7,6 @@ notifications:
 stages:
   - "frontendBuild"
   - "backendBuild"
-  - ":ship: front to heroku"
 env:
   - DOCKER_COMPOSE_VERSION=1.20.1
 before_install:
@@ -25,3 +24,9 @@ jobs:
         - stage: backendBuild
           script:
             - docker-compose -f ./src/docker-compose.yml build dashboard.webapi
+
+after_success:
+  - if [[ "$TRAVIS_BRANCH" == "develop" ]]; then
+      docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD ;
+      docker-compose push ;
+    fi
