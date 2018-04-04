@@ -17,7 +17,7 @@ namespace Dashboard.Application
 
     public class EnqueueFetchProjectsCiDataJob
     {
-        public static readonly string CronExpression = "*/3 * * * *";
+        public static readonly string CronExpression = "*/4 * * * *";
 
         private readonly IPanelService _panelService;
 
