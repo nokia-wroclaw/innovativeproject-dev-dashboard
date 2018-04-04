@@ -11,12 +11,14 @@ namespace Dashboard.Application.Services
     //TODO: add some validation
     public class ProjectService : IProjectService
     {
+        private readonly IPipelineRepository _pipelineRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly IPanelRepository _panelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
 
         public ProjectService(
+            IPipelineRepository pipelineRepository,
             IProjectRepository projectRepository, 
             IPanelRepository panelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
@@ -26,6 +28,7 @@ namespace Dashboard.Application.Services
             _panelRepository = panelRepository;
             _staticBranchPanelRepository = staticBranchPanelRepository;
             _projectRepository = projectRepository;
+            _pipelineRepository = pipelineRepository;
         }
 
         public Task<Project> GetProjectByIdAsync(int id)
@@ -141,11 +144,20 @@ namespace Dashboard.Application.Services
                                             );
             var updatedPipesWithFullInfo = (await Task.WhenAll(updatedPipesWithFullInfoTasks)).ToList();
 
+            //Delete old Pipelines
+            var pipelinesIds = project.Pipelines.Select(p => p.DataProviderId);
+            string key = project.ApiHostUrl + "/" + project.ApiProjectId;
+            var pipesToDelete = await _pipelineRepository.FindAllAsync(p => p.ProjectId == key);
+            for (int i = 0; i < pipesToDelete.Count(); i++)
+            {
+                _pipelineRepository.DeleteAsync(pipesToDelete.ElementAt(i));
+            }
+            await _pipelineRepository.SaveAsync();
 
             project.Pipelines = updatedPipesWithFullInfo;
 
             await _projectRepository.UpdateAsync(project, project.Id);
-
+            
             await _projectRepository.SaveAsync();
         }
     }
