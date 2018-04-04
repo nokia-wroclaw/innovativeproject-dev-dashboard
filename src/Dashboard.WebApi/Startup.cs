@@ -1,33 +1,39 @@
-﻿using System.Linq;
+﻿using System;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Dashboard.Application;
 using Dashboard.Data.Context;
-using Dashboard.WebApi.ApiModels.Requests;
-using Dashboard.WebApi.Infrastructure;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Dashboard.WebApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfigurationRoot Configuration { get; set; }
+        private IContainer ApplicationContainer { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddAppHangfire();
+
             //TODO: change when database is setup
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase("InMemoryDatabase"));
@@ -38,17 +44,28 @@ namespace Dashboard.WebApi
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
 
-            //Register app
-            services.AddApplication();
-
             services.AddMvc(options =>
             {
             });
             //services.AddMvcCore().AddJsonFormatters(f => f.Converters.Add(new StringEnumConverter()));
+
+            // Create the container builder.
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+
+            //Register app
+            builder.AddApplication();
+
+            this.ApplicationContainer = builder.Build();
+
+            GlobalConfiguration.Configuration.UseAutofacActivator(ApplicationContainer);
+
+            // Create the IServiceProvider based on the container.
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -73,11 +90,17 @@ namespace Dashboard.WebApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+
+
+            CronJobs.Register();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=HelloWorld}/{action=Get}");
+                    template: "swagger");
             });
         }
     }

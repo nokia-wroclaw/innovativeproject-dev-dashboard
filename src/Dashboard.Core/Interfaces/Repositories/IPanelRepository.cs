@@ -8,6 +8,7 @@ namespace Dashboard.Core.Interfaces.Repositories
 {
     public interface IPanelRepository : IEfRepository<Panel>
     {
+        Task<IEnumerable<int>> GetActiveProjectIds();
     }
 
     public interface IStaticBranchPanelRepository : IEfRepository<StaticBranchPanel>

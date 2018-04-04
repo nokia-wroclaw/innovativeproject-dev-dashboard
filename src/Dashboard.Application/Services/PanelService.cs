@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces.Repositories;
+using Dashboard.Data.Repositories;
 
 namespace Dashboard.Application.Services
 {
@@ -67,6 +68,11 @@ namespace Dashboard.Application.Services
             await _panelRepository.SaveAsync();
 
             return r;
+        }
+
+        public async Task<IEnumerable<int>> GetActiveProjectIds()
+        {
+            return await _panelRepository.GetActiveProjectIds();
         }
 
         public async Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position)
