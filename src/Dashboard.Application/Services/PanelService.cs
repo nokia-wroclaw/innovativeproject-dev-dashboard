@@ -34,7 +34,7 @@ namespace Dashboard.Application.Services
             if (enitty == null)
                 return;
 
-            await _panelRepository.DeleteAsync(enitty);
+            _panelRepository.Delete(enitty);
             await _panelRepository.SaveAsync();
         }
 

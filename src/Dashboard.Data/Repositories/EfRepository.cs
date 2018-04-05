@@ -50,10 +50,14 @@ namespace Dashboard.Data.Repositories
             return await Context.Set<T>().Where(match).ToListAsync();
         }
 
-        public virtual async Task<int> DeleteAsync(T entity)
+        public virtual void Delete(T entity)
         {
             Context.Set<T>().Remove(entity);
-            return await SaveAsync();
+        }
+
+        public virtual void DeleteRange(IEnumerable<T> entities)
+        {
+            Context.Set<T>().RemoveRange(entities);
         }
 
         public virtual async Task<T> UpdateAsync(T t, object key)

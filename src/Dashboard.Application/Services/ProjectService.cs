@@ -47,7 +47,7 @@ namespace Dashboard.Application.Services
             if (entity == null)
                 return;
 
-            await _projectRepository.DeleteAsync(entity);
+            _projectRepository.Delete(entity);
             await _projectRepository.SaveAsync();
         }
 
@@ -145,14 +145,7 @@ namespace Dashboard.Application.Services
             var updatedPipesWithFullInfo = (await Task.WhenAll(updatedPipesWithFullInfoTasks)).ToList();
 
             //Delete old Pipelines
-            var pipelinesIds = project.Pipelines.Select(p => p.DataProviderId);
-            string key = project.ApiHostUrl + "/" + project.ApiProjectId;
-            var pipesToDelete = await _pipelineRepository.FindAllAsync(p => p.ProjectId == key);
-            for (int i = 0; i < pipesToDelete.Count(); i++)
-            {
-                await _pipelineRepository.DeleteAsync(pipesToDelete.ElementAt(i));
-            }
-            await _pipelineRepository.SaveAsync();
+            _pipelineRepository.DeleteRange(project.Pipelines);
 
             project.Pipelines = updatedPipesWithFullInfo;
 
