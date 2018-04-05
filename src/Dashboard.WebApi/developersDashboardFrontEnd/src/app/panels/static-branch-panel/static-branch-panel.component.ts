@@ -23,7 +23,7 @@ export class StaticBranchPanelComponent implements OnDestroy, IPanelComponent<St
     status: "running",
     color: 'blue'
   }, {
-    status: "canceled",
+    status: "manual",
     color: 'pink'
   }, {
     status: "success",
@@ -31,6 +31,9 @@ export class StaticBranchPanelComponent implements OnDestroy, IPanelComponent<St
   }, {
     status: "created",
     color: "white"
+  }, {
+    status: "skipped",
+    color: "gray"
   }];
 
   private pipelineSub : Subscription;
@@ -57,38 +60,7 @@ export class StaticBranchPanelComponent implements OnDestroy, IPanelComponent<St
   }
 
   getColorOfStage(stage: Stage) {
-    const stageOfStage = this.getStateOfStage(stage);
-    return this.statusColors.find(statusColor => statusColor.status == stageOfStage).color;
-  }
-
-  // TODO it should and will be done at backend side, then we will get rid of unnecessary code
-  getStateOfStage(stage: Stage): string {
-    const finalStatuses: string[] = ["canceled", "failed", "running"];
-    const finalJob = stage.jobs.find(job => finalStatuses.findIndex(status => job.status == status) != -1);
-
-    if (finalJob != null) {
-      return finalJob.status;
-    } else {
-
-      let allSuccesses: boolean = true;
-      let allCreated: boolean = true;
-
-      stage.jobs.forEach(job => {
-        allSuccesses = allSuccesses && job.status == "success";
-        allCreated = allCreated && job.status == "created";
-      });
-
-      if (allSuccesses) {
-        return "success";
-      } else if (allCreated) {
-        return "created";
-      }
-
-      // check other conditions
-      // temp
-      return "created";
-    }
-
+    return this.statusColors.find(statusColor => statusColor.status == stage.stageStatus).color;
   }
 
 }

@@ -11,12 +11,7 @@ export interface Pipeline {
 
 export interface Stage {
     stageName : string;
-    jobs : Job[];
-}
-
-export interface Job {
-    name : string;
-    status : string;
+    stageStatus : string;
 }
 
 export class Project {

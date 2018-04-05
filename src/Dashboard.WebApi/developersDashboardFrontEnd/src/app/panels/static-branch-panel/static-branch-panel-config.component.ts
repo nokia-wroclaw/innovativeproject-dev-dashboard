@@ -18,7 +18,7 @@ export class StaticBranchPanelConfigComponent implements OnInit, IPanelConfigCom
     constructor(private panelsConfigApi : PanelsConfigApiService) {}
 
     isValid() : boolean {
-        return true;
+        return this.panel.staticBranchName != null && this.panel.staticBranchName != '';
     }
 
     setPanel(panel : any) {
