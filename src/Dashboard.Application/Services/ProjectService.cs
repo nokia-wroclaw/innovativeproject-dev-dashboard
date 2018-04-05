@@ -150,7 +150,7 @@ namespace Dashboard.Application.Services
             var pipesToDelete = await _pipelineRepository.FindAllAsync(p => p.ProjectId == key);
             for (int i = 0; i < pipesToDelete.Count(); i++)
             {
-                _pipelineRepository.DeleteAsync(pipesToDelete.ElementAt(i));
+                await _pipelineRepository.DeleteAsync(pipesToDelete.ElementAt(i));
             }
             await _pipelineRepository.SaveAsync();
 
