@@ -91,8 +91,7 @@ namespace Dashboard.Application
                                 new Stage()
                                 {
                                     StageName = s.Key,
-                                    StageStatus = s.Any(p => p.Status == "running") ? "running" : (s.Any(p => p.Status == "manual") ? "manual" : (s.Any(p => p.Status == "failed") ? "failed" : (s.All(p => p.Status == "success") ? "success" : "created"))),
-                                    Jobs = s.Select(p => new Job() { Name = p.Name, Status = p.Status }).ToList()
+                                    StageStatus = s.Any(p => p.Status == "running") ? "running" : (s.Any(p => p.Status == "manual") ? "manual" : (s.Any(p => p.Status == "failed") ? "failed" : (s.All(p => p.Status == "skipped")) ? "skipped" : (s.All(p => p.Status == "success") ? "success" : "created"))),
                                 });
 
             return stages;

@@ -15,7 +15,6 @@ namespace Dashboard.Data.Repositories
                                                                         .Include(p => p.Project)
                                                                             .ThenInclude(p => p.Pipelines)
                                                                                 .ThenInclude(p => p.Stages)
-                                                                                    .ThenInclude(p => p.Jobs)
                                                                         .Include(p => p.Position);
 
 
