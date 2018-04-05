@@ -17,9 +17,9 @@ stages:
   - build_all
   - unit_tests_backend
   - name: deploy_images_to_registry
-    if: branch = develop
+    if: (branch = develop) AND (NOT type IN (pull_request))
   - name: deploy_to_heroku
-    if: branch = develop
+    if: (branch = develop) AND (NOT type IN (pull_request))
 jobs:
     include:
         - stage: build_all
