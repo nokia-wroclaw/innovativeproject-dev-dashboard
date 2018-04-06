@@ -133,7 +133,7 @@ namespace Dashboard.Application.Services
             {
                 dict[pipe.Sha] = pipe;
             }
-            updatedPipelines = dict.Values.Take(11 - updatedPipelines.Count).ToList();
+            updatedPipelines = dict.Values.Take((await GetNumberOfDiscoveryPipelines(projectId) + staticBranches.Count())).ToList();
 
             var updatedPipesWithFullInfoTasks = updatedPipelines
                                             .Select(p => dataProvider.GetSpecificPipeline(
@@ -152,6 +152,20 @@ namespace Dashboard.Application.Services
             await _projectRepository.UpdateAsync(project, project.Id);
             
             await _projectRepository.SaveAsync();
+        }
+
+        private async Task<int> GetNumberOfDiscoveryPipelines(int projectId)
+        {
+            var dynamicPanels = await _panelRepository.FindAllAsync(p => p.Discriminator == "DynamicPipelinesPanel" && p.ProjectId == projectId);
+            if (dynamicPanels == null)
+                return 0;
+            int dynamicPipelines = 0;
+            foreach (var panel in dynamicPanels)
+            {
+                dynamicPipelines += ((DynamicPipelinesPanel)panel).HowManyLastPipelinesToRead;
+            }
+
+            return dynamicPipelines;
         }
     }
 }
