@@ -11,7 +11,7 @@ using Dashboard.Data.Context;
 
 namespace Dashboard.Data.Repositories
 {
-    public class DynamicPipelinesPanelRepository : EfRepository<DynamicPipelinesPanel>, IDynamicPipelinesPanelRepository
+    public class DynamicPipelinePanelRepository : EfRepository<DynamicPipelinesPanel>, IDynamicPipelinesPanelRepository
     {
         private IIncludableQueryable<DynamicPipelinesPanel, object> EagerPanels => Context.Set<DynamicPipelinesPanel>()
                                                                         .Include(p => p.Project)
@@ -19,18 +19,18 @@ namespace Dashboard.Data.Repositories
                                                                                 .ThenInclude(p => p.Stages)
                                                                         .Include(p => p.Position);
 
-        public DynamicPipelinesPanelRepository(AppDbContext context) : base(context)
+        public DynamicPipelinePanelRepository(AppDbContext context) : base(context)
         {
         }
 
         public async Task<IEnumerable<DynamicPipelinesPanel>> GetDynamicPanelsForProject(int projectId)
         {
-            return (await EagerPanels.ToListAsync()).Where(p => p.ProjectId == projectId);
+            return (await Context.Set<DynamicPipelinesPanel>().Where(p => p.ProjectId == projectId).ToListAsync());
         }
 
         public async Task<int> GetNumberOfDiscoverPipelinesForProject(int projectId)
         {
-            return (await EagerPanels.ToListAsync()).Where(p => p.ProjectId == projectId).Sum(p => p.HowManyLastPipelinesToRead);
+            return await Context.Set<DynamicPipelinesPanel>().Where(p => p.ProjectId == projectId).SumAsync(p => p.HowManyLastPipelinesToRead);
         }
     }
 }

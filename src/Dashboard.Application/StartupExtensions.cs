@@ -21,7 +21,7 @@ namespace Dashboard.Application
             builder.RegisterType<StaticBranchPanelRepository>().As<IStaticBranchPanelRepository>();
             builder.RegisterType<PipelineRepository>().As<IPipelineRepository>();
             builder.RegisterType<ProjectRepository>().As<IProjectRepository>();
-            builder.RegisterType<DynamicPipelinesPanelRepository>().As<IDynamicPipelinesPanelRepository>();
+            builder.RegisterType<DynamicPipelinePanelRepository>().As<IDynamicPipelinesPanelRepository>();
 
             //Register services
             builder.RegisterType<PanelService>().As<IPanelService>().SingleInstance();
