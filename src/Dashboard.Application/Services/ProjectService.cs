@@ -13,19 +13,19 @@ namespace Dashboard.Application.Services
     {
         private readonly IPipelineRepository _pipelineRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly IPanelRepository _panelRepository;
+        private readonly IDynamicPipelinePanelRepository _dynamicPipelinesPanelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
-            IProjectRepository projectRepository, 
-            IPanelRepository panelRepository,
+            IProjectRepository projectRepository,
+            IDynamicPipelinePanelRepository dynamicPipelinesPanelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
             ICiDataProviderFactory ciDataProviderFactory)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
-            _panelRepository = panelRepository;
+            _dynamicPipelinesPanelRepository = dynamicPipelinesPanelRepository;
             _staticBranchPanelRepository = staticBranchPanelRepository;
             _projectRepository = projectRepository;
             _pipelineRepository = pipelineRepository;
@@ -127,13 +127,13 @@ namespace Dashboard.Application.Services
             Dictionary<string, Pipeline> dict = new Dictionary<string, Pipeline>();
             foreach (var pipe in updatedPipelines)
             {
-                dict[pipe.Sha] = pipe;
+                dict[pipe.Ref] = pipe;
             }
             foreach (var pipe in downloadedPipelines)
             {
-                dict[pipe.Sha] = pipe;
+                dict[pipe.Ref] = pipe;
             }
-            updatedPipelines = dict.Values.Take(11 - updatedPipelines.Count).ToList();
+            updatedPipelines = dict.Values.Take((await _dynamicPipelinesPanelRepository.GetNumberOfDiscoverPipelinesForProject(projectId) + staticBranches.Count())).ToList();
 
             var updatedPipesWithFullInfoTasks = updatedPipelines
                                             .Select(p => dataProvider.GetSpecificPipeline(
@@ -153,5 +153,19 @@ namespace Dashboard.Application.Services
             
             await _projectRepository.SaveAsync();
         }
+
+        //private async Task<int> GetNumberOfDiscoveryPipelines(int projectId)
+        //{
+        //    var dynamicPanels = await _panelRepository.FindAllAsync(p => p.Discriminator == "DynamicPipelinesPanel" && p.ProjectId == projectId);
+        //    if (dynamicPanels == null)
+        //        return 0;
+        //    int dynamicPipelines = 0;
+        //    foreach (var panel in dynamicPanels)
+        //    {
+        //        dynamicPipelines += ((DynamicPipelinesPanel)panel).HowManyLastPipelinesToRead;
+        //    }
+
+        //    return dynamicPipelines;
+        //}
     }
 }
