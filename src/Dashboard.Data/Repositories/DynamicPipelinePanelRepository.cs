@@ -25,7 +25,7 @@ namespace Dashboard.Data.Repositories
 
         public async Task<IEnumerable<DynamicPipelinesPanel>> GetDynamicPanelsForProject(int projectId)
         {
-            return (await Context.Set<DynamicPipelinesPanel>().Where(p => p.ProjectId == projectId).ToListAsync());
+            return (await EagerPanels.Where(p => p.ProjectId == projectId).ToListAsync());
         }
 
         public async Task<int> GetNumberOfDiscoverPipelinesForProject(int projectId)
