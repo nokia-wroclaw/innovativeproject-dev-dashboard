@@ -31,7 +31,7 @@ namespace Dashboard.Data.Context
             new StaticBranchPanel()
             {
                 Title = "Fancy Title 2",
-                Position = new PanelPosition() {Column = 2, Row = 0, Width = 2, Height = 1},
+                Position = new PanelPosition() {Column = 2, Row = 0, Width = 4, Height = 1},
                 Project = SeedProjects.ElementAt(0),
                 StaticBranchName = "master",
             }

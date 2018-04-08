@@ -13,7 +13,7 @@ div.dynamic-panel-container {
     padding: 5px;
 }
 
-div.dynamic-panel-container.admin-mode {
+div.admin-mode-border {
     border-radius: 5px 5px 5px 5px;
     -moz-border-radius: 5px 5px 5px 5px;
     -webkit-border-radius: 5px 5px 5px 5px;
