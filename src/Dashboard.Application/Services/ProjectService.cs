@@ -13,14 +13,14 @@ namespace Dashboard.Application.Services
     {
         private readonly IPipelineRepository _pipelineRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly IDynamicPipelinesPanelRepository _dynamicPipelinesPanelRepository;
+        private readonly IDynamicPipelinePanelRepository _dynamicPipelinesPanelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
             IProjectRepository projectRepository,
-            IDynamicPipelinesPanelRepository dynamicPipelinesPanelRepository,
+            IDynamicPipelinePanelRepository dynamicPipelinesPanelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
             ICiDataProviderFactory ciDataProviderFactory)
         {

@@ -11,7 +11,7 @@ using Dashboard.Data.Context;
 
 namespace Dashboard.Data.Repositories
 {
-    public class DynamicPipelinePanelRepository : EfRepository<DynamicPipelinesPanel>, IDynamicPipelinesPanelRepository
+    public class DynamicPipelinePanelRepository : EfRepository<DynamicPipelinesPanel>, IDynamicPipelinePanelRepository
     {
         private IIncludableQueryable<DynamicPipelinesPanel, object> EagerPanels => Context.Set<DynamicPipelinesPanel>()
                                                                         .Include(p => p.Project)
