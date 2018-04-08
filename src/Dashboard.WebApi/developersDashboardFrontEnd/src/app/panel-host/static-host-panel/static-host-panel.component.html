@@ -6,9 +6,12 @@
     </div>
 
     <i *ngIf="adminMode " class="material-icons dnd-handle pull-right panel-icon">dehaze</i>
-    <a [routerLink]=" [ '/admin', panel.id] " class="pull-right ">
+
+    <!-- Edit settings does not currently work so it is blocked -->
+    <!-- [routerLink]=" [ '/admin', panel.id] " -->
+    <a href="#" class="pull-right">
         <i *ngIf="adminMode " class="material-icons panel-icon">settings</i>
-      </a>
+    </a>
 
   </div>
   <div class="panel-content-container">

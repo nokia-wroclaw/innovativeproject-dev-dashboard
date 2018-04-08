@@ -1,11 +1,24 @@
-<div class="dynamic-panel-container" [ngClass]="{'admin-mode': adminMode==true}">
-  <div class="pull-right">
-    <a [routerLink]=" ['/admin', panel.id]">
-      <i *ngIf="adminMode" class="material-icons panel-icon">settings</i>
-    </a>
-    <i *ngIf="adminMode" class="material-icons panel-icon dnd-handle">dehaze</i>
+<div class="dynamic-panel-container">
+
+  <div class="panel-header-container">
+
+    <div class="title pull-left" style="font-size: 1.5em">
+      <p>{{tileTitle}}</p>
+    </div>
+    <div class="pull-right">
+
+      <!-- Edit settings does not currently work so it is blocked -->
+      <!-- [routerLink]=" [ '/admin', panel.id] "  instead of href -->
+      <a href="#">
+        <i *ngIf="adminMode" class="material-icons panel-icon">settings</i>
+      </a>
+      <i *ngIf="adminMode" class="material-icons panel-icon dnd-handle">dehaze</i>
+    </div>
   </div>
 
-  <!-- Outlet for a component loaded dynamicaly -->
-  <ng-template host></ng-template>
+  <div class="panel-content-container" [ngClass]="{'admin-mode-border': adminMode==true}">
+    <!-- Outlet for a component loaded dynamicaly -->
+    <ng-template host></ng-template>
+  </div>
+
 </div>

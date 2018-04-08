@@ -3,6 +3,8 @@ import { RandomMemePanelConfigComponent } from "../../../panels/random-meme-pane
 import { StaticBranchPanelComponent } from "../../../panels/static-branch-panel/static-branch-panel.component";
 import { StaticBranchPanelConfigComponent } from "../../../panels/static-branch-panel/static-branch-panel-config.component";
 import {PanelBounds, PanelType} from "./panel-type";
+import { LastPipelinesPanelComponent } from "../../../panels/last-pipelines-panel/last-pipelines-panel.component";
+import { LastPipelinesPanelConfigComponent } from "../../../panels/last-pipelines-panel/last-pipelines-panel-config.component";
 
 export const panelTypes : PanelType[] = [
     {
@@ -33,5 +35,19 @@ export const panelTypes : PanelType[] = [
         },
         component: StaticBranchPanelComponent,
         configComponent: StaticBranchPanelConfigComponent
+    }, {
+        discriminator: "DynamicPipelinesPanel",
+        name: "Last pipelines",
+        dynamic: true,
+        bounds: {
+            minWidth: 2,
+            minHeight: 1,
+            maxWidth: 4,
+            maxHeight: 4,
+            defaultWidth: 2,
+            defaultHeight: 2
+        },
+        component: LastPipelinesPanelComponent,
+        configComponent: LastPipelinesPanelConfigComponent
     }
 ]
