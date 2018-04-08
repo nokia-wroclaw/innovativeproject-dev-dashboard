@@ -13,7 +13,7 @@ namespace Dashboard.Data.Repositories
     {
         private IIncludableQueryable<StaticBranchPanel, object> EagerPanels => Context.Set<StaticBranchPanel>()
             .Include(p => p.Project)
-                .ThenInclude(p => p.Pipelines)
+                .ThenInclude(p => p.StaticPipelines)
             .Include(p => p.Position);
 
         public StaticBranchPanelRepository(AppDbContext context) : base(context)

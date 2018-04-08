@@ -46,7 +46,7 @@ namespace Dashboard.Data.Context
                 ApiHostUrl = "https://gitlab.com",
                 ApiProjectId = "13083",
                 ApiAuthenticationToken = "6h-Xjym_EFy8DBxPDR9z",
-                Pipelines = new List<Pipeline>()
+                StaticPipelines = new List<Pipeline>()
                 {
                     new Pipeline()
                     {
