@@ -22,5 +22,7 @@ namespace Dashboard.Core.Interfaces.Repositories
 
     public interface IDynamicPipelinesPanelRepository : IEfRepository<DynamicPipelinesPanel>
     {
+        Task<IEnumerable<DynamicPipelinesPanel>> GetDynamicPanelsForProject(int projectId);
+        Task<int> GetNumberOfDiscoverPipelinesForProject(int projectId);
     }
 }
