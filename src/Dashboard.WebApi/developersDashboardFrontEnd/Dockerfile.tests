@@ -1,0 +1,8 @@
+FROM circleci/node:8.9.4-browsers
+
+COPY --chown=circleci:circleci . /app/
+
+WORKDIR /app
+
+RUN npm install
+ENV PATH=/app/node_modules/@angular/cli/bin:$PATH
