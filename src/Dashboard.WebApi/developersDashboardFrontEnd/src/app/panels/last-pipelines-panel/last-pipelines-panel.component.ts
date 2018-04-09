@@ -12,17 +12,31 @@ export class LastPipelinesPanelComponent implements OnDestroy, IPanelComponent<L
   panel: LastPipelinesPanel;
 
   numbers: number[];
+  
+  private pipelineSub : Subscription;
 
-  setPanel(panel: LastPipelinesPanel) {
+  /**
+   * Pipelines to visualize.
+   */
+  pipelines : Pipeline[];
+
+  setPanel(panel : LastPipelinesPanel) {
     this.panel = panel;
-    
-    // temp
-    this.numbers = Array(this.panel.howManyLastPipelinesToRead).fill(0).map((x,i)=>i);
+
+    // TODO get N newest? or it is guaranted to be N newest by the backend?
+
+    // subscribtion for further updates of related project
+    this.pipelineSub = this
+      .projectsApi
+      .getProject(this.panel.projectId)
+      .filter(project => project != null)
+      .filter(project => project.dynamicPipelines != null)
+      .map(project => project.dynamicPipelines)
+      .subscribe(pipelines => this.pipelines = pipelines.slice(0, this.panel.howManyLastPipelinesToRead));
   }
 
   constructor(private projectsApi: ProjectsApiService, private elementRef: ElementRef) {
     console.log(elementRef);
-    
   }
 
   ngOnDestroy(): void {

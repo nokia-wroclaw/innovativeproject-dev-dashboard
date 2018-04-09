@@ -64,6 +64,7 @@ import {StaticBranchPanelConfigComponent} from "./panels/static-branch-panel/sta
 import { PanelTypeService } from './panel-manager/service/panel-type/panel-type.service';
 import { LastPipelinesPanelComponent } from './panels/last-pipelines-panel/last-pipelines-panel.component';
 import { LastPipelinesPanelConfigComponent } from './panels/last-pipelines-panel/last-pipelines-panel-config.component';
+import { PipelineViewComponent } from './panels/shared/pipeline-view/pipeline-view.component';
 
 const appRoutes : Routes = [
   {
@@ -102,7 +103,8 @@ const appRoutes : Routes = [
     StaticBranchPanelComponent,
     StaticBranchPanelConfigComponent,
     LastPipelinesPanelComponent,
-    LastPipelinesPanelConfigComponent
+    LastPipelinesPanelConfigComponent,
+    PipelineViewComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),

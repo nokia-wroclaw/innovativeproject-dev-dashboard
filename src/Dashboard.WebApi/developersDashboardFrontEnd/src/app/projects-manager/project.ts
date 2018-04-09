@@ -28,8 +28,8 @@ export class Project {
     apiAuthenticationToken : string;
     dataProviderName : string;
     staticPipelines : Pipeline[];
-    cynamicPipelines : Pipeline[];
-    
+    dynamicPipelines : Pipeline[];
+
     constructor(projectTitle : string,apiHostUrl : string, apiProjectId : string, apiAuthenticationToken : string, dataProviderName : string, pipelines : Pipeline[]) {}
 
 }

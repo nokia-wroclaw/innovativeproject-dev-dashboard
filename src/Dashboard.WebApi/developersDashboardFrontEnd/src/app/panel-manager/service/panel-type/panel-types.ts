@@ -12,12 +12,12 @@ export const panelTypes : PanelType[] = [
         name: "Random meme",
         dynamic: false,
         bounds: {
-            minWidth: 2,
-            minHeight: 2,
+            minWidth: 1,
+            minHeight: 1,
             maxWidth: 3,
             maxHeight: 3,
-            defaultWidth: 2,
-            defaultHeight: 2
+            defaultWidth: 1,
+            defaultHeight: 1
         },
         component: RandomMemePanelComponent,
         configComponent: RandomMemePanelConfigComponent
@@ -42,8 +42,8 @@ export const panelTypes : PanelType[] = [
         bounds: {
             minWidth: 2,
             minHeight: 1,
-            maxWidth: 4,
-            maxHeight: 4,
+            maxWidth: 10,
+            maxHeight: 10,
             defaultWidth: 2,
             defaultHeight: 2
         },

@@ -42,6 +42,7 @@ namespace Dashboard.Data.Context
         {
             new Project()
             {
+                ProjectTitle = "GitLab CE",
                 DataProviderName = "GitLab",
                 ApiHostUrl = "https://gitlab.com",
                 ApiProjectId = "13083",
