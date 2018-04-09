@@ -31,7 +31,7 @@ namespace Dashboard.Data.Context
             new StaticBranchPanel()
             {
                 Title = "Fancy Title 2",
-                Position = new PanelPosition() {Column = 2, Row = 0, Width = 2, Height = 1},
+                Position = new PanelPosition() {Column = 2, Row = 0, Width = 4, Height = 1},
                 Project = SeedProjects.ElementAt(0),
                 StaticBranchName = "master",
             }
@@ -42,11 +42,12 @@ namespace Dashboard.Data.Context
         {
             new Project()
             {
+                ProjectTitle = "GitLab CE",
                 DataProviderName = "GitLab",
                 ApiHostUrl = "https://gitlab.com",
                 ApiProjectId = "13083",
                 ApiAuthenticationToken = "6h-Xjym_EFy8DBxPDR9z",
-                Pipelines = new List<Pipeline>()
+                StaticPipelines = new List<Pipeline>()
                 {
                     new Pipeline()
                     {

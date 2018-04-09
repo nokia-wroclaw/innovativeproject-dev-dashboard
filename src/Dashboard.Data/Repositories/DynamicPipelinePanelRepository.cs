@@ -15,7 +15,7 @@ namespace Dashboard.Data.Repositories
     {
         private IIncludableQueryable<DynamicPipelinesPanel, object> EagerPanels => Context.Set<DynamicPipelinesPanel>()
                                                                         .Include(p => p.Project)
-                                                                            .ThenInclude(p => p.Pipelines)
+                                                                            .ThenInclude(p => p.DynamicPipelines)
                                                                                 .ThenInclude(p => p.Stages)
                                                                         .Include(p => p.Position);
 
