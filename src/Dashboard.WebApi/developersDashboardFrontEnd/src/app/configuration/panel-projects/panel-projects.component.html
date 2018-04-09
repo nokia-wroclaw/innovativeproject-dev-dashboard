@@ -7,6 +7,9 @@
 
   <form #projectForm="ngForm" (ngSubmit)="addProject()">
     <mat-card-content>
+        <mat-form-field class=" example-full-width ">
+            <input type="text" matInput placeholder="projectTitle " required [(ngModel)]="project.projectTitle" name="projectTitle">
+          </mat-form-field>
       <mat-form-field class=" example-full-width ">
         <input type="text" matInput placeholder="apiHostUrl " required [(ngModel)]="project.apiHostUrl" name="apiHostUrl">
       </mat-form-field>

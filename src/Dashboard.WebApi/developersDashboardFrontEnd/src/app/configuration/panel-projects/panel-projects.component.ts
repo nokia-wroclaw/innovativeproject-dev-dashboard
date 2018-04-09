@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
 })
 export class PanelProjectsComponent implements OnInit {
 
-  project = new Project('', '', '', '', undefined);
+  project = new Project('','', '', '', '', undefined);
   dataProviderNames = new SupportedProviders(undefined);
 
   constructor(private projectApiService : ProjectsApiService, private router : Router, private zone : NgZone,) {
@@ -21,7 +21,6 @@ export class PanelProjectsComponent implements OnInit {
   }
   
   addProject() {
-    console.log('XD');
     console.log(this.project);
     if (!this.project) {
       return;

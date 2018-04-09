@@ -20,12 +20,14 @@ export class SupportedProviders{
 }
 
 export class Project {
+    
     id : number;
+    projectTitle : string;
     apiHostUrl : string;
     apiProjectId : string;
     apiAuthenticationToken : string;
     dataProviderName : string;
     pipelines : Pipeline[];
-    constructor(apiHostUrl : string, apiProjectId : string, apiAuthenticationToken : string, dataProviderName : string, pipelines : Pipeline[]) {}
+    constructor(projectTitle : string,apiHostUrl : string, apiProjectId : string, apiAuthenticationToken : string, dataProviderName : string, pipelines : Pipeline[]) {}
 
 }
