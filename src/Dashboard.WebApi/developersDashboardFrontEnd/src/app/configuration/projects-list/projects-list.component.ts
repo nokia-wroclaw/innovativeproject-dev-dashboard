@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
-import {Project} from '../../projects-manager/project';
+import {Project, SupportedProviders} from '../../projects-manager/project';
 
 @Component({selector: 'app-projects-list', templateUrl: './projects-list.component.html', styleUrls: ['./projects-list.component.css']})
 export class ProjectsListComponent implements OnInit {

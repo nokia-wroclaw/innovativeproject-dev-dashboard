@@ -16,7 +16,6 @@ export class ProjectsApiService implements OnDestroy {
     private baseUrl: string = "/api/project";
 
     private poolingInterval: number = 10000;
-
     private projects: BehaviorSubject<Project[]> = new BehaviorSubject<Project[]>([]);
     private projectsPulling: Subscription;
 
@@ -47,5 +46,11 @@ export class ProjectsApiService implements OnDestroy {
             this.asyncPull.next(true);
             return Observable.of(project);
         });
+    }
+
+    private url: string = "api/DashboardData/SupportedProviders";
+
+    getSupportedProvidersForProjects(): Observable<string[]> {
+        return this.http.get <string[]> (this.url);
     }
 }
