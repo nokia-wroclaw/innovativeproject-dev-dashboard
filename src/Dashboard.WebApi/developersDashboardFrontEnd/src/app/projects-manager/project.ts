@@ -14,6 +14,11 @@ export interface Stage {
     stageStatus : string;
 }
 
+export class SupportedProviders{
+    data : string[];
+    constructor(data : string[]) {}
+}
+
 export class Project {
     id : number;
     apiHostUrl : string;
