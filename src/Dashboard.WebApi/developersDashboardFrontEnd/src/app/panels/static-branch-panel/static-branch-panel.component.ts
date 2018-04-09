@@ -44,8 +44,8 @@ export class StaticBranchPanelComponent implements OnDestroy, IPanelComponent<St
     // subscribtion for further updates of related project
     this.pipelineSub = this.projectsApi.getProject(this.panel.projectId)
       .filter(project => project != null)
-      .filter(project => project.pipelines != null)
-      .map(project => project.pipelines.find(pipeline => pipeline.ref == this.panel.staticBranchName))
+      .filter(project => project.staticPipelines != null)
+      .map(project => project.staticPipelines.find(pipeline => pipeline.ref == this.panel.staticBranchName))
       .subscribe(pipeline => this.pipeline = pipeline);
   }
 
