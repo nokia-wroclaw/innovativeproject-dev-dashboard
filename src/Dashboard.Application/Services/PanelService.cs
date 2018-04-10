@@ -4,6 +4,7 @@ using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces.Repositories;
 using Dashboard.Data.Repositories;
+using Hangfire;
 
 namespace Dashboard.Application.Services
 {
@@ -66,6 +67,8 @@ namespace Dashboard.Application.Services
 
             var r = await _panelRepository.AddAsync(model);
             await _panelRepository.SaveAsync();
+
+            BackgroundJob.Enqueue<IProjectService>(s => s.UpdateCiDataForProjectAsync(projectId));
 
             return r;
         }

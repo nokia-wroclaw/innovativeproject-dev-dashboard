@@ -10,7 +10,7 @@ namespace Dashboard.Application
         public static void Register()
         {
             //Fetch Data Panels Project
-            RecurringJob.AddOrUpdate<EnqueueFetchProjectsCiDataJob>("fetch-data-panels-project",
+            RecurringJob.AddOrUpdate<EnqueueFetchProjectsCiDataJob>("fetch-cidata-projects",
                 j => j.EnqueueFetching(), EnqueueFetchProjectsCiDataJob.CronExpression);
         }
     }
