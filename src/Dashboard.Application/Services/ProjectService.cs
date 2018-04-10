@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
@@ -124,7 +125,7 @@ namespace Dashboard.Application.Services
             var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
 
             //Apparently faster way than LINQ, merge collections, discard duplicates
-            Dictionary<string, Pipeline> dict = new Dictionary<string, Pipeline>();
+            var dict = new Dictionary<string, Pipeline>();
             foreach (var pipe in updatedPipelines)
             {
                 dict[pipe.Ref] = pipe;
@@ -152,22 +153,24 @@ namespace Dashboard.Application.Services
             project.DynamicPipelines = updatedPipesWithFullInfo.Where(p => !staticBranches.Contains(p.Ref)).Select(p => p).ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
-
             await _projectRepository.SaveAsync();
+
+
+            var before = GC.GetTotalMemory(true);
+
+            downloadedPipelines = null;
+            staticBranches = null;
+            updatePiplineTasks = null;
+            updatedPipelines = null;
+            dict = null;
+            updatedPipesWithFullInfoTasks = null;
+            updatedPipesWithFullInfo = null;
+
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            var after = GC.GetTotalMemory(true);
         }
-
-        //private async Task<int> GetNumberOfDiscoveryPipelines(int projectId)
-        //{
-        //    var dynamicPanels = await _panelRepository.FindAllAsync(p => p.Discriminator == "DynamicPipelinesPanel" && p.ProjectId == projectId);
-        //    if (dynamicPanels == null)
-        //        return 0;
-        //    int dynamicPipelines = 0;
-        //    foreach (var panel in dynamicPanels)
-        //    {
-        //        dynamicPipelines += ((DynamicPipelinesPanel)panel).HowManyLastPipelinesToRead;
-        //    }
-
-        //    return dynamicPipelines;
-        //}
     }
 }

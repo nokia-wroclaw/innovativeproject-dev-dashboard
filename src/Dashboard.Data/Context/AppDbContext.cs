@@ -26,6 +26,7 @@ namespace Dashboard.Data.Context
             builder.Entity<Pipeline>(m =>
             {
                 m.HasKey(p => p.Id);
+                m.HasMany(p => p.Stages);
             });
 
             builder.Entity<Stage>(m =>

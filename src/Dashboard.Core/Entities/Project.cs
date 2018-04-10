@@ -13,7 +13,7 @@ namespace Dashboard.Core.Entities
         public string ApiAuthenticationToken { get; set; }
         public string DataProviderName { get; set; }
 
-        public virtual IEnumerable<Pipeline> StaticPipelines { get; set; } = new List<Pipeline>();
-        public virtual IEnumerable<Pipeline> DynamicPipelines { get; set; } = new List<Pipeline>();
+        public List<Pipeline> StaticPipelines { get; set; }
+        public List<Pipeline> DynamicPipelines { get; set; }
     }
 }

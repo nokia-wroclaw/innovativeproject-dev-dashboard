@@ -24,7 +24,7 @@ namespace Dashboard.Application
             builder.RegisterType<DynamicPipelinePanelRepository>().As<IDynamicPipelinePanelRepository>();
 
             //Register services
-            builder.RegisterType<PanelService>().As<IPanelService>().SingleInstance();
+            builder.RegisterType<PanelService>().As<IPanelService>();
             builder.RegisterType<ProjectService>().As<IProjectService>();
 
             builder.RegisterType<GitLabDataProvider>().As<ICiDataProvider>();
