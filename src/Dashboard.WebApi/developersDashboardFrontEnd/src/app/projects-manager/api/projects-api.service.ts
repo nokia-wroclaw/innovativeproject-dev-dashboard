@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
@@ -52,5 +52,12 @@ export class ProjectsApiService implements OnDestroy {
 
     getSupportedProvidersForProjects(): Observable<string[]> {
         return this.http.get <string[]> (this.url);
+    }
+
+    getMatchingBranches(projectId: number, searchValue: string): Observable<string[]> {
+
+        const options = projectId && searchValue ? { params: new HttpParams().set('projectId', projectId.toString()).set('searchValue', searchValue) } : {};
+
+        return this.http.get<string[]>('/api/DashboardData/SearchForBranch', options);
     }
 }

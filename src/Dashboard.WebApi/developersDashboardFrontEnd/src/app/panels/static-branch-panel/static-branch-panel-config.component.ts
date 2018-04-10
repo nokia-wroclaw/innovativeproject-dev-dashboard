@@ -3,19 +3,31 @@ import {IPanelConfigComponent} from "../panel.component";
 import {PanelsConfigApiService} from "../panels-config-api.service";
 import {Observable} from "rxjs/Observable";
 import {StaticBranchPanel} from "./static-branch";
+import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
+import {FormControl} from '@angular/forms';
 
 @Component({template: `
     <mat-form-field class="example-full-width">
-        <input matInput placeholder="Branch name" required [(ngModel)]="panel.staticBranchName" name="token">
+        <input matInput placeholder="Branch name" required [(ngModel)]="panel.staticBranchName" name="token" [formControl]="branchNameControl" [matAutocomplete]="auto">
     </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of branchNameAutocompleteOptions" [value]="option">
+            {{ option }}
+        </mat-option>
+    </mat-autocomplete>
 `, styleUrls: ['./../../configuration/panel.shared.css']})
-export class StaticBranchPanelConfigComponent implements OnInit, IPanelConfigComponent<StaticBranchPanel> {
+export class StaticBranchPanelConfigComponent implements OnInit,
+IPanelConfigComponent < StaticBranchPanel > {
 
     createPanelUrl : string = "/api/Panel/CreateStaticBranchPanel";
 
     panel : StaticBranchPanel;
 
-    constructor(private panelsConfigApi : PanelsConfigApiService) {}
+    branchNameControl : FormControl = new FormControl();
+
+    branchNameAutocompleteOptions : string[];
+
+    constructor(private panelsConfigApi : PanelsConfigApiService, private projectsApi : ProjectsApiService) {}
 
     isValid() : boolean {
         return this.panel.staticBranchName != null && this.panel.staticBranchName != '';
@@ -24,13 +36,28 @@ export class StaticBranchPanelConfigComponent implements OnInit, IPanelConfigCom
     setPanel(panel : any) {
         this.panel = panel;
     }
-    postPanel() : Observable<StaticBranchPanel> {
-        return this.panelsConfigApi.savePanel<StaticBranchPanel>(this.createPanelUrl, this.panel)
-        .map(response => {console.log(response); return response});
+    postPanel() : Observable < StaticBranchPanel > {
+        return this.panelsConfigApi.savePanel < StaticBranchPanel > (this.createPanelUrl, this.panel).map(response => {
+            console.log(response);
+            return response
+        });
     }
 
     ngOnInit() {
-
+        this
+            .branchNameControl
+            .valueChanges
+            .filter(val => val != null)
+            .filter(val => val.length >= 3)
+            .filter(val => this.panel.projectId != null)
+            .subscribe(val => {
+                this
+                    .projectsApi
+                    .getMatchingBranches(this.panel.projectId, val)
+                    .filter(matchingBranches => matchingBranches != null)
+                    .map(matchingBranches => matchingBranches.sort((a, b) => a.length - b.length))
+                    .subscribe(matchingBranches => this.branchNameAutocompleteOptions = matchingBranches);
+            });
     }
 
 }
