@@ -154,23 +154,6 @@ namespace Dashboard.Application.Services
 
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
-
-
-            var before = GC.GetTotalMemory(true);
-
-            downloadedPipelines = null;
-            staticBranches = null;
-            updatePiplineTasks = null;
-            updatedPipelines = null;
-            dict = null;
-            updatedPipesWithFullInfoTasks = null;
-            updatedPipesWithFullInfo = null;
-
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            var after = GC.GetTotalMemory(true);
         }
     }
 }
