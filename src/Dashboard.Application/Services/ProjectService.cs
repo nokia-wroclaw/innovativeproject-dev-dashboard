@@ -132,7 +132,8 @@ namespace Dashboard.Application.Services
             }
             foreach (var pipe in downloadedPipelines)
             {
-                dict[pipe.Ref] = pipe;
+                if(!dict.ContainsKey(pipe.Ref))
+                    dict[pipe.Ref] = pipe;
             }
             updatedPipelines = dict.Values.Take((await _dynamicPipelinesPanelRepository.GetNumberOfDiscoverPipelinesForProject(projectId) + staticBranches.Count())).ToList();
 
