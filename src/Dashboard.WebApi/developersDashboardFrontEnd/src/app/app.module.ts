@@ -62,6 +62,9 @@ import {RandomMemeService} from "./panels/random-meme-panel/random-meme.service"
 import {StaticBranchPanelComponent} from "./panels/static-branch-panel/static-branch-panel.component";
 import {StaticBranchPanelConfigComponent} from "./panels/static-branch-panel/static-branch-panel-config.component";
 import { PanelTypeService } from './panel-manager/service/panel-type/panel-type.service';
+import { LastPipelinesPanelComponent } from './panels/last-pipelines-panel/last-pipelines-panel.component';
+import { LastPipelinesPanelConfigComponent } from './panels/last-pipelines-panel/last-pipelines-panel-config.component';
+import { PipelineViewComponent } from './panels/shared/pipeline-view/pipeline-view.component';
 
 const appRoutes : Routes = [
   {
@@ -98,7 +101,10 @@ const appRoutes : Routes = [
     RandomMemePanelComponent,
     RandomMemePanelConfigComponent,
     StaticBranchPanelComponent,
-    StaticBranchPanelConfigComponent
+    StaticBranchPanelConfigComponent,
+    LastPipelinesPanelComponent,
+    LastPipelinesPanelConfigComponent,
+    PipelineViewComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),
@@ -152,7 +158,7 @@ const appRoutes : Routes = [
     PanelsConfigApiService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [RandomMemePanelComponent, RandomMemePanelConfigComponent, StaticBranchPanelComponent, StaticBranchPanelConfigComponent]
+  entryComponents: [RandomMemePanelComponent, RandomMemePanelConfigComponent, StaticBranchPanelComponent, StaticBranchPanelConfigComponent, LastPipelinesPanelComponent, LastPipelinesPanelConfigComponent]
 })
 export class AppModule {}
 

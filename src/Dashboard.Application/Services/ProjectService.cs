@@ -137,20 +137,22 @@ namespace Dashboard.Application.Services
 
             var updatedPipesWithFullInfoTasks = updatedPipelines
                                             .Select(p => dataProvider.GetSpecificPipeline(
-                                                project.ApiHostUrl, 
-                                                project.ApiAuthenticationToken, 
-                                                project.ApiProjectId, 
+                                                project.ApiHostUrl,
+                                                project.ApiAuthenticationToken,
+                                                project.ApiProjectId,
                                                 p.DataProviderId.ToString())
                                             );
             var updatedPipesWithFullInfo = (await Task.WhenAll(updatedPipesWithFullInfoTasks)).ToList();
 
             //Delete old Pipelines
-            _pipelineRepository.DeleteRange(project.Pipelines);
+            _pipelineRepository.DeleteRange(project.StaticPipelines);
+            _pipelineRepository.DeleteRange(project.DynamicPipelines);
 
-            project.Pipelines = updatedPipesWithFullInfo;
+            project.StaticPipelines = updatedPipesWithFullInfo.Where(p => staticBranches.Contains(p.Ref)).Select(p => p).ToList();
+            project.DynamicPipelines = updatedPipesWithFullInfo.Where(p => !staticBranches.Contains(p.Ref)).Select(p => p).ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
-            
+
             await _projectRepository.SaveAsync();
         }
 

@@ -48,7 +48,8 @@ namespace Dashboard.Data.Context
                 m.Property(p => p.ApiHostUrl).IsRequired();
                 m.Property(p => p.DataProviderName).IsRequired();
 
-                m.HasMany(p => p.Pipelines);
+                m.HasMany(p => p.StaticPipelines);
+                m.HasMany(p => p.DynamicPipelines);
             });
 
             builder.Entity<BranchName>(m =>
