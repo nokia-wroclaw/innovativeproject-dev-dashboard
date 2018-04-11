@@ -3,6 +3,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dashboard.Application;
 using Dashboard.Data.Context;
+using Dashboard.WebApi.Infrastructure;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -90,7 +91,11 @@ namespace Dashboard.WebApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard(options: new DashboardOptions()
+            {
+                AppPath = "/hangfire",
+                Authorization = new[] { new HangfireAuthorizationFilter(),  }
+            });
             app.UseHangfireServer();
 
 
