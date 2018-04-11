@@ -114,53 +114,36 @@ namespace Dashboard.Application.Services
 
             //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
+
             var staticBranches = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
-            Pipeline[] updatedPipesWithFullInfo = null;
-            try
-            {
-                var updatePiplineTasks = staticBranches.Select(b =>
-                    dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b));
+            var updatePiplineTasks = staticBranches.Select(b =>
+                dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b));
 
-                var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
+            var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
 
-                //Apparently faster way than LINQ, merge collections, discard duplicates
-                var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl,
-                    project.ApiAuthenticationToken, project.ApiProjectId);
+            //Apparently faster way than LINQ, merge collections, discard duplicates
+            var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl,
+                project.ApiAuthenticationToken, project.ApiProjectId);
 
-                var dict = updatedPipelines.ToDictionary(k => k.Ref, v => v);
-                downloadedPipelines
-                    .Where(pipe => !dict.ContainsKey(pipe.Ref))
-                    .ToList()
-                    .ForEach(pipe => dict[pipe.Ref] = pipe);
+            var dict = updatedPipelines.ToDictionary(k => k.Ref, v => v);
+            downloadedPipelines
+                .Where(pipe => !dict.ContainsKey(pipe.Ref))
+                .ToList()
+                .ForEach(pipe => dict[pipe.Ref] = pipe);
 
 
-                updatedPipelines = dict.Values
-                    .Take(await _dynamicPipelinesPanelRepository.GetNumberOfDiscoverPipelinesForProject(projectId) +
-                          staticBranches.Count()).ToList();
+            updatedPipelines = dict.Values
+                .Take(await _dynamicPipelinesPanelRepository.GetNumberOfDiscoverPipelinesForProject(projectId) +
+                        staticBranches.Count()).ToList();
 
-                var updatedPipesWithFullInfoTasks = updatedPipelines.Select(p => dataProvider.GetSpecificPipeline(
-                    project.ApiHostUrl,
-                    project.ApiAuthenticationToken,
-                    project.ApiProjectId,
-                    p.DataProviderId.ToString())
-                );
-                updatedPipesWithFullInfo = await Task.WhenAll(updatedPipesWithFullInfoTasks);
-            }
-            catch (ApplicationHttpRequestException ex)
-            {
-                _logger.LogWarning("ApplicationHttpRequestException " + JsonConvert.SerializeObject(new
-                {
-                    Response = new
-                    {
-                        StatusCode = ex.Response.StatusCode,
-                        StatusDescription = ex.Response.StatusDescription,
-                        Content = ex.Response.Content,
-                        IsSuccessful = ex.Response.IsSuccessful,
-                        ResponseStatus = ex.Response.ResponseStatus,
-                    }
-                }));
-                return;
-            }
+            var updatedPipesWithFullInfoTasks = updatedPipelines.Select(p => dataProvider.GetSpecificPipeline(
+                project.ApiHostUrl,
+                project.ApiAuthenticationToken,
+                project.ApiProjectId,
+                p.DataProviderId.ToString())
+            );
+            var updatedPipesWithFullInfo = await Task.WhenAll(updatedPipesWithFullInfoTasks);
+
 
             //Delete old Pipelines
             _pipelineRepository.DeleteRange(project.StaticPipelines);
@@ -173,6 +156,8 @@ namespace Dashboard.Application.Services
 
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
+
+            _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
     }
 }
