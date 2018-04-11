@@ -61,6 +61,7 @@ namespace Dashboard.Application
 
             return new Pipeline
             {
+                ProjectId = apiHost + "/" + apiProjectId,
                 DataProviderId = pipeline.Id,
                 Ref = pipeline.Ref,
                 Sha = pipeline.Sha,
@@ -83,13 +84,16 @@ namespace Dashboard.Application
             var apiClient = new GitLabClient(apiHost, apiKey);
             var jobs = await apiClient.GetJobs(apiProjectId, pipeId);
 
+            var grouped = jobs.GroupBy(j => j.Stage);
+
             var stages = jobs.GroupBy(j => j.Stage)
-                                .Select(s => 
+                                .Select(s =>
                                 new Stage()
                                 {
                                     StageName = s.Key,
-                                    Jobs = s.Select(p => new Job() { Name = p.Name, Status = p.Status }).ToList()
+                                    StageStatus = s.Any(p => p.Status == "running") ? "running" : (s.Any(p => p.Status == "manual") ? "manual" : (s.Any(p => p.Status == "failed") ? "failed" : (s.All(p => p.Status == "skipped")) ? "skipped" : (s.All(p => p.Status == "success") ? "success" : "created"))),
                                 });
+
             return stages;
         }
     }

@@ -13,9 +13,11 @@ namespace Dashboard.Data.Repositories
     {
         private IIncludableQueryable<Panel, object> EagerPanels => Context.Set<Panel>()
                                                                         .Include(p => p.Project)
-                                                                            .ThenInclude(p => p.Pipelines)
+                                                                            .ThenInclude(p => p.StaticPipelines)
                                                                                 .ThenInclude(p => p.Stages)
-                                                                                    .ThenInclude(p => p.Jobs)
+                                                                        .Include(p => p.Project)
+                                                                            .ThenInclude(p => p.DynamicPipelines)
+                                                                                .ThenInclude(p => p.Stages)
                                                                         .Include(p => p.Position);
 
 
@@ -33,6 +35,15 @@ namespace Dashboard.Data.Repositories
         {
             return await EagerPanels
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<int>> GetActiveProjectIds()
+        {
+            return await Context.Set<Panel>()
+                .Include(p => p.Project)
+                .Select(p => p.Project.Id)
+                .Distinct()
+                .ToListAsync();
         }
     }
 }

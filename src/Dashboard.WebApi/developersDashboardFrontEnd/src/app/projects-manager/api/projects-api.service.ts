@@ -1,33 +1,63 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';;
+import { Injectable, OnDestroy } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Response } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 
-import {Project, Pipeline} from "./../project";
+import { Project, Pipeline } from "./../project";
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import 'rxjs/Rx';
+import { Subscription } from 'rxjs/Rx';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
-export class ProjectsApiService {
+export class ProjectsApiService implements OnDestroy {
 
-    private baseUrl : string = "/api/project";
+    private baseUrl: string = "/api/project";
 
-    constructor(private http : HttpClient) {
-        // temp interval poking backend to update data
-        setInterval(() => {
-            http.post("/api/DashboardData/UpdateCiDataForProject/1", null).subscribe(() => console.log('temp pooling'));
-        }, 30000)
+    private poolingInterval: number = 10000;
+    private projects: BehaviorSubject<Project[]> = new BehaviorSubject<Project[]>([]);
+    private projectsPulling: Subscription;
+
+    // Writting to this subject causes an immidiate fetch of projects from backend API.
+    private asyncPull: Subject<boolean> = new Subject();
+
+    constructor(private http: HttpClient) {
+        this.projectsPulling = Observable.merge(
+            Observable.interval(this.poolingInterval).startWith(0),
+            this.asyncPull.asObservable()).switchMap(() => this.http.get<Project[]>(this.baseUrl))
+            .subscribe(projects => this.projects.next(projects));
     }
 
-    getProjects() : Observable < Project[] > {
-        return this.http.get < Project[] > (this.baseUrl);
+    ngOnDestroy(): void {
+        this.projectsPulling.unsubscribe();
     }
 
-    // it is called individualy from every panel. could be opt with ReplaySubject TODO
-    getProject(id : number) : Observable < Project > {
-        return this.http.get < Project > (this.baseUrl + "/" + id);
+    getProjects(): Observable<Project[]> {
+        return this.projects;
     }
 
-    addProject(project : Project) : Observable < Project > {
-        return this.http.post < Project > (this.baseUrl, project);
+    getProject(id: number): Observable<Project> {
+        return this.projects.map(projects => projects.find(project => project.id == id));
     }
 
+    addProject(project: Project): Observable<Project> {
+        return this.http.post<Project>(this.baseUrl, project).flatMap(project => {
+            this.asyncPull.next(true);
+            return Observable.of(project);
+        });
+    }
+
+    private url: string = "api/DashboardData/SupportedProviders";
+
+    getSupportedProvidersForProjects(): Observable<string[]> {
+        return this.http.get <string[]> (this.url);
+    }
+
+    getMatchingBranches(projectId: number, searchValue: string): Observable<string[]> {
+
+        const options = projectId && searchValue ? { params: new HttpParams().set('projectId', projectId.toString()).set('searchValue', searchValue) } : {};
+
+        return this.http.get<string[]>('/api/DashboardData/SearchForBranch', options);
+    }
 }

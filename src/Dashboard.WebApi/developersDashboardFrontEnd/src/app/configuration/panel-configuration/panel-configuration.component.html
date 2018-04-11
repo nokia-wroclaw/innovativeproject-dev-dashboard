@@ -25,7 +25,7 @@
      <mat-form-field>
       <mat-select placeholder="Projects" required [(ngModel)]="panel.projectId" name="project">
         <mat-option *ngFor="let project of projects" [value]="project.id">
-          {{project.apiProjectId}}
+          {{project.projectTitle}}
         </mat-option>
       </mat-select>
     </mat-form-field> 
@@ -37,7 +37,7 @@
 
     <mat-card-actions>
       <button  type="submit" [disabled]="!panelForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
-      <button  mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
+      <button  [routerLink]="'/'" mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
     </mat-card-actions>
 
   </form>

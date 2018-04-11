@@ -44,6 +44,7 @@ namespace Dashboard.WebApi.Controllers
             //TODO: change when automapper
             var project = new Project()
             {
+                ProjectTitle = model.ProjectTitle,
                 ApiAuthenticationToken = model.ApiAuthenticationToken,
                 ApiHostUrl = model.ApiHostUrl,
                 ApiProjectId = model.ApiProjectId,
@@ -63,6 +64,7 @@ namespace Dashboard.WebApi.Controllers
             var updatedProject = new Project()
             {
                 Id = id,
+                ProjectTitle = model.ProjectTitle,
                 ApiAuthenticationToken = model.ApiAuthenticationToken,
                 ApiHostUrl = model.ApiHostUrl,
                 ApiProjectId = model.ApiProjectId,

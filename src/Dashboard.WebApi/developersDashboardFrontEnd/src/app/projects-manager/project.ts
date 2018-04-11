@@ -11,24 +11,25 @@ export interface Pipeline {
 
 export interface Stage {
     stageName : string;
-    jobs : Job[];
+    stageStatus : string;
 }
 
-// export enum JobStatus {     created, manual, success, prepare, canceled,
-// failed, running }
-
-export interface Job {
-    name : string;
-    status : string;
+export class SupportedProviders{
+    data : string[];
+    constructor(data : string[]) {}
 }
 
 export class Project {
+    
     id : number;
+    projectTitle : string;
     apiHostUrl : string;
     apiProjectId : string;
     apiAuthenticationToken : string;
     dataProviderName : string;
-    pipelines : Pipeline[];
-    constructor(apiHostUrl : string, apiProjectId : string, apiAuthenticationToken : string, dataProviderName : string, pipelines : Pipeline[]) {}
+    staticPipelines : Pipeline[];
+    dynamicPipelines : Pipeline[];
+
+    constructor(projectTitle : string,apiHostUrl : string, apiProjectId : string, apiAuthenticationToken : string, dataProviderName : string, pipelines : Pipeline[]) {}
 
 }

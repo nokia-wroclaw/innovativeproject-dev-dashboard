@@ -4,27 +4,53 @@ dotnet: 2.0.0
 sudo: required
 notifications:
    slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
-addons:
-    chrome: stable
-apt:
-    sources:
-        - google-chrome
-    packages:
-        - google-chrome-stable
-        - google-chrome-beta
+env:
+  - DOCKER_COMPOSE_VERSION=1.20.1
 before_install:
-    - export CHROME_BIN=chromium-browser
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
+  - docker ps
+stages:
+  - build_all
+  - test
+  - name: deploy_images_to_registry
+    if: (branch = develop) AND (type IN (push))
+  - name: deploy_to_heroku
+    if: (branch = develop) AND (type IN (push))
 jobs:
     include:
-        - stage: frontendBuild
-          script: 
-            - cd src/Dashboard.WebApi/developersDashboardFrontEnd
-            - npm install
-            - npm build
-            - npm test
-        - stage: backendBuild
+        - stage: build_all
+          script: docker-compose -f ./src/docker-compose.yml build dashboard.webapi
+        - script: docker-compose -f ./src/docker-compose.yml build dashboard.web
+
+        - stage: test
           script:
-            - dotnet restore ./src
-            - dotnet build ./src/Dashboard.sln
+            - docker-compose -f ./src/docker-compose.tests.yml run --rm webapi.unittests
+        - script: docker-compose -f ./src/docker-compose.tests.yml run --rm frontend.test npm run test
+        #- script: docker-compose -f ./src/docker-compose.tests.yml run --rm frontend.test npm run e2e
+        #- script: docker-compose -f ./src/docker-compose.tests.yml run --rm frontend.test npm run lint
+
+        - stage: deploy_images_to_registry
+          script:
+            - docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD
+            - docker-compose -f ./src/docker-compose.yml build dashboard.webapi
+            - docker-compose -f ./src/docker-compose.yml push dashboard.webapi
+        - script:
+            - docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD
+            - docker-compose -f ./src/docker-compose.yml build dashboard.web
+            - docker-compose -f ./src/docker-compose.yml push dashboard.web
+
+        - stage: deploy_to_heroku
+          script:
+            - docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
+            - docker pull registry.hub.docker.com/randomdocker729/cidashboard-webapi:latest
+            - docker tag registry.hub.docker.com/randomdocker729/cidashboard-webapi:latest registry.heroku.com/cidasherapi/web
+            - docker push registry.heroku.com/cidasherapi/web
+        - script:
+          - docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
+          - docker pull registry.hub.docker.com/randomdocker729/cidashboard-frontend:latest
+          - docker tag registry.hub.docker.com/randomdocker729/cidashboard-frontend:latest registry.heroku.com/cidasher/web
+          - docker push registry.heroku.com/cidasher/web

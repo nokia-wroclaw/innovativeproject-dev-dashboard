@@ -26,6 +26,7 @@ namespace Dashboard.Data.Context
             builder.Entity<Pipeline>(m =>
             {
                 m.HasKey(p => p.Id);
+                m.HasMany(p => p.Stages);
             });
 
             builder.Entity<Stage>(m =>
@@ -48,7 +49,8 @@ namespace Dashboard.Data.Context
                 m.Property(p => p.ApiHostUrl).IsRequired();
                 m.Property(p => p.DataProviderName).IsRequired();
 
-                m.HasMany(p => p.Pipelines);
+                m.HasMany(p => p.StaticPipelines);
+                m.HasMany(p => p.DynamicPipelines);
             });
 
             builder.Entity<BranchName>(m =>

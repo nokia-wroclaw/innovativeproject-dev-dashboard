@@ -6,6 +6,8 @@ namespace Dashboard.WebApi.ApiModels.Requests
     public class UpdateProject
     {
         [Required]
+        public string ProjectTitle { get; set; }
+        [Required]
         public string ApiHostUrl { get; set; }
         [Required]
         public string ApiProjectId { get; set; }

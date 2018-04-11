@@ -14,6 +14,7 @@ namespace Dashboard.Core.Entities
         public int Id { get; set; }
 
         public int DataProviderId { get; set; }
+        public string ProjectId { get; set; }
         public string Sha{ get; set; }
         public string Ref { get; set; }
         public string Status { get; set; }

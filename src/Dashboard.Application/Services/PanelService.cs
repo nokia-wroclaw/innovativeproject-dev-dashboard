@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces.Repositories;
+using Dashboard.Data.Repositories;
+using Hangfire;
 
 namespace Dashboard.Application.Services
 {
@@ -34,7 +36,7 @@ namespace Dashboard.Application.Services
             if (enitty == null)
                 return;
 
-            await _panelRepository.DeleteAsync(enitty);
+            _panelRepository.Delete(enitty);
             await _panelRepository.SaveAsync();
         }
 
@@ -66,7 +68,14 @@ namespace Dashboard.Application.Services
             var r = await _panelRepository.AddAsync(model);
             await _panelRepository.SaveAsync();
 
+            BackgroundJob.Enqueue<IProjectService>(s => s.UpdateCiDataForProjectAsync(projectId));
+
             return r;
+        }
+
+        public async Task<IEnumerable<int>> GetActiveProjectIds()
+        {
+            return await _panelRepository.GetActiveProjectIds();
         }
 
         public async Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position)

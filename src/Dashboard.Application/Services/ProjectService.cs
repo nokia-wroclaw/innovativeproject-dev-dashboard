@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
@@ -11,21 +12,24 @@ namespace Dashboard.Application.Services
     //TODO: add some validation
     public class ProjectService : IProjectService
     {
+        private readonly IPipelineRepository _pipelineRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly IPanelRepository _panelRepository;
+        private readonly IDynamicPipelinePanelRepository _dynamicPipelinesPanelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
 
         public ProjectService(
-            IProjectRepository projectRepository, 
-            IPanelRepository panelRepository,
+            IPipelineRepository pipelineRepository,
+            IProjectRepository projectRepository,
+            IDynamicPipelinePanelRepository dynamicPipelinesPanelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
             ICiDataProviderFactory ciDataProviderFactory)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
-            _panelRepository = panelRepository;
+            _dynamicPipelinesPanelRepository = dynamicPipelinesPanelRepository;
             _staticBranchPanelRepository = staticBranchPanelRepository;
             _projectRepository = projectRepository;
+            _pipelineRepository = pipelineRepository;
         }
 
         public Task<Project> GetProjectByIdAsync(int id)
@@ -44,7 +48,7 @@ namespace Dashboard.Application.Services
             if (entity == null)
                 return;
 
-            await _projectRepository.DeleteAsync(entity);
+            _projectRepository.Delete(entity);
             await _projectRepository.SaveAsync();
         }
 
@@ -121,31 +125,35 @@ namespace Dashboard.Application.Services
             var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
 
             //Apparently faster way than LINQ, merge collections, discard duplicates
-            Dictionary<string, Pipeline> dict = new Dictionary<string, Pipeline>();
+            var dict = new Dictionary<string, Pipeline>();
             foreach (var pipe in updatedPipelines)
             {
-                dict[pipe.Sha] = pipe;
+                dict[pipe.Ref] = pipe;
             }
             foreach (var pipe in downloadedPipelines)
             {
-                dict[pipe.Sha] = pipe;
+                if(!dict.ContainsKey(pipe.Ref))
+                    dict[pipe.Ref] = pipe;
             }
-            updatedPipelines = dict.Values.Take(11 - updatedPipelines.Count).ToList();
+            updatedPipelines = dict.Values.Take((await _dynamicPipelinesPanelRepository.GetNumberOfDiscoverPipelinesForProject(projectId) + staticBranches.Count())).ToList();
 
             var updatedPipesWithFullInfoTasks = updatedPipelines
                                             .Select(p => dataProvider.GetSpecificPipeline(
-                                                project.ApiHostUrl, 
-                                                project.ApiAuthenticationToken, 
-                                                project.ApiProjectId, 
+                                                project.ApiHostUrl,
+                                                project.ApiAuthenticationToken,
+                                                project.ApiProjectId,
                                                 p.DataProviderId.ToString())
                                             );
             var updatedPipesWithFullInfo = (await Task.WhenAll(updatedPipesWithFullInfoTasks)).ToList();
 
+            //Delete old Pipelines
+            _pipelineRepository.DeleteRange(project.StaticPipelines);
+            _pipelineRepository.DeleteRange(project.DynamicPipelines);
 
-            project.Pipelines = updatedPipesWithFullInfo;
+            project.StaticPipelines = updatedPipesWithFullInfo.Where(p => staticBranches.Contains(p.Ref)).Select(p => p).ToList();
+            project.DynamicPipelines = updatedPipesWithFullInfo.Where(p => !staticBranches.Contains(p.Ref)).Select(p => p).ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
-
             await _projectRepository.SaveAsync();
         }
     }

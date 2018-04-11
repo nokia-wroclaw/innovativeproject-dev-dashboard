@@ -14,7 +14,8 @@ namespace Dashboard.Core.Interfaces.Repositories
     {
         Task<T> AddAsync(T t);
         Task<int> CountAsync();
-        Task<int> DeleteAsync(T entity);
+        void Delete(T entity);
+        void DeleteRange(IEnumerable<T> entities);
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> match);
         Task<T> FindOneByAsync(Expression<Func<T, bool>> match);
         Task<IEnumerable<T>> FindByAsync(Expression<Func<T, bool>> predicate);

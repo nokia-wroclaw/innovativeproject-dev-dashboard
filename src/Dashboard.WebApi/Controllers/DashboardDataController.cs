@@ -33,18 +33,5 @@ namespace Dashboard.WebApi.Controllers
             var result = await _projectService.SearchForBranchInProject(projectId, searchValue);
             return result;
         }
-
-        //api/DashboardData/UpdateCiDataForProject
-        [HttpPost("{id}")]
-        public async Task<IActionResult> UpdateCiDataForProject(int id) //Move to project controller?
-        {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
-                return NotFound();
-
-            await _projectService.UpdateCiDataForProjectAsync(id);
-
-            return Ok();
-        }
     }
 }

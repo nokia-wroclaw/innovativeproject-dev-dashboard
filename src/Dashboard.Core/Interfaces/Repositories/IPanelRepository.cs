@@ -8,6 +8,7 @@ namespace Dashboard.Core.Interfaces.Repositories
 {
     public interface IPanelRepository : IEfRepository<Panel>
     {
+        Task<IEnumerable<int>> GetActiveProjectIds();
     }
 
     public interface IStaticBranchPanelRepository : IEfRepository<StaticBranchPanel>
@@ -19,7 +20,9 @@ namespace Dashboard.Core.Interfaces.Repositories
     {
     }
 
-    public interface IDynamicPipelinesPanelRepository : IEfRepository<DynamicPipelinesPanel>
+    public interface IDynamicPipelinePanelRepository : IEfRepository<DynamicPipelinesPanel>
     {
+        Task<IEnumerable<DynamicPipelinesPanel>> GetDynamicPanelsForProject(int projectId);
+        Task<int> GetNumberOfDiscoverPipelinesForProject(int projectId);
     }
 }
