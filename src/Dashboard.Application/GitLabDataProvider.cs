@@ -84,8 +84,6 @@ namespace Dashboard.Application
             var apiClient = new GitLabClient(apiHost, apiKey);
             var jobs = await apiClient.GetJobs(apiProjectId, pipeId);
 
-            var grouped = jobs.GroupBy(j => j.Stage);
-
             var stages = jobs.GroupBy(j => j.Stage)
                                 .Select(s =>
                                 new Stage()

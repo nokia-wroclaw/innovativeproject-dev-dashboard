@@ -71,33 +71,34 @@ namespace Dashboard.WebApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseApplicationHttpRequestExceptionMiddleware();
             }
             else
             {
+                app.UseApplicationHttpRequestExceptionMiddleware();
                 app.UseExceptionHandler("/Home/Error");
             }
 
             app.UseStaticFiles();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
+            app
+                .UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
 
-            app.UseHangfireDashboard(options: new DashboardOptions()
+            app.UseHangfireServer().UseHangfireDashboard(options: new DashboardOptions()
             {
                 AppPath = "/hangfire",
-                Authorization = new[] { new HangfireAuthorizationFilter(),  }
+                Authorization = new[] { new HangfireAuthorizationFilter(), }
             });
-            app.UseHangfireServer();
-
 
             CronJobs.Register();
 
