@@ -50,7 +50,7 @@ namespace Dashboard.Application.GitLabApi
             if (!string.IsNullOrEmpty(branchName))
                 request.AddQueryParameter("ref", branchName);
 
-            return EnsureSuccess(() => Client.ExecuteTaskAsync<IEnumerable<Pipeline>>(request));
+            return Client.ExecuteTaskAsync<IEnumerable<Pipeline>>(request).EnsureSuccess();
         }
 
         public async Task<Branch> GetBranch(string projectId, string branchName)
@@ -65,7 +65,7 @@ namespace Dashboard.Application.GitLabApi
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
             request.AddUrlSegment("branchName", branchName);
 
-            return EnsureSuccess(() => Client.ExecuteTaskAsync<IEnumerable<Branch>>(request));
+            return Client.ExecuteTaskAsync<IEnumerable<Branch>>(request).EnsureSuccess();
         }
 
         public async Task<Commit> GetCommitBySHA(string projectId, string commitSHA)
@@ -80,7 +80,7 @@ namespace Dashboard.Application.GitLabApi
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
             request.AddUrlSegment("commitSHA", commitSHA);
 
-            return EnsureSuccess(() => Client.ExecuteTaskAsync<IEnumerable<Commit>>(request));
+            return Client.ExecuteTaskAsync<IEnumerable<Commit>>(request).EnsureSuccess();
         }
 
         public Task<IEnumerable<Job>> GetJobs(string projectId, string pipelineId)
@@ -91,7 +91,7 @@ namespace Dashboard.Application.GitLabApi
 
             request.AddQueryParameter("per_page", "10000");//Arbitrary value
 
-            return EnsureSuccess(() => Client.ExecuteTaskAsync<IEnumerable<Job>>(request));
+            return Client.ExecuteTaskAsync<IEnumerable<Job>>(request).EnsureSuccess();
         }
 
         public Task<IEnumerable<Branch>> SearchForBranchInProject(string projectId, string branchPartialName)
@@ -102,16 +102,7 @@ namespace Dashboard.Application.GitLabApi
 
             request.AddQueryParameter("per_page", "10000");
 
-            return EnsureSuccess(() => Client.ExecuteTaskAsync<IEnumerable<Branch>>(request));
-        }
-
-        private async Task<T> EnsureSuccess<T>(Func<Task<IRestResponse<T>>> requestTask)
-        {
-            var r = await requestTask();
-            if (!r.IsSuccessful)
-                throw new ApplicationHttpRequestException(r);
-
-            return r.Data;
+            return Client.ExecuteTaskAsync<IEnumerable<Branch>>(request).EnsureSuccess();
         }
     }
 }
