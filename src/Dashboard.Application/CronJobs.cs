@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Exceptions;
 using Hangfire;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Dashboard.Application
 {
@@ -34,41 +32,7 @@ namespace Dashboard.Application
             var activeProjects = (await _panelService.GetActiveProjectIds()).ToList();
 
             activeProjects.ForEach(projectId =>
-                BackgroundJob.Enqueue<SafeJob>(j => j.Fire(projectId)));
-        }
-
-        private class SafeJob
-        {
-            private readonly IProjectService _service;
-            private readonly ILogger<EnqueueFetchProjectsCiDataJob> _logger;
-
-            public SafeJob(IProjectService service, ILogger<EnqueueFetchProjectsCiDataJob> logger)
-            {
-                _service = service;
-                _logger = logger;
-            }
-
-            public async Task Fire(int projectId)
-            {
-                try
-                {
-                    await _service.UpdateCiDataForProjectAsync(projectId);
-                }
-                catch (ApplicationHttpRequestException ex)
-                {
-                    _logger.LogWarning("Exception: ApplicationHttpRequestException in EnqueueFetchProjectsCiDataJob: " + JsonConvert.SerializeObject(new
-                    {
-                        Response = new
-                        {
-                            StatusCode = ex.Response.StatusCode,
-                            StatusDescription = ex.Response.StatusDescription,
-                            Content = ex.Response.Content,
-                            IsSuccessful = ex.Response.IsSuccessful,
-                            ResponseStatus = ex.Response.ResponseStatus,
-                        }
-                    }));
-                }
-            }
+                BackgroundJob.Enqueue<IProjectService>(s => s.UpdateCiDataForProjectAsync(projectId)));
         }
     }
 }
