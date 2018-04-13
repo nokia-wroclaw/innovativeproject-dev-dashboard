@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
+using Dashboard.Core.Exceptions;
 using Hangfire;
 
 namespace Dashboard.Application

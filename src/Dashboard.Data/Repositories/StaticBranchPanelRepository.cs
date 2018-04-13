@@ -22,7 +22,7 @@ namespace Dashboard.Data.Repositories
 
         public async Task<IEnumerable<string>> GetBranchNamesFromStaticPanelsForProject(int projectId)
         {
-            return await EagerPanels
+            return await Context.Set<StaticBranchPanel>()
                 .Where(p => p.Project.Id == projectId)
                 .Select(p => p.StaticBranchName)
                 .ToListAsync();

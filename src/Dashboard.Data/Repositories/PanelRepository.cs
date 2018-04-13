@@ -40,7 +40,6 @@ namespace Dashboard.Data.Repositories
         public async Task<IEnumerable<int>> GetActiveProjectIds()
         {
             return await Context.Set<Panel>()
-                .Include(p => p.Project)
                 .Select(p => p.Project.Id)
                 .Distinct()
                 .ToListAsync();
