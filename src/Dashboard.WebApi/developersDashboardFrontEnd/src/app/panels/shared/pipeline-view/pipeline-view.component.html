@@ -16,11 +16,11 @@
       </div>
     </div>
 
-    <svg *ngFor="let stage of pipeline.stages; let i = index" height="75" [attr.width]="getOneStageWidth()">
+    <svg *ngFor="let stage of pipeline.stages; let i = index" height="75" [attr.width]="getOneStageWidth() - 2*pipelineBlockPadding" class="pipeline-building-block" [style.margin]="pipelineBlockPadding">
 
-      <rect [attr.width]="getOneStageWidth()" height="100" [attr.fill]="getColorOfStage(stage)" />
+      <rect [attr.width]="getOneStageWidth() - 2*pipelineBlockPadding" height="75" [attr.fill]="getColorOfStage(stage)" />
 
-      <text text-anchor="middle" [attr.x]="getOneStageWidth()/2" y="45" font-family="Verdana" font-size="10">
+      <text text-anchor="middle" [attr.x]="(getOneStageWidth() - 2*pipelineBlockPadding)/2" y="45" font-family="Verdana" font-size="10">
         {{stage.stageName}}
       </text>
 

@@ -12,6 +12,8 @@ export class PipelineViewComponent implements OnInit {
 
   pipelineContainerHeight : number = 70;
 
+  pipelineBlockPadding : number = 3;
+
   ngOnInit() { }
 
   statusColors : any[] = [
@@ -52,7 +54,7 @@ export class PipelineViewComponent implements OnInit {
   }
 
   getOneStageWidth() : number {
-    return this.pipelineContainer.nativeElement.clientWidth / this.pipeline.stages.length;
+    return (this.pipelineContainer.nativeElement.clientWidth ) / this.pipeline.stages.length;
   }
 
 }
