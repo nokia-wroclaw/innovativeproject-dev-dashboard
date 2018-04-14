@@ -29,6 +29,11 @@ namespace Dashboard.Core.Entities
         {
             return false;
         }
+
+        public bool ShouldSerializeProjectId()
+        {
+            return _project != null;
+        }
     }
 
     public class MemePanel : Panel
