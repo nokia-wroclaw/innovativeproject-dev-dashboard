@@ -1,0 +1,30 @@
+
+.pipeline-metadata {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pipeline-metadata-item {
+    margin-left: 5px;
+    margin-right: 5px; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+}
+
+.pipeline-metadata-item .material-icons {
+    font-size: 20px;
+}
+
+.pipeline-metadata-item.no-shrink {
+    flex-shrink: 0;
+}
+
+.pipeline-metadata-item.shrink {
+    flex-shrink: 1;
+}
