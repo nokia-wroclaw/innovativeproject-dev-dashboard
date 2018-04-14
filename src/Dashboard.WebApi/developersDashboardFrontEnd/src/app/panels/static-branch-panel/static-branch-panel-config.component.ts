@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {IPanelConfigComponent} from "../panel.component";
-import {PanelsConfigApiService} from "../panels-config-api.service";
 import {Observable} from "rxjs/Observable";
 import {StaticBranchPanel} from "./static-branch";
 import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
 import {FormControl} from '@angular/forms';
+import { PanelApiService } from '../../panel-manager/service/api/panel-api.service';
 
 @Component({template: `
     <mat-form-field class="example-full-width">
@@ -27,7 +27,7 @@ IPanelConfigComponent < StaticBranchPanel > {
 
     branchNameAutocompleteOptions : string[];
 
-    constructor(private panelsConfigApi : PanelsConfigApiService, private projectsApi : ProjectsApiService) {}
+    constructor(private panelApi : PanelApiService, private projectsApi : ProjectsApiService) {}
 
     isValid() : boolean {
         return this.panel.staticBranchName != null && this.panel.staticBranchName != '';
@@ -36,8 +36,8 @@ IPanelConfigComponent < StaticBranchPanel > {
     setPanel(panel : any) {
         this.panel = panel;
     }
-    postPanel() : Observable < StaticBranchPanel > {
-        return this.panelsConfigApi.savePanel < StaticBranchPanel > (this.createPanelUrl, this.panel).map(response => {
+    postPanel(edit : boolean) : Observable < StaticBranchPanel > {
+        return this.panelApi.saveOrUpdate(edit, this.panel).map(response => {
             console.log(response);
             return response
         });

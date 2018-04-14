@@ -16,5 +16,5 @@ export interface IPanelConfigComponent<T> {
     setPanel(panel : T);
 
     isValid() : boolean;
-    postPanel() : Observable<T>;
+    postPanel(edit : boolean) : Observable<T>;
 }

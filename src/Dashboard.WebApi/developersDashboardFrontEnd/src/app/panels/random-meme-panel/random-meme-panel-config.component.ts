@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {IPanelConfigComponent} from "../panel.component";
 import {RandomMemePanel} from "./random-meme-panel";
-import {PanelsConfigApiService} from "../panels-config-api.service";
 import {Observable} from "rxjs/Observable";
+import { PanelApiService } from '../../panel-manager/service/api/panel-api.service';
 
 @Component({template: `
     <mat-form-field class="example-full-width">
@@ -15,7 +15,7 @@ export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigCompo
 
     panel : RandomMemePanel;
 
-    constructor(private panelsConfigApi : PanelsConfigApiService) {}
+    constructor(private panelsApi : PanelApiService) {}
 
     isValid() : boolean {
         return this.panel.memeApiToken != null && this.panel.memeApiToken != '';
@@ -24,8 +24,8 @@ export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigCompo
     setPanel(panel : any) {
         this.panel = panel;
     }
-    postPanel() : Observable<RandomMemePanel> {
-        return this.panelsConfigApi.savePanel<RandomMemePanel>(this.createPanelUrl, this.panel)
+    postPanel(edit : boolean) : Observable<RandomMemePanel> {
+        return this.panelsApi.saveOrUpdate(edit, this.panel)
         .map(response => {console.log(response); return response});
     }
 

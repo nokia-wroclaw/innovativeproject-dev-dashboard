@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {IPanelConfigComponent} from "../panel.component";
-import {PanelsConfigApiService} from "../panels-config-api.service";
 import {Observable} from "rxjs/Observable";
 import {LastPipelinesPanel} from "./last-pipelines";
+import { PanelApiService } from '../../panel-manager/service/api/panel-api.service';
 
 @Component({template: `
     <mat-form-field class="example-full-width">
@@ -15,7 +15,7 @@ export class LastPipelinesPanelConfigComponent implements OnInit, IPanelConfigCo
 
     panel : LastPipelinesPanel;
 
-    constructor(private panelsConfigApi : PanelsConfigApiService) {}
+    constructor(private panelApi : PanelApiService) {}
 
     isValid() : boolean {
         const value = this.panel.howManyLastPipelinesToRead;
@@ -25,9 +25,11 @@ export class LastPipelinesPanelConfigComponent implements OnInit, IPanelConfigCo
     setPanel(panel : any) {
         this.panel = panel;
     }
-    postPanel() : Observable<LastPipelinesPanel> {
-        return this.panelsConfigApi.savePanel<LastPipelinesPanel>(this.createPanelUrl, this.panel)
-        .map(response => {console.log(response); return response});
+    postPanel(edit : boolean) : Observable<LastPipelinesPanel> {
+        return this.panelApi.saveOrUpdate(edit, this.panel).map(response => {
+            console.log(response);
+            return response
+        });
     }
 
     ngOnInit() {
