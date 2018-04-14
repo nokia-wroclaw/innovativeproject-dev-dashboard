@@ -16,6 +16,8 @@ export interface Panel {
     position? : PanelPosition;
     projectId : number;
 
+    typeName? : string;
+
     panelType?: PanelType;
 }
 
