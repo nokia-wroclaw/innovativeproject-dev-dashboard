@@ -44,7 +44,7 @@ namespace Dashboard.WebApi.Controllers
         // POST api/Panel/
         [HttpPost]
         [ValidateModel]
-        [SwaggerRequestExample(typeof(CreateDynamicPipelinePanel), typeof(CreateDynamicPipelinePanelExample))]
+        [SwaggerRequestExample(typeof(CreatePanel), typeof(CreateDynamicPipelinePanelExample))]
         public async Task<IActionResult> Post([FromBody]CreatePanel model)
         {
             var entity = model.MapEntity(model);

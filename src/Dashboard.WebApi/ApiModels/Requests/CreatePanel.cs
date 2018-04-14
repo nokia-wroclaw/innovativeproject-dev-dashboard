@@ -13,7 +13,7 @@ using Swashbuckle.AspNetCore.Examples;
 namespace Dashboard.WebApi.ApiModels.Requests
 {
     [JsonConverter(typeof(MyCustomConverter))]
-    public abstract class CreatePanel
+    public class CreatePanel
     {
         [Required]
         public string TypeName { get; set; }
@@ -22,16 +22,16 @@ namespace Dashboard.WebApi.ApiModels.Requests
         [Required]
         public PanelPosition Position { get; set; }
 
-        public abstract Panel MapEntity(CreatePanel model);
+        public virtual Panel MapEntity(CreatePanel model) => null;
 
-        private class MyCustomConverter : JsonCreationConverter<CreatePanel>
+        public class MyCustomConverter : JsonCreationConverter<CreatePanel>
         {
             protected override CreatePanel Create(Type objectType, JObject jObject)
             {
                 //TODO: read the raw JSON object through jObject to identify the type
                 //e.g. here I'm reading a 'TypeName' property:
 
-                var panelTypeName = jObject.Value<string>("TypeName");
+                var panelTypeName = jObject.Value<string>("typeName");
                 switch (panelTypeName)
                 {
                     case nameof(CreateDynamicPipelinePanel):
@@ -140,6 +140,7 @@ namespace Dashboard.WebApi.ApiModels.Requests
         {
             return new CreateDynamicPipelinePanel()
             {
+                TypeName = nameof(CreateDynamicPipelinePanel),
                 Title = "Dynami Pipelines Title",
                 ProjectId = 1,
                 HowManyLastPipelinesToRead = 3,

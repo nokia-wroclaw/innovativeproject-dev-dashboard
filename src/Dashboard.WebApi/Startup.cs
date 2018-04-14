@@ -48,12 +48,12 @@ namespace Dashboard.WebApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
-                //TODO: DOESNT WORK >>> c.OperationFilter<ExamplesOperationFilter>(); // [SwaggerRequestExample] & [SwaggerResponseExample]
-                //c.OperationFilter<DescriptionOperationFilter>(); // [Description] on Response properties
+                c.OperationFilter<ExamplesOperationFilter>(); // [SwaggerRequestExample] & [SwaggerResponseExample]
+                c.OperationFilter<DescriptionOperationFilter>(); // [Description] on Response properties
                 //c.OperationFilter<AuthorizationInputOperationFilter>(); // Adds an Authorization input box to every endpoint
                 //c.OperationFilter<AddFileParamTypesOperationFilter>(); // Adds an Upload button to endpoints which have [AddSwaggerFileUploadButton]
                 //c.OperationFilter<AddHeaderOperationFilter>("correlationId", "Correlation Id for the request"); // adds any string you like to the request headers - in this case, a correlation id
-                //c.OperationFilter<AddResponseHeadersFilter>(); // [SwaggerResponseHeader]
+                c.OperationFilter<AddResponseHeadersFilter>(); // [SwaggerResponseHeader]
                 //c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>(); // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
             });
 

@@ -26,7 +26,7 @@ namespace Dashboard.WebApi.ApiModels.Requests
                 //TODO: read the raw JSON object through jObject to identify the type
                 //e.g. here I'm reading a 'TypeName' property:
 
-                var panelTypeName = jObject.Value<string>("TypeName");
+                var panelTypeName = jObject.Value<string>("typeName");
                 switch (panelTypeName)
                 {
                     case nameof(UpdateDynamicPipelinePanel):
