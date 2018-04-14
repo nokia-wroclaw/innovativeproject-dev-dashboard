@@ -20,7 +20,9 @@ export const panelTypes : PanelType[] = [
             defaultHeight: 1
         },
         component: RandomMemePanelComponent,
-        configComponent: RandomMemePanelConfigComponent
+        configComponent: RandomMemePanelConfigComponent,
+        apiTypeNameSave: 'CreateMemePanel',
+        apiTypeNameUpdate: 'UpdateMemePanel'
     }, {
         discriminator: "StaticBranchPanel",
         name: "Static branch pipelines",
@@ -34,7 +36,9 @@ export const panelTypes : PanelType[] = [
             defaultHeight: 1
         },
         component: StaticBranchPanelComponent,
-        configComponent: StaticBranchPanelConfigComponent
+        configComponent: StaticBranchPanelConfigComponent,
+        apiTypeNameSave: 'CreateStaticBranchPanel',
+        apiTypeNameUpdate: 'UpdateStaticBranchPanel'
     }, {
         discriminator: "DynamicPipelinesPanel",
         name: "Last pipelines",
@@ -48,6 +52,8 @@ export const panelTypes : PanelType[] = [
             defaultHeight: 2
         },
         component: LastPipelinesPanelComponent,
-        configComponent: LastPipelinesPanelConfigComponent
+        configComponent: LastPipelinesPanelConfigComponent,
+        apiTypeNameSave: 'CreateDynamicPipelinePanel',
+        apiTypeNameUpdate: 'UpdateDynamicPipelinePanel'
     }
 ]

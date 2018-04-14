@@ -2,7 +2,8 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title style="font-size: 1.5em">
-      Panel configuration
+      <span *ngIf="!editMode">Create panel</span>
+      <span *ngIf="editMode">Panel configuration</span>
     </mat-card-title>
   </mat-card-header>
 
@@ -14,7 +15,7 @@
 
       
      <mat-form-field>
-      <mat-select (selectionChange)="descriminatorSelectionChanged()" placeholder="Types" required [(ngModel)]="panel.discriminator" name="discriminator">
+      <mat-select [disabled]="editMode" (selectionChange)="descriminatorSelectionChanged()" placeholder="Types" required [(ngModel)]="panel.discriminator" name="discriminator">
         <mat-option *ngFor="let type of panelTypes" [value]="type.discriminator">
           {{type.name}}
         </mat-option>
@@ -38,6 +39,7 @@
     <mat-card-actions>
       <button  type="submit" [disabled]="!panelForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
       <button  [routerLink]="'/'" mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
+      <button  *ngIf="editMode" (click)="onDelete()" mat-button class="pull-right " style=" font-size: 1em; color: #d22e2b;">DELETE</button>
     </mat-card-actions>
 
   </form>

@@ -63,7 +63,6 @@ namespace Dashboard.Data.Context
             {
                 model.HasKey(p => p.Id);
                 model.Property(p => p.Id).ValueGeneratedOnAdd();
-                model.HasOne(p => p.Project);
 
                 model.OwnsOne(p => p.Position);
             });
@@ -74,10 +73,12 @@ namespace Dashboard.Data.Context
             builder.Entity<StaticBranchPanel>(model =>
             {
                 model.HasBaseType<Panel>();
+                model.HasOne(p => p.Project);
             });
             builder.Entity<DynamicPipelinesPanel>(model =>
             {
                 model.HasBaseType<Panel>();
+                model.HasOne(p => p.Project);
             });
             #endregion
         }

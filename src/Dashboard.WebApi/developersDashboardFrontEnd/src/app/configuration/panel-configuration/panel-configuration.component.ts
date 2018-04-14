@@ -8,6 +8,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsApiService} from "../../projects-manager/api/projects-api.service";
 import { PanelTypeService } from '../../panel-manager/service/panel-type/panel-type.service';
 import { PanelType } from '../../panel-manager/service/panel-type/panel-type';
+import { PanelApiService } from '../../panel-manager/service/api/panel-api.service';
 
 @Component({
   templateUrl: './panel-configuration.component.html',
@@ -16,10 +17,12 @@ import { PanelType } from '../../panel-manager/service/panel-type/panel-type';
 export class PanelConfigurationComponent implements OnInit,
 OnDestroy {
 
-  constructor(private router : Router, private route : ActivatedRoute, private panelTypeService : PanelTypeService, private projectsApi : ProjectsApiService, private panelManager : PanelManagerService) {}
+  constructor(private router : Router, private route : ActivatedRoute, private panelTypeService : PanelTypeService, private projectsApi : ProjectsApiService, private panelManager : PanelManagerService, private panelApi : PanelApiService) {}
 
   @ViewChild(HostDirective)
   configurationHost : HostDirective;
+
+  editMode : boolean = false;
 
   projects : Project[] = [];
 
@@ -59,6 +62,8 @@ OnDestroy {
       .params
       .subscribe(params => {
         if (params['id'] != null) {
+          this.editMode = true;
+
           this
             .panelManager
             .getPanel(params['id'])
@@ -67,7 +72,7 @@ OnDestroy {
               this.descriminatorSelectionChanged();
             });
         } else {
-          console.log("id was null");
+          this.editMode = false;
         }
       });
   }
@@ -102,7 +107,7 @@ OnDestroy {
 
       this
         .panelSpecificConfiguration
-        .postPanel()
+        .postPanel(this.editMode)
         .subscribe(response => {
           console.log(response);
           // TODO 
@@ -113,6 +118,15 @@ OnDestroy {
 
     } else {
       console.log("Panel type specific configuration is invalid!")
+    }
+  }
+
+  onDelete() {
+    if(this.editMode) {
+      this.panelApi.deletePanel(this.panel).subscribe(response => {
+        console.log(response);
+        this.router.navigate(['/']);
+      });
     }
   }
 

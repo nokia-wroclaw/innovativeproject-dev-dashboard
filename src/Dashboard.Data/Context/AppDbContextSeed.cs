@@ -11,7 +11,6 @@ namespace Dashboard.Data.Context
     {
         public static void Seed(AppDbContext ctx)
         {
-            //SeedPipelines().ForEach(x => ctx.Add(x));
             ctx.AddRange(SeedProjects);
             ctx.AddRange(SeedPanels);
 
@@ -25,7 +24,6 @@ namespace Dashboard.Data.Context
             {
                 Title = "Fancy Title 1",
                 Position = new PanelPosition() {Column = 0, Row = 0, Width = 2, Height = 2},
-                Project = SeedProjects.ElementAt(0),
                 MemeApiToken = "JakisAPiTokenZ"
             },
             new StaticBranchPanel()
@@ -59,26 +57,5 @@ namespace Dashboard.Data.Context
                 }
             }
         });
-
-        private static List<Pipeline> SeedPipelines()
-        {
-            string htmlResponse = "";
-            string uri = @"https://gitlab.com/api/v4/projects/13083/pipelines?ref=master&per_page=1";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.Headers.Add("PRIVATE-TOKEN: 6h-Xjym_EFy8DBxPDR9z");
-            request.Accept = "application/json";
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                htmlResponse = reader.ReadToEnd();
-            }
-
-            Pipelines allPipelines = JsonConvert.DeserializeObject<Pipelines>(htmlResponse);
-
-            return new List<Pipeline>() { allPipelines[0] };
-        }
     }
 }

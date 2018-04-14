@@ -17,4 +17,7 @@ export interface PanelType {
     bounds: PanelBounds;
     component: Type<any>;
     configComponent: Type<any>;
+
+    apiTypeNameSave: string;
+    apiTypeNameUpdate: string; 
 }
