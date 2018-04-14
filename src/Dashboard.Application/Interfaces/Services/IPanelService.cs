@@ -9,8 +9,8 @@ namespace Dashboard.Application.Interfaces.Services
         Task<Panel> GetPanelByIdAsync(int id);
         Task<IEnumerable<Panel>> GetAllPanelsAsync();
         Task DeletePanelAsync(int id);
-        Task<Panel> UpdatePanelAsync(Panel updatedPanel, int projectId);
-        Task<Panel> CreatePanelAsync(Panel model, int projectId);
+        Task<Panel> UpdatePanelAsync(Panel updatedPanel);
+        Task<Panel> CreatePanelAsync(Panel model);
 
         Task<IEnumerable<int>> GetActiveProjectIds();
 
