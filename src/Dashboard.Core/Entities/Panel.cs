@@ -10,11 +10,6 @@ namespace Dashboard.Core.Entities
         public string Title { get; set; }
         public PanelPosition Position { get; set; } = new PanelPosition();
 
-        /// <summary>
-        /// If panel may contain more than one card in itself
-        /// </summary>
-        public abstract bool IsDynamic { get; }
-
         public abstract string Discriminator { get; }
 
         public int ProjectId { get; set; }
@@ -38,7 +33,6 @@ namespace Dashboard.Core.Entities
 
     public class MemePanel : Panel
     {
-        public override bool IsDynamic => false;
         public override string Discriminator => nameof(MemePanel);
 
         public string MemeApiToken { get; set; }
@@ -46,7 +40,6 @@ namespace Dashboard.Core.Entities
 
     public class StaticBranchPanel : Panel
     {
-        public override bool IsDynamic => false;
         public override string Discriminator => nameof(StaticBranchPanel);
 
         public string StaticBranchName { get; set; }
@@ -54,7 +47,6 @@ namespace Dashboard.Core.Entities
 
     public class DynamicPipelinesPanel : Panel
     {
-        public override bool IsDynamic => true;
         public override string Discriminator => nameof(DynamicPipelinesPanel);
 
         public int HowManyLastPipelinesToRead { get; set; }
