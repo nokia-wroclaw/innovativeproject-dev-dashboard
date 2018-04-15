@@ -47,8 +47,11 @@ namespace Dashboard.Application.Services
 
             if (updatedPanel.Discriminator != model.Discriminator) return null;
 
-            var project = await _projectRepository.GetByIdAsync(updatedPanel.ProjectId);
-            model.Project = project;
+            if (updatedPanel.ProjectId.HasValue)
+            {
+                var project = await _projectRepository.GetByIdAsync(updatedPanel.ProjectId.Value);
+                model.Project = project;
+            }
 
             var r = await _panelRepository.UpdateAsync(updatedPanel, model.Id);
             await _panelRepository.SaveAsync();
@@ -58,8 +61,11 @@ namespace Dashboard.Application.Services
 
         public async Task<Panel> CreatePanelAsync(Panel model)
         {
-            var existingProject = await _projectRepository.GetByIdAsync(model.ProjectId);
-            model.Project = existingProject;
+            if (model.ProjectId.HasValue)
+            {
+                var existingProject = await _projectRepository.GetByIdAsync(model.ProjectId.Value);
+                model.Project = existingProject;
+            }
 
             var r = await _panelRepository.AddAsync(model);
             await _panelRepository.SaveAsync();
