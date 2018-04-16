@@ -12,6 +12,7 @@ namespace Dashboard.Core.Entities
         public string ApiProjectId { get; set; }
         public string ApiAuthenticationToken { get; set; }
         public string DataProviderName { get; set; }
+        public string CiDataUpdateCronExpression { get; set; }
 
         public List<Pipeline> StaticPipelines { get; set; }
         public List<Pipeline> DynamicPipelines { get; set; }

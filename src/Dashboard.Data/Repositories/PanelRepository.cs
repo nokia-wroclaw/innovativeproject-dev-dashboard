@@ -37,11 +37,11 @@ namespace Dashboard.Data.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<int>> GetActiveProjectIds()
+        public async Task<IEnumerable<Project>> GetActiveProjects()
         {
             return await Context.Set<Panel>()
-                .Select(p => p.Project.Id)
-                .Distinct()
+                .GroupBy(p => p.Project.Id)
+                .Select(x => x.FirstOrDefault().Project)
                 .ToListAsync();
         }
     }

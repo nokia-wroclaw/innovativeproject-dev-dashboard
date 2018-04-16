@@ -49,6 +49,7 @@ namespace Dashboard.WebApi.Controllers
                 ApiHostUrl = model.ApiHostUrl,
                 ApiProjectId = model.ApiProjectId,
                 DataProviderName = model.DataProviderName,
+                CiDataUpdateCronExpression = model.CiDataUpdateCronExpression
             };
 
             var createdProject = await _projectService.CreateProjectAsync(project);
@@ -69,6 +70,7 @@ namespace Dashboard.WebApi.Controllers
                 ApiHostUrl = model.ApiHostUrl,
                 ApiProjectId = model.ApiProjectId,
                 DataProviderName = model.DataProviderName,
+                CiDataUpdateCronExpression = model.CiDataUpdateCronExpression
             };
 
             var r = await _projectService.UpdateProjectAsync(updatedProject);

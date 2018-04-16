@@ -12,7 +12,11 @@ namespace Dashboard.Application.Interfaces.Services
         Task<Panel> UpdatePanelAsync(Panel updatedPanel, int projectId);
         Task<Panel> CreatePanelAsync(Panel model, int projectId);
 
-        Task<IEnumerable<int>> GetActiveProjectIds();
+        /// <summary>
+        /// Returns list of projects that are referenced by any panel
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<Project>> GetActiveProjects();
 
         Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position);
     }

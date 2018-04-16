@@ -17,7 +17,7 @@ namespace Dashboard.Core.Entities
 
         public abstract string Discriminator { get; }
 
-        public int ProjectId { get; private set; }
+        public int? ProjectId { get; private set; }
 
         private Project _project { get; set; }
         public Project Project {

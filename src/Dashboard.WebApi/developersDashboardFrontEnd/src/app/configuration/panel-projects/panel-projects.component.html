@@ -25,7 +25,10 @@
             {{provider}}
           </mat-option>
         </mat-select>
-      </mat-form-field> 
+      </mat-form-field>
+      <mat-form-field class=" example-full-width ">
+        <input type="number" matInput placeholder="ciDataUpdateIntervalMinutes " required [(ngModel)]="projectCiDataUpdateIntervalMinutes" name="projectCiDataUpdateIntervalMinutes">
+      </mat-form-field>
     </mat-card-content>
 
     <mat-card-actions>
