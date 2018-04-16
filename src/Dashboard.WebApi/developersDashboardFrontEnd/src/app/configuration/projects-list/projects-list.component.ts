@@ -17,8 +17,32 @@ export class ProjectsListComponent implements OnInit {
     responsiveView: true,
     resizable: false,
     useCSSTransforms: true,
-    widthHeightRatio: 1.7
+    widthHeightRatio: 1.3,
+    responsiveOptions: [
+      {
+        breakpoint: 'sm',
+        lanes: 3
+      }, {
+        breakpoint: 'md',
+        minWidth: 768,
+        lanes: 4,
+        dragAndDrop: true,
+        resizable: true
+      }, {
+        breakpoint: 'lg',
+        lanes: 6,
+        dragAndDrop: true,
+        resizable: true
+      }, {
+        breakpoint: 'xl',
+        minWidth: 1800,
+        lanes: 8,
+        dragAndDrop: true,
+        resizable: true
+      }
+    ]
   };
+  
 
   ngOnInit() {
     this.loadProjects();

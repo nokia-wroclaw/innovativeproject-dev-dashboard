@@ -2,23 +2,30 @@
   <gridster-item *ngFor="let project of projects" [resizable]="true">
     <mat-card>
       <mat-card-title>
-        <h4 style="font-size:1.3vw;">{{project.projectTitle}}</h4>
-        <h4 style="font-size:1.3vw;" *ngIf="!project.projectTitle">Default title</h4>
+        <h4 style="font-size:1.4rem;">{{project.projectTitle}}</h4>
+        <h4 style="font-size:1.4rem;" *ngIf="!project.projectTitle">Default title</h4>
       </mat-card-title>
-      <mat-card-content style="font-size:0.9vw; display: inline-block">
-        
-        <p>
-          <b>apiHostUrl:</b> {{project.apiHostUrl}}</p>
-
-        <p>       
-          <b>apiProjectId:</b> {{project.apiProjectId}}</p>
+      <mat-card-content style="font-size:1.0rem; display: inline-block">
 
         <p>
-          <b>apiAuthenticationToken:</b> {{project.apiAuthenticationToken}}</p>
+          <b>apiHostUrl:</b> {{project.apiHostUrl}}
+        </p>
 
         <p>
-          <b>dataProviderName:</b> {{project.dataProviderName}}</p>
+          <b>apiProjectId:</b> {{project.apiProjectId}}
+        </p>
 
+        <p>
+          <b>apiAuthenticationToken:</b> {{project.apiAuthenticationToken}}
+        </p>
+
+        <p>
+          <b>dataProviderName:</b> {{project.dataProviderName}}
+        </p>
+
+        <p>
+          <b>ciDataUpdateCronExpression:</b> {{project.ciDataUpdateCronExpression}}
+        </p>
 
       </mat-card-content>
     </mat-card>
