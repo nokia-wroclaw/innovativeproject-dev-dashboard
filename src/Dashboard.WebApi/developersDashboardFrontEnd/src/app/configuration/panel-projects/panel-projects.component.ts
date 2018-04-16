@@ -10,7 +10,8 @@ import {Router} from '@angular/router';
 })
 export class PanelProjectsComponent implements OnInit {
 
-  project = new Project('','', '', '', '', undefined);
+  project = new Project('', '', '', '', '', '', undefined);
+  projectCiDataUpdateIntervalMinutes: number;
   dataProviderNames = new SupportedProviders(undefined);
 
   constructor(private projectApiService : ProjectsApiService, private router : Router, private zone : NgZone,) {
@@ -25,6 +26,9 @@ export class PanelProjectsComponent implements OnInit {
     if (!this.project) {
       return;
     }
+
+    this.project.setCiDataUpdateCronExpression(this.projectCiDataUpdateIntervalMinutes);
+
     this
       .projectApiService
       .addProject(this.project)
