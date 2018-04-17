@@ -14,7 +14,7 @@ namespace Dashboard.Core.Entities
         public string DataProviderName { get; set; }
         public string CiDataUpdateCronExpression { get; set; }
 
-        public virtual List<Pipeline> StaticPipelines { get; set; }
-        public virtual List<Pipeline> DynamicPipelines { get; set; }
+        public virtual ICollection<Pipeline> StaticPipelines { get; set; }
+        public virtual ICollection<Pipeline> DynamicPipelines { get; set; }
     }
 }

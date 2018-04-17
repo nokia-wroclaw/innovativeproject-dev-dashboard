@@ -1,6 +1,7 @@
 ﻿using System;
 using Dashboard.Core.Interfaces;
 using Dashboard.Data.Context;
+using Hangfire;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

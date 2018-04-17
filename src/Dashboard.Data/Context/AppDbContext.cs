@@ -6,9 +6,6 @@ namespace Dashboard.Data.Context
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Blog> Blogs { get; set; }
-        public DbSet<Post> Posts { get; set; }
-
         public DbSet<Pipeline> Pipelines { get; set; }
         public DbSet<Project> Projects { get; set; }
 
@@ -24,10 +21,6 @@ namespace Dashboard.Data.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<Blog>()
-                .HasMany<Post>(b => b.Posts)
-                .WithOne(p => p.Blog);
 
             //Fluent API
             builder.Entity<Pipeline>(m =>
@@ -70,25 +63,16 @@ namespace Dashboard.Data.Context
             {
                 model.HasKey(p => p.Id);
                 model.Property(p => p.Id).ValueGeneratedOnAdd();
-                model.HasOne(p => p.Project);
 
-                //model.Property(p => p.Project)
-                //    .HasField("_project")
-                //    .UsePropertyAccessMode(PropertyAccessMode.Field);
+                model.HasOne(p => p.Project)
+                    .WithMany()
+                    .HasForeignKey(p => p.ProjectId);
 
                 model.OwnsOne(p => p.Position);
-            });
-            builder.Entity<MemePanel>(model =>
-            {
-                model.HasBaseType<Panel>();
-            });
-            builder.Entity<StaticBranchPanel>(model =>
-            {
-                model.HasBaseType<Panel>();
-            });
-            builder.Entity<DynamicPipelinesPanel>(model =>
-            {
-                model.HasBaseType<Panel>();
+
+                model.HasDiscriminator<string>("PanelType")
+                    .HasValue<MemePanel>(nameof(MemePanel))
+                    .HasValue<StaticBranchPanel>(nameof(StaticBranchPanel));
             });
             #endregion
         }

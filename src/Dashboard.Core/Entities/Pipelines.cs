@@ -27,6 +27,6 @@ namespace Dashboard.Core.Entities
         public DateTime? StartedAt { get; set; }
         public DateTime? FinishedAt { get; set; }
 
-        public virtual List<Stage> Stages { get; set; }
+        public virtual ICollection<Stage> Stages { get; set; }
     }
 }

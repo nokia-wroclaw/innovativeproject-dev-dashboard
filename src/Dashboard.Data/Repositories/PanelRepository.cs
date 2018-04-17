@@ -31,7 +31,7 @@ namespace Dashboard.Data.Repositories
         {
             return await Context.Set<Panel>()
                 .GroupBy(p => p.Project.Id)
-                .Select(x => x.FirstOrDefault().Project)
+                .Select(x => x.OrderBy(p => p.Id).FirstOrDefault().Project)
                 .ToListAsync();
         }
     }
