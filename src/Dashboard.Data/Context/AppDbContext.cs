@@ -72,7 +72,8 @@ namespace Dashboard.Data.Context
 
                 model.HasDiscriminator<string>("PanelType")
                     .HasValue<MemePanel>(nameof(MemePanel))
-                    .HasValue<StaticBranchPanel>(nameof(StaticBranchPanel));
+                    .HasValue<StaticBranchPanel>(nameof(StaticBranchPanel))
+                    .HasValue<DynamicPipelinesPanel>(nameof(DynamicPipelinesPanel));
             });
             #endregion
         }
