@@ -11,38 +11,41 @@ namespace Dashboard.Data.Repositories
 {
     public class PanelRepository : EfRepository<Panel>, IPanelRepository
     {
-        private IIncludableQueryable<Panel, object> EagerPanels => Context.Set<Panel>()
-                                                                        .Include(p => p.Project)
-                                                                            .ThenInclude(p => p.StaticPipelines)
-                                                                                .ThenInclude(p => p.Stages)
-                                                                        .Include(p => p.Project)
-                                                                            .ThenInclude(p => p.DynamicPipelines)
-                                                                                .ThenInclude(p => p.Stages)
-                                                                        .Include(p => p.Position);
-
-
         public PanelRepository(AppDbContext context) : base(context)
         {
         }
 
         public override async Task<IEnumerable<Panel>> GetAllAsync()
         {
-            return await EagerPanels
+            return await Context.Set<Panel>()
                 .ToListAsync();
         }
 
         public override async Task<Panel> GetByIdAsync(int id)
         {
-            return await EagerPanels
+            return await Context.Set<Panel>()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<Project>> GetActiveProjects()
         {
-            return await Context.Set<Panel>()
+            var xxx = await Context.Set<Blog>().FirstOrDefaultAsync();
+
+            var proj = await Context.Set<Project>().ToListAsync();
+
+            var panels = await Context.Set<Panel>().ToListAsync();
+
+            var panelsWithProject = await Context.Set<Panel>().Where(p => p.Project != null).ToListAsync();
+
+            var r = 
+
+            await Context.Set<Panel>()
+                .Where(p => p.Project != null)
                 .GroupBy(p => p.Project.Id)
                 .Select(x => x.FirstOrDefault().Project)
                 .ToListAsync();
+
+            return r;
         }
     }
 }

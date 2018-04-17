@@ -8,7 +8,7 @@ namespace Dashboard.Core.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public PanelPosition Position { get; set; } = new PanelPosition();
+        public virtual PanelPosition Position { get; set; }
 
         /// <summary>
         /// If panel may contain more than one card in itself
@@ -19,15 +19,17 @@ namespace Dashboard.Core.Entities
 
         public int? ProjectId { get; private set; }
 
-        private Project _project { get; set; }
-        public Project Project {
-            get => _project;
-            set
-            {
-                _project = value;
-                ProjectId = _project.Id;
-            }
-        }
+        public virtual Project Project { get; set; }
+
+        //private Project _project { get; set; }
+        //public virtual Project Project {
+        //    get => _project;
+        //    set
+        //    {
+        //        _project = value;
+        //        ProjectId = _project.Id;
+        //    }
+        //}
 
         public bool ShouldSerializeProject()
         {

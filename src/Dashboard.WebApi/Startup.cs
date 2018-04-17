@@ -8,6 +8,7 @@ using Dashboard.WebApi.Infrastructure;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,10 @@ namespace Dashboard.WebApi
 
             //TODO: change when database is setup
             services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase("InMemoryDatabase"));
+            {
+                options.UseLazyLoadingProxies();
+                options.UseInMemoryDatabase("InMemoryDatabase");
+            });
 
             //OpenAPI for sweet swagger documentation
             services.AddSwaggerGen(c =>
@@ -48,7 +52,9 @@ namespace Dashboard.WebApi
 
             services.AddMvc(options =>
             {
-            });
+            }).AddJsonOptions(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //services.AddMvcCore().AddJsonFormatters(f => f.Converters.Add(new StringEnumConverter()));
 
             // Create the container builder.
@@ -83,7 +89,9 @@ namespace Dashboard.WebApi
                 app.UseApplicationHttpRequestExceptionMiddleware();
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseHsts();
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.

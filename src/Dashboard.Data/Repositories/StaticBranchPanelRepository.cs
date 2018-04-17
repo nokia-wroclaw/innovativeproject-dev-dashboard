@@ -11,11 +11,6 @@ namespace Dashboard.Data.Repositories
 {
     public class StaticBranchPanelRepository : EfRepository<StaticBranchPanel>, IStaticBranchPanelRepository
     {
-        private IIncludableQueryable<StaticBranchPanel, object> EagerPanels => Context.Set<StaticBranchPanel>()
-            .Include(p => p.Project)
-                .ThenInclude(p => p.StaticPipelines)
-            .Include(p => p.Position);
-
         public StaticBranchPanelRepository(AppDbContext context) : base(context)
         {
         }

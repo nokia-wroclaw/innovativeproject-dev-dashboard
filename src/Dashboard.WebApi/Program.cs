@@ -11,7 +11,7 @@ namespace Dashboard.WebApi
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
+            var host = CreateWebHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
             {
@@ -25,10 +25,9 @@ namespace Dashboard.WebApi
             host.Run();
         }
 
-        private static IWebHost BuildWebHost(string[] args) =>
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-		        .UseUrls($"http://*:{ Environment.GetEnvironmentVariable("PORT") ?? "5001" }/")
-                .Build();
+		        .UseUrls($"http://*:{ Environment.GetEnvironmentVariable("PORT") ?? "5001" }/");
     }
 }

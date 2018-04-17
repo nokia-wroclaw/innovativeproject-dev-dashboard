@@ -12,25 +12,19 @@ namespace Dashboard.Data.Repositories
 {
     public class ProjectRepository : EfRepository<Project>, IProjectRepository
     {
-        private IIncludableQueryable<Project, object> EagerProjects => Context.Set<Project>()
-                                                                        .Include(proj => proj.StaticPipelines)
-                                                                            .ThenInclude(pipes => pipes.Stages)
-                                                                        .Include(proj => proj.DynamicPipelines)
-                                                                            .ThenInclude(pipes => pipes.Stages);
-
         public ProjectRepository(AppDbContext context) : base(context)
         {
         }
 
         public override async Task<IEnumerable<Project>> GetAllAsync()
         {
-            return await EagerProjects
+            return await Context.Set<Project>()
                 .ToListAsync();
         }
 
         public override Task<Project> GetByIdAsync(int id)
         {
-            return EagerProjects
+            return Context.Set<Project>()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
     }

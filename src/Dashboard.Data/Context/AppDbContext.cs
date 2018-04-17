@@ -6,6 +6,9 @@ namespace Dashboard.Data.Context
 {
     public class AppDbContext : DbContext
     {
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Post> Posts { get; set; }
+
         public DbSet<Pipeline> Pipelines { get; set; }
         public DbSet<Project> Projects { get; set; }
 
@@ -21,6 +24,10 @@ namespace Dashboard.Data.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Blog>()
+                .HasMany<Post>(b => b.Posts)
+                .WithOne(p => p.Blog);
 
             //Fluent API
             builder.Entity<Pipeline>(m =>
@@ -64,6 +71,10 @@ namespace Dashboard.Data.Context
                 model.HasKey(p => p.Id);
                 model.Property(p => p.Id).ValueGeneratedOnAdd();
                 model.HasOne(p => p.Project);
+
+                //model.Property(p => p.Project)
+                //    .HasField("_project")
+                //    .UsePropertyAccessMode(PropertyAccessMode.Field);
 
                 model.OwnsOne(p => p.Position);
             });
