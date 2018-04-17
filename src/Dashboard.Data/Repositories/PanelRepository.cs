@@ -29,23 +29,10 @@ namespace Dashboard.Data.Repositories
 
         public async Task<IEnumerable<Project>> GetActiveProjects()
         {
-            var xxx = await Context.Set<Blog>().FirstOrDefaultAsync();
-
-            var proj = await Context.Set<Project>().ToListAsync();
-
-            var panels = await Context.Set<Panel>().ToListAsync();
-
-            var panelsWithProject = await Context.Set<Panel>().Where(p => p.Project != null).ToListAsync();
-
-            var r = 
-
-            await Context.Set<Panel>()
-                .Where(p => p.Project != null)
+            return await Context.Set<Panel>()
                 .GroupBy(p => p.Project.Id)
                 .Select(x => x.FirstOrDefault().Project)
                 .ToListAsync();
-
-            return r;
         }
     }
 }

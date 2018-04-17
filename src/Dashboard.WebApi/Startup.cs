@@ -54,7 +54,7 @@ namespace Dashboard.WebApi
             {
             }).AddJsonOptions(
                 options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            );
             //services.AddMvcCore().AddJsonFormatters(f => f.Converters.Add(new StringEnumConverter()));
 
             // Create the container builder.
@@ -89,9 +89,7 @@ namespace Dashboard.WebApi
                 app.UseApplicationHttpRequestExceptionMiddleware();
                 app.UseExceptionHandler("/Home/Error");
             }
-            app.UseHsts();
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
