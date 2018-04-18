@@ -64,23 +64,16 @@ namespace Dashboard.Data.Context
                 model.HasKey(p => p.Id);
                 model.Property(p => p.Id).ValueGeneratedOnAdd();
 
-                model.HasOne(p => p.Project).WithMany().HasForeignKey(p => p.ProjectId);
+                model.HasOne(p => p.Project)
+                    .WithMany()
+                    .HasForeignKey(p => p.ProjectId);
 
                 model.OwnsOne(p => p.Position);
-            });
-            builder.Entity<MemePanel>(model =>
-            {
-                model.HasBaseType<Panel>();
-            });
-            builder.Entity<StaticBranchPanel>(model =>
-            {
-                model.HasBaseType<Panel>();
-                model.HasOne(p => p.Project);
-            });
-            builder.Entity<DynamicPipelinesPanel>(model =>
-            {
-                model.HasBaseType<Panel>();
-                model.HasOne(p => p.Project);
+
+                model.HasDiscriminator<string>("PanelType")
+                    .HasValue<MemePanel>(nameof(MemePanel))
+                    .HasValue<StaticBranchPanel>(nameof(StaticBranchPanel))
+                    .HasValue<DynamicPipelinesPanel>(nameof(DynamicPipelinesPanel));
             });
             #endregion
         }

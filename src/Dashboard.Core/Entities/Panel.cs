@@ -8,13 +8,12 @@ namespace Dashboard.Core.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public PanelPosition Position { get; set; } = new PanelPosition();
+        public virtual PanelPosition Position { get; set; }
 
         public abstract string Discriminator { get; }
 
         public int? ProjectId { get; set; }
-        public Project Project { get; set; }
-
+        public virtual Project Project { get; set; }
 
         public bool ShouldSerializeProject()
         {

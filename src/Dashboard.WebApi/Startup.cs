@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Examples;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Dashboard.WebApi
@@ -35,28 +34,27 @@ namespace Dashboard.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddAppHangfire();
-
             //TODO: change when database is setup
-            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemoryDatabase"));
-
-            services.AddMvc(options =>
+            services.AddDbContext<AppDbContext>(options =>
             {
+                options.UseLazyLoadingProxies();
+                options.UseInMemoryDatabase("InMemoryDatabase");
             });
-            //services.AddMvcCore().AddJsonFormatters(f => f.Converters.Add(new StringEnumConverter()));
 
             //OpenAPI for sweet swagger documentation
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
-                c.OperationFilter<ExamplesOperationFilter>(); // [SwaggerRequestExample] & [SwaggerResponseExample]
-                c.OperationFilter<DescriptionOperationFilter>(); // [Description] on Response properties
-                //c.OperationFilter<AuthorizationInputOperationFilter>(); // Adds an Authorization input box to every endpoint
-                //c.OperationFilter<AddFileParamTypesOperationFilter>(); // Adds an Upload button to endpoints which have [AddSwaggerFileUploadButton]
-                //c.OperationFilter<AddHeaderOperationFilter>("correlationId", "Correlation Id for the request"); // adds any string you like to the request headers - in this case, a correlation id
-                c.OperationFilter<AddResponseHeadersFilter>(); // [SwaggerResponseHeader]
-                //c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>(); // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
             });
+
+            services.AddMvc(options =>
+            {
+            }).AddJsonOptions(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+            //services.AddMvcCore().AddJsonFormatters(f => f.Converters.Add(new StringEnumConverter()));
+
+            services.AddAppHangfire();
 
             // Create the container builder.
             var builder = new ContainerBuilder();
@@ -102,11 +100,13 @@ namespace Dashboard.WebApi
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 });
 
-            app.UseHangfireServer().UseHangfireDashboard(options: new DashboardOptions()
-            {
-                AppPath = "/hangfire",
-                Authorization = new[] { new HangfireAuthorizationFilter(), }
-            });
+            app
+                .UseHangfireServer()
+                .UseHangfireDashboard(options: new DashboardOptions()
+                {
+                    AppPath = "/hangfire",
+                    Authorization = new[] { new HangfireAuthorizationFilter(), }
+                });
 
             app.UseMvc(routes =>
             {

@@ -74,6 +74,7 @@ namespace Dashboard.Application.Services
             project.ApiHostUrl = updatedProject.ApiHostUrl;
             project.ApiProjectId = updatedProject.ApiProjectId;
             project.DataProviderName = updatedProject.DataProviderName;
+            project.CiDataUpdateCronExpression = updatedProject.CiDataUpdateCronExpression;
 
             _cronJobsManager.UpdateCiDataForProject(updatedProject);
 

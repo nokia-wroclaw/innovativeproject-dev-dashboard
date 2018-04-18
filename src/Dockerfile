@@ -1,16 +1,17 @@
-FROM microsoft/aspnetcore:2.0 AS base
+FROM microsoft/dotnet:2.1.300-preview2-sdk AS base
 WORKDIR /app
 EXPOSE 5001
 
-FROM microsoft/aspnetcore-build:2.0 AS build
+FROM microsoft/dotnet:2.1.300-preview2-sdk AS build
 WORKDIR /src
 COPY Dashboard.sln ./
 COPY Dashboard.WebApi/Dashboard.WebApi.csproj Dashboard.WebApi/
 COPY Dashboard.Application/Dashboard.Application.csproj Dashboard.Application/
 COPY Dashboard.Core/Dashboard.Core.csproj Dashboard.Core/
 COPY Dashboard.Data/Dashboard.Data.csproj Dashboard.Data/
-RUN dotnet restore -nowarn:msb3202,nu1503
+COPY Dashboard.UnitTests/Dashboard.UnitTests.csproj Dashboard.UnitTests/
 COPY . .
+RUN dotnet restore -nowarn:msb3202,nu1503 ./Dashboard.sln
 WORKDIR /src/Dashboard.WebApi
 RUN dotnet build -c Release -o /app
 

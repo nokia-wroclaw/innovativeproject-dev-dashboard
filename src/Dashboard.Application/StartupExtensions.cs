@@ -35,12 +35,13 @@ namespace Dashboard.Application
         public static void AddAppHangfire(this IServiceCollection services)
         {
             //Hangfire
+            var inMemory = GlobalConfiguration.Configuration.UseMemoryStorage(new MemoryStorageOptions()
+            {
+                JobExpirationCheckInterval = TimeSpan.FromMinutes(15)
+            });
             services.AddHangfire(c =>
             {
-                c.UseMemoryStorage(new MemoryStorageOptions()
-                {
-                    JobExpirationCheckInterval = TimeSpan.FromMinutes(15)
-                });
+                c.UseStorage(inMemory);
             });
         }
     }
