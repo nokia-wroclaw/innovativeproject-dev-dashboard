@@ -34,12 +34,13 @@ OnDestroy {
         lanes: 3
       }, {
         breakpoint: 'md',
-        minWidth: 768,
+        minWidth: 980,
         lanes: 4,
         dragAndDrop: true,
         resizable: true
       }, {
         breakpoint: 'lg',
+        minWidth: 1400,
         lanes: 6,
         dragAndDrop: true,
         resizable: true

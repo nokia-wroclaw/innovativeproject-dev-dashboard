@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, ElementRef, ViewChild} from '@angular/core';
+import {Component, OnInit, Input, ElementRef, ViewChild, DoCheck} from '@angular/core';
 import {Pipeline, Stage} from '../../../projects-manager/project';
 
 @Component({selector: 'app-pipeline-view', templateUrl: './pipeline-view.component.html', styleUrls: ['./pipeline-view.component.css']})
@@ -11,19 +11,12 @@ export class PipelineViewComponent implements OnInit {
   pipelineContainer : ElementRef;
 
   // display configuration
-  style : number = 2; // style 1 - arrows, style 2 - rectangles
+  style : number = 1; // style 1 - arrows, style 2 - rectangles
   pipelineContainerHeight : number = 70;
-  pipelineBlockPadding : number = 3; 
+  pipelineBlockPadding : number = 15; 
   arrowIndent : number = 15;
 
-
-  ngOnInit() {
-    // temp
-    setInterval(() => {
-      this.style = this.style == 1 ? 2 : 1;
-    }, 5000);
-
-  }
+  ngOnInit() { }
 
   statusColors : any[] = [
     {
