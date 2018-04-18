@@ -7,9 +7,7 @@
     </div>
     <div class="pull-right">
 
-      <!-- Edit settings does not currently work so it is blocked -->
-      <!-- [routerLink]=" [ '/admin', panel.id] "  instead of href -->
-      <a href="#">
+      <a [routerLink]=" [ '/admin', panel.id] ">
         <i *ngIf="adminMode" class="material-icons panel-icon">settings</i>
       </a>
       <i *ngIf="adminMode" class="material-icons panel-icon dnd-handle">dehaze</i>

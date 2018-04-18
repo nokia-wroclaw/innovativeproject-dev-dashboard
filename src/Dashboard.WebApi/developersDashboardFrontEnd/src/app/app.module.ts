@@ -56,7 +56,6 @@ import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.servic
 import {RandomMemePanelComponent} from "./panels/random-meme-panel/random-meme-panel.component";
 import {PanelProjectsComponent} from './configuration/panel-projects/panel-projects.component';
 import {ProjectsListComponent} from './configuration/projects-list/projects-list.component';
-import {PanelsConfigApiService} from "./panels/panels-config-api.service";
 import {RandomMemePanelConfigComponent} from "./panels/random-meme-panel/random-meme-panel-config.component";
 import {RandomMemeService} from "./panels/random-meme-panel/random-meme.service";
 import {StaticBranchPanelComponent} from "./panels/static-branch-panel/static-branch-panel.component";
@@ -156,7 +155,6 @@ const appRoutes : Routes = [
     ProjectsApiService,
     RandomMemeService,
     AdminModeService,
-    PanelsConfigApiService,
     NotificationService
   ],
   bootstrap: [AppComponent],

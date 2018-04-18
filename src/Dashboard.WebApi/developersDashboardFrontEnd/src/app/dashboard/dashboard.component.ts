@@ -6,7 +6,8 @@ import {Panel, PanelPositionUpdateItem} from "../panel-manager/panel";
 import {AdminModeService} from "./admin-mode-service/admin-mode.service";
 
 @Component({selector: 'app-dashboard', templateUrl: './dashboard.component.html', styleUrls: ['./dashboard.component.css']})
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit,
+OnDestroy {
 
   constructor(private adminModeService : AdminModeService, private panelManagerService : PanelManagerService, private route : ActivatedRoute, private _router : Router) {}
 
@@ -19,14 +20,38 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private updatePositionsRequestThrottle : number = 1000;
 
   gridsterOptions = {
-    lanes: 6,
+    lanes: 2,
     direction: 'vertical',
     floating: true,
     dragAndDrop: true,
     responsiveView: true,
     resizable: true,
     useCSSTransforms: true,
-    widthHeightRatio: 1.4
+    widthHeightRatio: 1.4,
+    responsiveOptions: [
+      {
+        breakpoint: 'sm',
+        lanes: 3
+      }, {
+        breakpoint: 'md',
+        minWidth: 980,
+        lanes: 4,
+        dragAndDrop: true,
+        resizable: true
+      }, {
+        breakpoint: 'lg',
+        minWidth: 1400,
+        lanes: 6,
+        dragAndDrop: true,
+        resizable: true
+      }, {
+        breakpoint: 'xl',
+        minWidth: 1800,
+        lanes: 8,
+        dragAndDrop: true,
+        resizable: true
+      }
+    ]
   };
 
   ngOnInit() {
@@ -41,8 +66,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(adminMode => this.adminMode = adminMode);
   }
 
-  
-  ngOnDestroy(): void {
+  ngOnDestroy() : void {
     if(this.positionUpdateThrottle) {
       clearTimeout(this.positionUpdateThrottle);
       this.updatePositions();
@@ -50,17 +74,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   updatePositionsThrottled() {
-    if(!this.positionUpdateThrottle) {
-      this.positionUpdateThrottle = setTimeout( () => {this.updatePositions(); this.positionUpdateThrottle = null}, this.updatePositionsRequestThrottle);
-    } 
+    if (!this.positionUpdateThrottle) {
+      this.positionUpdateThrottle = setTimeout(() => {
+        this.updatePositions();
+        this.positionUpdateThrottle = null
+      }, this.updatePositionsRequestThrottle);
+    }
   }
 
   updatePositions() {
-    const panelPositions = this.panels.map<PanelPositionUpdateItem>(panel => {
-      return {panelId : panel.id, position: panel.position};
+    const panelPositions = this.panels.map < PanelPositionUpdateItem > (panel => {
+      return {panelId: panel.id, position: panel.position};
     });
 
-    this.panelManagerService.updatePanelPositions(panelPositions).subscribe(response => null, error => console.log(error));
+    this
+      .panelManagerService
+      .updatePanelPositions(panelPositions)
+      .subscribe(response => null, error => console.log(error));
   }
 
   onGridsterItemChange($event, panel : Panel) {

@@ -24,7 +24,6 @@ namespace Dashboard.Data.Context
             {
                 Title = "Fancy Title 1",
                 Position = new PanelPosition() {Column = 0, Row = 0, Width = 2, Height = 2},
-                Project = SeedProjects.ElementAt(0),
                 MemeApiToken = "JakisAPiTokenZ"
             },
             new StaticBranchPanel()

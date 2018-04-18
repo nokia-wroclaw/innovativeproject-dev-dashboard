@@ -2,30 +2,30 @@
   <gridster-item *ngFor="let project of projects" [resizable]="true">
     <mat-card>
       <mat-card-title>
-        <h4 style="font-size:1.4rem;">{{project.projectTitle}}</h4>
-        <h4 style="font-size:1.4rem;" *ngIf="!project.projectTitle">Default title</h4>
+        <h4 style="font-size:1.6rem;">{{project.projectTitle}}</h4>
+        <h4 style="font-size:1.6rem;" *ngIf="!project.projectTitle">Default title</h4>
       </mat-card-title>
-      <mat-card-content style="font-size:1.0rem; display: inline-block">
+      <mat-card-content style="font-size:1.2rem;">
 
-        <p>
-          <b>apiHostUrl:</b> {{project.apiHostUrl}}
-        </p>
+       
+          <b>apiHostUrl:</b> <span>{{project.apiHostUrl}}</span>
+          <br> <br>
 
-        <p>
-          <b>apiProjectId:</b> {{project.apiProjectId}}
-        </p>
+     
+          <b>apiProjectId:</b> <span>{{project.apiProjectId}}</span> 
+          <br> <br>
 
-        <p>
-          <b>apiAuthenticationToken:</b> {{project.apiAuthenticationToken}}
-        </p>
+       
+          <b>apiAuthenticationToken:</b> <span>{{project.apiAuthenticationToken}}</span>
+          <br> <br>
 
-        <p>
-          <b>dataProviderName:</b> {{project.dataProviderName}}
-        </p>
+        
+          <b>dataProviderName:</b> <span>{{project.dataProviderName}}</span>
+          <br> <br>
 
-        <p>
-          <b>ciDataUpdateCronExpression:</b> {{project.ciDataUpdateCronExpression}}
-        </p>
+       
+          <b>ciDataUpdateCronExpression:</b> <span>{{project.ciDataUpdateCronExpression}}</span>
+        
 
       </mat-card-content>
     </mat-card>

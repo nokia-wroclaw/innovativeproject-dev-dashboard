@@ -30,8 +30,9 @@ namespace Dashboard.Data.Repositories
         public async Task<IEnumerable<Project>> GetActiveProjects()
         {
             return await Context.Set<Panel>()
+                .Where(p => p.Project != null)
                 .GroupBy(p => p.Project.Id)
-                .Select(x => x.OrderBy(p => p.Id).FirstOrDefault().Project)
+                .Select(x => x.OrderByDescending(p => p.Id).First().Project)
                 .ToListAsync();
         }
     }

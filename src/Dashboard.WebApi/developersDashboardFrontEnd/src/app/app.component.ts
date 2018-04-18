@@ -1,7 +1,7 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
 import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.service";
 import { MatSnackBar } from '@angular/material';
-import { NotificationService } from './snackbar/notification.service';
+import { NotificationService, NotificationType } from './snackbar/notification.service';
 
 @Component({selector: 'app-root', templateUrl: './app.component.html', styleUrls: ['./app.component.css']})
 export class AppComponent {
@@ -13,11 +13,19 @@ export class AppComponent {
 
   constructor(private adminModeService : AdminModeService, public snackBar: MatSnackBar, private notificationService: NotificationService) {
     this.notificationService.subj_notification.subscribe(notification => {
-      snackBar.open(notification.message,'', 
+      if(notification.type == NotificationType.Success){
+        snackBar.open(notification.message,'', 
         { duration : 2000,
           verticalPosition: 'top',
           horizontalPosition: 'end',});
-    });
+    } 
+      else{
+        snackBar.open(notification.message,'', 
+        { duration : 4000,
+          verticalPosition: 'top',
+          horizontalPosition: 'end',});
+    }
+      });
 }
 
   onNavOpened(opened : boolean) {}

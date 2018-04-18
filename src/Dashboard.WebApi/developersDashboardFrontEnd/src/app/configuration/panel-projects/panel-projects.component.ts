@@ -41,6 +41,7 @@ export class PanelProjectsComponent implements OnInit {
         this.project = project;
        this.notificationService.addNotification('Udalo sie dodac projekt', NotificationType.Success);
       }, err => {
+        this.notificationService.addNotification('Nie udalo sie dodac projektu', NotificationType.Failure);
         console.error('Error msg: ', err);
       }, () => {
         this

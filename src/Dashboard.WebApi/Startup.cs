@@ -2,6 +2,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dashboard.Application;
+using Dashboard.Core.Interfaces;
 using Dashboard.Data.Context;
 using Dashboard.WebApi.Infrastructure;
 using Hangfire;

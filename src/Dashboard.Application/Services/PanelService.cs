@@ -40,35 +40,38 @@ namespace Dashboard.Application.Services
             await _panelRepository.SaveAsync();
         }
 
-        public async Task<Panel> UpdatePanelAsync(Panel updatedPanel, int projectId)
+        public async Task<Panel> UpdatePanelAsync(Panel updatedPanel)
         {
             var model = await GetPanelByIdAsync(updatedPanel.Id);
-            if (model == null)
-                return null;
+            if (model == null) return null;
 
-            var project = await _projectRepository.GetByIdAsync(projectId);
-            model.Project = project;
+            if (updatedPanel.Discriminator != model.Discriminator) return null;
 
-            //TODO: change when automapper
-            model.Title = updatedPanel.Title;
-            model.Position.Column = updatedPanel.Position.Column;
-            model.Position.Row = updatedPanel.Position.Row;
+            if (updatedPanel.ProjectId.HasValue)
+            {
+                var project = await _projectRepository.GetByIdAsync(updatedPanel.ProjectId.Value);
+                model.Project = project;
+            }
 
-            var r = await _panelRepository.UpdateAsync(model, updatedPanel.Id);
+            var r = await _panelRepository.UpdateAsync(updatedPanel, model.Id);
             await _panelRepository.SaveAsync();
 
             return r;
         }
 
-        public async Task<Panel> CreatePanelAsync(Panel model, int projectId)
+        public async Task<Panel> CreatePanelAsync(Panel model)
         {
-            var project = await _projectRepository.GetByIdAsync(projectId);
-            model.Project = project;
+            if (model.ProjectId.HasValue)
+            {
+                var existingProject = await _projectRepository.GetByIdAsync(model.ProjectId.Value);
+                model.Project = existingProject;
+            }
 
             var r = await _panelRepository.AddAsync(model);
             await _panelRepository.SaveAsync();
 
-            BackgroundJob.Enqueue<IProjectService>(s => s.UpdateCiDataForProjectAsync(projectId));
+            if(model.Project != null)
+                BackgroundJob.Enqueue<IProjectService>(s => s.UpdateCiDataForProjectAsync(model.Project.Id));
 
             return r;
         }

@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 using Dashboard.WebApi.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Swashbuckle.AspNetCore.Examples;
 
 namespace Dashboard.WebApi.ApiModels.Requests
 {
     [JsonConverter(typeof(MyCustomConverter))]
-    public class CreatePanel
+    public abstract class UpdatePanel
     {
         [Required]
         public string TypeName { get; set; }
@@ -22,11 +17,11 @@ namespace Dashboard.WebApi.ApiModels.Requests
         [Required]
         public PanelPosition Position { get; set; }
 
-        public virtual Panel MapEntity(CreatePanel model) => null;
+        public abstract Panel MapEntity(UpdatePanel model);
 
-        public class MyCustomConverter : JsonCreationConverter<CreatePanel>
+        private class MyCustomConverter : JsonCreationConverter<UpdatePanel>
         {
-            protected override CreatePanel Create(Type objectType, JObject jObject)
+            protected override UpdatePanel Create(Type objectType, JObject jObject)
             {
                 //TODO: read the raw JSON object through jObject to identify the type
                 //e.g. here I'm reading a 'TypeName' property:
@@ -34,12 +29,12 @@ namespace Dashboard.WebApi.ApiModels.Requests
                 var panelTypeName = jObject.Value<string>("typeName");
                 switch (panelTypeName)
                 {
-                    case nameof(CreateDynamicPipelinePanel):
-                        return new CreateDynamicPipelinePanel();
-                    case nameof(CreateStaticBranchPanel):
-                        return new CreateStaticBranchPanel();
-                    case nameof(CreateMemePanel):
-                        return new CreateMemePanel();
+                    case nameof(UpdateDynamicPipelinePanel):
+                        return new UpdateDynamicPipelinePanel();
+                    case nameof(UpdateStaticBranchPanel):
+                        return new UpdateStaticBranchPanel();
+                    case nameof(UpdateMemePanel):
+                        return new UpdateMemePanel();
                     default:
                         return null;
                 }
@@ -47,16 +42,16 @@ namespace Dashboard.WebApi.ApiModels.Requests
         }
     }
 
-    public class CreateDynamicPipelinePanel : CreatePanel
+    public class UpdateDynamicPipelinePanel : UpdatePanel
     {
         [Required]
         public int HowManyLastPipelinesToRead { get; set; }
         [Required]
         public int ProjectId { get; set; }
 
-        public override Panel MapEntity(CreatePanel model)
+        public override Panel MapEntity(UpdatePanel model)
         {
-            var realModel = (CreateDynamicPipelinePanel) model;
+            var realModel = (UpdateDynamicPipelinePanel)model;
 
             //TODO: change when automapper
             var entity = new DynamicPipelinesPanel()
@@ -77,7 +72,7 @@ namespace Dashboard.WebApi.ApiModels.Requests
         }
     }
 
-    public class CreateStaticBranchPanel : CreatePanel
+    public class UpdateStaticBranchPanel : UpdatePanel
     {
         [Required]
         public string StaticBranchName { get; set; }
@@ -85,9 +80,9 @@ namespace Dashboard.WebApi.ApiModels.Requests
         [Required]
         public int ProjectId { get; set; }
 
-        public override Panel MapEntity(CreatePanel model)
+        public override Panel MapEntity(UpdatePanel model)
         {
-            var realModel = (CreateStaticBranchPanel) model;
+            var realModel = (UpdateStaticBranchPanel)model;
 
             //TODO: change when automapper
             var entity = new StaticBranchPanel()
@@ -107,14 +102,14 @@ namespace Dashboard.WebApi.ApiModels.Requests
         }
     }
 
-    public class CreateMemePanel : CreatePanel
+    public class UpdateMemePanel : UpdatePanel
     {
         [Required]
         public string MemeApiToken { get; set; }
 
-        public override Panel MapEntity(CreatePanel model)
+        public override Panel MapEntity(UpdatePanel model)
         {
-            var realModel = (CreateMemePanel)model;
+            var realModel = (UpdateMemePanel)model;
 
             //TODO: change when automapper
             var entity = new MemePanel()
@@ -130,28 +125,6 @@ namespace Dashboard.WebApi.ApiModels.Requests
                 MemeApiToken = realModel.MemeApiToken,
             };
             return entity;
-        }
-    }
-
-
-    public class CreateDynamicPipelinePanelExample : IExamplesProvider
-    {
-        public object GetExamples()
-        {
-            return new CreateDynamicPipelinePanel()
-            {
-                TypeName = nameof(CreateDynamicPipelinePanel),
-                Title = "Dynami Pipelines Title",
-                ProjectId = 1,
-                HowManyLastPipelinesToRead = 3,
-                Position = new PanelPosition()
-                {
-                    Width = 1,
-                    Height = 2,
-                    Column = 3,
-                    Row = 4,
-                }
-            };
         }
     }
 }
