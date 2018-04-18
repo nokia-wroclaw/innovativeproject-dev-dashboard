@@ -12,7 +12,7 @@ namespace Dashboard.Core.Entities
 
         public abstract string Discriminator { get; }
 
-        public int? ProjectId { get; private set; }
+        public int? ProjectId { get; set; }
         public virtual Project Project { get; set; }
 
         public bool ShouldSerializeProject()
