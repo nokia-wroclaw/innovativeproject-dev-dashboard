@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <ServerGarbageCollection>false</ServerGarbageCollection>
   </PropertyGroup>
 
@@ -12,6 +11,49 @@
     <Content Remove="client\**" />
     <EmbeddedResource Remove="client\**" />
     <None Remove="client\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="developersDashboardFrontEnd\e2e\app.e2e-spec.ts" />
+    <None Remove="developersDashboardFrontEnd\e2e\app.po.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\app.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\app.module.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\configuration\panel-configuration\panel-configuration.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\configuration\panel-projects\panel-projects.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\configuration\projects-list\projects-list.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\dashboard\admin-mode-service\admin-mode.service.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\dashboard\dashboard.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-host\dynamic-host-panel\dynamic-host-panel.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-host\host.directive.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-host\static-host-panel\static-host-panel.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-manager\panel.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-manager\service\api\panel-api.service.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-manager\service\panel-manager.service.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-manager\service\panel-type\panel-type.service.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-manager\service\panel-type\panel-type.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panel-manager\service\panel-type\panel-types.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\last-pipelines-panel\last-pipelines-panel-config.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\last-pipelines-panel\last-pipelines-panel.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\last-pipelines-panel\last-pipelines.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\panel.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel-config.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme.service.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.spec.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel-config.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\projects-manager\api\projects-api.service.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\projects-manager\project.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\snackbar\notification.service.ts" />
+    <None Remove="developersDashboardFrontEnd\src\environments\environment.prod.ts" />
+    <None Remove="developersDashboardFrontEnd\src\environments\environment.ts" />
+    <None Remove="developersDashboardFrontEnd\src\main.ts" />
+    <None Remove="developersDashboardFrontEnd\src\polyfills.ts" />
+    <None Remove="developersDashboardFrontEnd\src\test.ts" />
+    <None Remove="developersDashboardFrontEnd\src\typings.d.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +83,49 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dashboard.Application\Dashboard.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="developersDashboardFrontEnd\e2e\app.e2e-spec.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\e2e\app.po.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\app.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\app.module.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\configuration\panel-configuration\panel-configuration.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\configuration\panel-projects\panel-projects.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\configuration\projects-list\projects-list.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\dashboard\admin-mode-service\admin-mode.service.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\dashboard\dashboard.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-host\dynamic-host-panel\dynamic-host-panel.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-host\host.directive.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-host\static-host-panel\static-host-panel.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-manager\panel.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-manager\service\api\panel-api.service.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-manager\service\panel-manager.service.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-manager\service\panel-type\panel-type.service.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-manager\service\panel-type\panel-type.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panel-manager\service\panel-type\panel-types.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\last-pipelines-panel\last-pipelines-panel-config.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\last-pipelines-panel\last-pipelines-panel.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\last-pipelines-panel\last-pipelines.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\panel.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel-config.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme.service.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.spec.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel-config.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\projects-manager\api\projects-api.service.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\projects-manager\project.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\snackbar\notification.service.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\environments\environment.prod.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\environments\environment.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\main.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\polyfills.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\test.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\typings.d.ts" />
   </ItemGroup>
 
 </Project>
