@@ -64,6 +64,8 @@ namespace Dashboard.Data.Context
                 model.HasKey(p => p.Id);
                 model.Property(p => p.Id).ValueGeneratedOnAdd();
 
+                model.HasOne(p => p.Project).WithMany().HasForeignKey(p => p.ProjectId);
+
                 model.OwnsOne(p => p.Position);
             });
             builder.Entity<MemePanel>(model =>
