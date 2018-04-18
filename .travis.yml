@@ -1,6 +1,5 @@
 language: csharp
 mono: none
-dotnet: 2.0.0
 sudo: required
 notifications:
    slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
@@ -11,7 +10,6 @@ cache:
     - $HOME/.npm
     - $HOME/.nuget/packages
 
-
 before_install:
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -19,7 +17,6 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
   - docker ps
-
 
 stages:
   - build_all
