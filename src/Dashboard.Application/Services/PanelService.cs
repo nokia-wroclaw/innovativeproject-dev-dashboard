@@ -70,9 +70,9 @@ namespace Dashboard.Application.Services
             return r;
         }
 
-        public async Task<IEnumerable<int>> GetActiveProjectIds()
+        public async Task<IEnumerable<Project>> GetActiveProjects()
         {
-            return await _panelRepository.GetActiveProjectIds();
+            return await _panelRepository.GetActiveProjects();
         }
 
         public async Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position)

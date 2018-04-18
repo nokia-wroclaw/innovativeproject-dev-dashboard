@@ -8,24 +8,33 @@
   <form #projectForm="ngForm" (ngSubmit)="addProject()">
     <mat-card-content>
         <mat-form-field class=" example-full-width ">
-            <input type="text" matInput placeholder="projectTitle " required [(ngModel)]="project.projectTitle" name="projectTitle">
+            <input type="text" matInput placeholder="Project title " required [(ngModel)]="project.projectTitle" name="projectTitle">
           </mat-form-field>
       <mat-form-field class=" example-full-width ">
-        <input type="text" matInput placeholder="apiHostUrl " required [(ngModel)]="project.apiHostUrl" name="apiHostUrl">
+        <input type="text" matInput placeholder="Api host url " required [(ngModel)]="project.apiHostUrl" name="apiHostUrl">
       </mat-form-field>
       <mat-form-field class=" example-full-width ">
-        <input type="text" matInput placeholder="apiProjectId " required [(ngModel)]="project.apiProjectId" name="apiProjectId">
+        <input type="text" matInput placeholder="Api project id " required [(ngModel)]="project.apiProjectId" name="apiProjectId">
       </mat-form-field>
       <mat-form-field class=" example-full-width ">
-        <input type="text" matInput placeholder="apiAuthenticationToken " required [(ngModel)]="project.apiAuthenticationToken" name="apiAuthenticationToken">
+        <input type="text" matInput placeholder="Api authentication token " required [(ngModel)]="project.apiAuthenticationToken" name="apiAuthenticationToken">
       </mat-form-field>
       <mat-form-field class=" example-full-width ">
-        <mat-select  placeholder="dataProviderName " required [(ngModel)]="project.dataProviderName" name="dataProviderName">
+        <mat-select  placeholder="Data provider name " required [(ngModel)]="project.dataProviderName" name="dataProviderName">
           <mat-option *ngFor="let provider of dataProviderNames.data" [value]="provider">
             {{provider}}
           </mat-option>
         </mat-select>
-      </mat-form-field> 
+      </mat-form-field>
+      <mat-checkbox #abcde>Enable interval pooling</mat-checkbox>
+      <div *ngIf='abcde.checked'>
+        <h2 class="mat-h2">Data fetch period (in minutes)</h2>  
+        <div class="dataFetchPeriod">                
+          <mat-slider min="1.0" max="59" step="1.0" value="1.0" thumbLabel required [(ngModel)]="projectCiDataUpdateIntervalMinutes" name="dataFetchPeriod" ></mat-slider>
+        </div>
+      </div>
+        
+     
     </mat-card-content>
 
     <mat-card-actions>

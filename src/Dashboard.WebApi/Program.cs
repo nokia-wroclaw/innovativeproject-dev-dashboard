@@ -1,4 +1,5 @@
 ﻿using System;
+using Dashboard.Core.Interfaces;
 using Dashboard.Data.Context;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,9 @@ namespace Dashboard.WebApi
             {
                 var ctx = scope.ServiceProvider.GetService<AppDbContext>();
                 AppDbContextSeed.Seed(ctx);
+
+                var cronManager = scope.ServiceProvider.GetService<ICronJobsManager>();
+                cronManager.RegisterAllCronJobs();
             }
 
             host.Run();

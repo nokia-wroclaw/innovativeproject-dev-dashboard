@@ -27,6 +27,7 @@ namespace Dashboard.Application
             builder.RegisterType<PanelService>().As<IPanelService>();
             builder.RegisterType<ProjectService>().As<IProjectService>();
 
+            builder.RegisterType<CronJobsManager>().As<ICronJobsManager>();
             builder.RegisterType<GitLabDataProvider>().As<ICiDataProvider>();
             builder.RegisterType<CiDataProviderFactory>().As<ICiDataProviderFactory>();
         }

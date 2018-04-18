@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild, ElementRef, NgZone} from '@angular/core';
 import {Project, SupportedProviders} from '../../projects-manager/project';
 import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
 import {Router} from '@angular/router';
+import { NotificationService, SnackBar, NotificationType } from '../../snackbar/notification.service';
 
 @Component({
   selector: 'app-panel-projects',
@@ -10,10 +11,11 @@ import {Router} from '@angular/router';
 })
 export class PanelProjectsComponent implements OnInit {
 
-  project = new Project('','', '', '', '', undefined);
+  project = new Project('', '', '', '', '', '', undefined);
+  projectCiDataUpdateIntervalMinutes: number;
   dataProviderNames = new SupportedProviders(undefined);
 
-  constructor(private projectApiService : ProjectsApiService, private router : Router, private zone : NgZone,) {
+  constructor(private projectApiService: ProjectsApiService, private notificationService: NotificationService, private router : Router, private zone : NgZone,) {
   }
 
   ngOnInit() {
@@ -25,11 +27,19 @@ export class PanelProjectsComponent implements OnInit {
     if (!this.project) {
       return;
     }
+
+   if (this.projectCiDataUpdateIntervalMinutes == undefined){
+     this.projectCiDataUpdateIntervalMinutes = 4;
+    }
+
+    this.project.setCiDataUpdateCronExpression(this.projectCiDataUpdateIntervalMinutes);
+
     this
       .projectApiService
       .addProject(this.project)
       .subscribe(project => {
         this.project = project;
+       this.notificationService.addNotification('Udalo sie dodac projekt', NotificationType.Success);
       }, err => {
         console.error('Error msg: ', err);
       }, () => {

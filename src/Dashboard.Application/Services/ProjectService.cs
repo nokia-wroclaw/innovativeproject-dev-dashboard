@@ -21,16 +21,19 @@ namespace Dashboard.Application.Services
         private readonly IDynamicPipelinePanelRepository _dynamicPipelinesPanelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
+        private readonly ICronJobsManager _cronJobsManager;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
             IProjectRepository projectRepository,
             IDynamicPipelinePanelRepository dynamicPipelinesPanelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
-            ICiDataProviderFactory ciDataProviderFactory, 
+            ICiDataProviderFactory ciDataProviderFactory,
+            ICronJobsManager cronJobsManager,
             ILogger<ProjectService> logger)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
+            _cronJobsManager = cronJobsManager;
             _dynamicPipelinesPanelRepository = dynamicPipelinesPanelRepository;
             _staticBranchPanelRepository = staticBranchPanelRepository;
             _projectRepository = projectRepository;
@@ -54,6 +57,8 @@ namespace Dashboard.Application.Services
             if (entity == null)
                 return;
 
+            _cronJobsManager.UnregisterUpdateCiDataForProject(entity.Id);
+
             _projectRepository.Delete(entity);
             await _projectRepository.SaveAsync();
         }
@@ -70,6 +75,8 @@ namespace Dashboard.Application.Services
             project.ApiProjectId = updatedProject.ApiProjectId;
             project.DataProviderName = updatedProject.DataProviderName;
 
+            _cronJobsManager.UpdateCiDataForProject(updatedProject);
+
             var r = await _projectRepository.UpdateAsync(project, updatedProject.Id);
             await _projectRepository.SaveAsync();
 
@@ -80,6 +87,8 @@ namespace Dashboard.Application.Services
         {
             var r = await _projectRepository.AddAsync(project);
             await _projectRepository.SaveAsync();
+
+            _cronJobsManager.UpdateCiDataForProject(project);
 
             return r;
         }

@@ -26,10 +26,14 @@ export class Project {
     apiHostUrl : string;
     apiProjectId : string;
     apiAuthenticationToken : string;
-    dataProviderName : string;
+    dataProviderName: string;
+    ciDataUpdateCronExpression: string;
     staticPipelines : Pipeline[];
     dynamicPipelines : Pipeline[];
 
-    constructor(projectTitle : string,apiHostUrl : string, apiProjectId : string, apiAuthenticationToken : string, dataProviderName : string, pipelines : Pipeline[]) {}
+  constructor(projectTitle: string, apiHostUrl: string, apiProjectId: string, apiAuthenticationToken: string, dataProviderName: string, ciDataUpdateCronExpression: string, pipelines : Pipeline[]) {}
 
+  setCiDataUpdateCronExpression(intervalMinutes: number) {
+    this.ciDataUpdateCronExpression = `*/${intervalMinutes} * * * *`;
+  }
 }

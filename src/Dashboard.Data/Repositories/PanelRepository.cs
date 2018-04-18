@@ -48,12 +48,11 @@ namespace Dashboard.Data.Repositories
             return (await EagerPanels()).FirstOrDefault(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<int>> GetActiveProjectIds()
+        public async Task<IEnumerable<Project>> GetActiveProjects()
         {
             return await Context.Set<Panel>()
-                .Where(p => p.Project != null)
-                .Select(p => p.Project.Id)
-                .Distinct()
+                .GroupBy(p => p.Project.Id)
+                .Select(x => x.FirstOrDefault().Project)
                 .ToListAsync();
         }
     }
