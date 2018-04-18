@@ -13,25 +13,12 @@ namespace Dashboard.Core.Entities
         public abstract string Discriminator { get; }
 
         public int? ProjectId { get; set; }
-        private Project _project { get; set; }
-        public Project Project {
-            get => _project;
-            set
-            {
-                _project = value;
-                if(_project != null)
-                    ProjectId = _project.Id;
-            }
-        }
+        public Project Project { get; set; }
+
 
         public bool ShouldSerializeProject()
         {
             return false;
-        }
-
-        public bool ShouldSerializeProjectId()
-        {
-            return _project != null;
         }
     }
 

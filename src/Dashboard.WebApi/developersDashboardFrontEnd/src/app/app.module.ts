@@ -155,7 +155,6 @@ const appRoutes : Routes = [
     ProjectsApiService,
     RandomMemeService,
     AdminModeService,
-    PanelsConfigApiService,
     NotificationService
   ],
   bootstrap: [AppComponent],
