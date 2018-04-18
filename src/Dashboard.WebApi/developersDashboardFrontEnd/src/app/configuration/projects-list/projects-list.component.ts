@@ -17,28 +17,28 @@ export class ProjectsListComponent implements OnInit {
     responsiveView: true,
     resizable: false,
     useCSSTransforms: true,
-    widthHeightRatio: 1.3,
+    widthHeightRatio: 1.9,
     responsiveOptions: [
       {
         breakpoint: 'sm',
-        lanes: 3
+        minWidth: 1024,
+        lanes: 3,
+        widthHeightRatio: 1.4,
       }, {
         breakpoint: 'md',
-        minWidth: 768,
-        lanes: 4,
-        dragAndDrop: true,
-        resizable: true
+        minWidth: 1280,
+        widthHeightRatio: 1.4,
+        lanes: 4 ,
       }, {
         breakpoint: 'lg',
-        lanes: 6,
-        dragAndDrop: true,
-        resizable: true
+        minWidth: 1400,
+        lanes: 5,
+        widthHeightRatio: 1.4,
       }, {
         breakpoint: 'xl',
         minWidth: 1800,
-        lanes: 8,
-        dragAndDrop: true,
-        resizable: true
+        lanes: 6,
+        widthHeightRatio: 1.3,
       }
     ]
   };
