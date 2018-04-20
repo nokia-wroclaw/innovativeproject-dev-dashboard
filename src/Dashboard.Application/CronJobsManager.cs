@@ -35,5 +35,11 @@ namespace Dashboard.Application
         {
             RecurringJob.RemoveIfExists($"CronFetchProjectCiDataJob-{projectId}");
         }
+
+        public void FireProjectUpdate(int projectId)
+        {
+            //BackgroundJob.Enqueue( () => _projectService.UpdateCiDataForProjectAsync(projectId) );
+            BackgroundJob.Enqueue<IProjectService>(s => s.UpdateCiDataForProjectAsync(projectId));
+        }
     }
 }
