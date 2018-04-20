@@ -16,38 +16,20 @@
       </div>
     </div>
 
-    <ng-container *ngIf="style == 1">
-      <svg [attr.height]="pipelineContainerHeight" [attr.width]="getFullWidth()" class="shadow">
+    
 
 
-        <polygon *ngFor="let stage of pipeline.stages; let i = index" [attr.points]="getPolygonBoundaries(i)" [attr.fill]="getColorOfStage(stage)">
-
-        </polygon>
-
-        <text *ngFor="let stage of pipeline.stages; let i = index" text-anchor="middle" [attr.x]="getXPositionForLabel(i)" [attr.y]="pipelineContainerHeight/2 + 5"
-          font-family="Verdana" font-size="10">
-          {{stage.stageName}}
-        </text>
-
-      </svg>
-    </ng-container>
-
-    <ng-container *ngIf="style == 2">
-      <svg *ngFor="let stage of pipeline.stages; let i = index" [attr.height]="pipelineContainerHeight" [attr.width]="getOneStageWidth() - 2*pipelineBlockPadding"
-        class="pipeline-building-block" [style.margin]="pipelineBlockPadding">
-
-        <rect [attr.width]="getOneStageWidth() - 2*pipelineBlockPadding" [attr.height]="pipelineContainerHeight" [attr.fill]="getColorOfStage(stage)" />
-
-        <text text-anchor="middle" [attr.x]="(getOneStageWidth() - 2*pipelineBlockPadding)/2" [attr.y]="pipelineContainerHeight/2 + 5" font-family="Verdana" font-size="10">
-          {{stage.stageName}}
-        </text>
-
-      </svg>
-    </ng-container>
-
-
-
-
+        <div class="fleksik"  [style.width]="getFullWidth()" >
+          <div class="container"   *ngFor="let stage of pipeline.stages" >
+          <div class="chevron"  [style.background-color]="getColorOfStage(stage)" >
+              <div class="content"  >
+               <p>
+                {{stage.stageName}}
+              </p>            
+                </div>            
+          </div>
+          </div>
+        </div>
   </div>
   <div *ngIf="!pipeline">
     <p style="margin-top: 5px;">Loading..</p>
