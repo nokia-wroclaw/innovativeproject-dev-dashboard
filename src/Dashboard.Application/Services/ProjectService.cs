@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
@@ -168,6 +169,25 @@ namespace Dashboard.Application.Services
             await _projectRepository.SaveAsync();
 
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
+        }
+
+        public async Task<int> GetProjectIdForWebhook(string providerName, Stream body)
+        {
+            string provider = "";
+            if(providerName.Contains(@"https://"))
+                provider = providerName.Remove(0, 8);
+            else if (providerName.Contains(@"http://"))
+                provider = providerName.Remove(0, 7);
+
+            if (provider.Contains("www"))
+                provider = provider.Remove(0, 4);
+
+            provider = provider.Split('.')[0];
+
+            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(provider);
+            string projectId = await dataProvider.GetProjectIdFromWebhookRequest(body);
+            Project tmpProject = await _projectRepository.FindOneByAsync(p => p.DataProviderName.ToLower() == provider.ToLower() && p.ApiProjectId == projectId);
+            return tmpProject.Id;
         }
     }
 }

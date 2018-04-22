@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 
@@ -14,5 +15,7 @@ namespace Dashboard.Application.Interfaces.Services
 
         Task<IEnumerable<string>> SearchForBranchInProject(int projectId, string searchValue);
         Task UpdateCiDataForProjectAsync(int projectId);
+
+        Task<int> GetProjectIdForWebhook(string providerName, Stream body);
     }
 }

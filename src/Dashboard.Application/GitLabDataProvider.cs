@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dashboard.Application.GitLabApi;
 using Dashboard.Core.Entities;
@@ -93,6 +95,15 @@ namespace Dashboard.Application
                                 });
 
             return stages;
+        }
+
+        public async Task<string> GetProjectIdFromWebhookRequest(Stream body)
+        {
+            string tmp = new StreamReader(body).ReadToEnd();
+            string flag = "\"project\":{";
+            string newBody = tmp.Substring(tmp.IndexOf(flag), tmp.IndexOf("}"));
+            string id = Regex.Match(newBody, @"\d+").Value;
+            return id;
         }
     }
 }
