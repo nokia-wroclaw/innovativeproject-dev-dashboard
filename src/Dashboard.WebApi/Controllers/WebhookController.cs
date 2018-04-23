@@ -10,15 +10,13 @@ using System.IO;
 
 namespace Dashboard.WebApi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class WebhookController : Controller
     {
-        private readonly ICronJobsManager _cronJobsManager;
         private readonly IProjectService _projectService;
 
-        public WebhookController(ICronJobsManager cronJobsManager, IProjectService projectService)
+        public WebhookController(IProjectService projectService)
         {
-            _cronJobsManager = cronJobsManager;
             _projectService = projectService;
         }
 
@@ -27,10 +25,19 @@ namespace Dashboard.WebApi.Controllers
         {
             //use in local to tests
             //int projectId = (await _projectService.GetProjectIdForWebhook(@"https://gitlab.com", Request.Body));
+
             //use in deploy
-            int projectId = (await _projectService.GetProjectIdForWebhook(Request.Host.Host, Request.Body));
-            _cronJobsManager.FireProjectUpdate(projectId);
-            return Content(Request.Host.Host);
+            //int projectId = (await _projectService.GetProjectIdForWebhook(Request.Host.ToUriComponent(), Request.Body));
+
+            Stream stream = Request.Body;
+            stream.Position = 0;
+            StreamReader s = new StreamReader(stream);
+            string bdy = s.ReadToEnd();
+            
+
+            _projectService.FireProjectUpdate(@"https://gitlab.com", bdy);
+
+            return new OkResult();// Content(Request.Host.Host);
         }
     }
 }

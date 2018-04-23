@@ -12,6 +12,5 @@ namespace Dashboard.Core.Interfaces
 
         void UpdateCiDataForProject(Project project);
         void UnregisterUpdateCiDataForProject(int projectId);
-        void FireProjectUpdate(int projectId);
     }
 }

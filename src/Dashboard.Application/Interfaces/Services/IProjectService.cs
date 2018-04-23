@@ -17,5 +17,7 @@ namespace Dashboard.Application.Interfaces.Services
         Task UpdateCiDataForProjectAsync(int projectId);
 
         Task<int> GetProjectIdForWebhook(string providerName, Stream body);
+        void FireProjectUpdate(string providerName, string body);
+        Task WebhookFunction(string providerName, string body);
     }
 }

@@ -97,11 +97,12 @@ namespace Dashboard.Application
             return stages;
         }
 
-        public async Task<string> GetProjectIdFromWebhookRequest(Stream body)
+        public async Task<string> GetProjectIdFromWebhookRequest(string body)
         {
-            string tmp = new StreamReader(body).ReadToEnd();
+            //body.Position = 0;
+            //string tmp = new StreamReader(body).ReadToEnd();
             string flag = "\"project\":{";
-            string newBody = tmp.Substring(tmp.IndexOf(flag), tmp.IndexOf("}"));
+            string newBody = body.Substring(body.IndexOf(flag), body.IndexOf("}"));
             string id = Regex.Match(newBody, @"\d+").Value;
             return id;
         }

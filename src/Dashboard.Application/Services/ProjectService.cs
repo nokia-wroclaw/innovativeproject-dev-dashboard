@@ -7,8 +7,10 @@ using Dashboard.Core.Entities;
 using Dashboard.Core.Exceptions;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
+using Hangfire;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 
 namespace Dashboard.Application.Services
 {
@@ -171,10 +173,34 @@ namespace Dashboard.Application.Services
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
 
-        public async Task<int> GetProjectIdForWebhook(string providerName, Stream body)
+        public async Task<int> GetProjectIdForWebhook(string providerName, string body)
+        {
+            string provider = ExtractProviderName(providerName);
+            //provider = provider.Split('.')[0];
+            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(provider);
+            string projectId = await dataProvider.GetProjectIdFromWebhookRequest(body);
+
+            Project tmpProject = await _projectRepository.FindOneByAsync(p => /*ExtractProviderName(p.ApiHostUrl).Equals(ExtractProviderName(providerName)) &&*/ p.ApiProjectId == projectId);
+            return tmpProject.Id;
+        }
+
+        public void FireProjectUpdate(string providerName, string body)
+        {
+            BackgroundJob.Enqueue<IProjectService>(s => s.WebhookFunction(providerName, body));
+        }
+
+        public async Task WebhookFunction(string providerName, string body)
+        {
+            //int projectId = await GetProjectIdForWebhook(providerName, body);
+            await UpdateCiDataForProjectAsync(2);
+        }
+
+        private string ExtractProviderName(string providerName)
         {
             string provider = "";
-            if(providerName.Contains(@"https://"))
+            //Uri u = new Uri(providerName);
+            //provider = u.DnsSafeHost.Contains("www") ? u.DnsSafeHost.Remove(0, 4) : u.DnsSafeHost;
+            if (providerName.Contains(@"https://"))
                 provider = providerName.Remove(0, 8);
             else if (providerName.Contains(@"http://"))
                 provider = providerName.Remove(0, 7);
@@ -183,11 +209,7 @@ namespace Dashboard.Application.Services
                 provider = provider.Remove(0, 4);
 
             provider = provider.Split('.')[0];
-
-            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(provider);
-            string projectId = await dataProvider.GetProjectIdFromWebhookRequest(body);
-            Project tmpProject = await _projectRepository.FindOneByAsync(p => p.DataProviderName.ToLower() == provider.ToLower() && p.ApiProjectId == projectId);
-            return tmpProject.Id;
+            return provider;
         }
     }
 }
