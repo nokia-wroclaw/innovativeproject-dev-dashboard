@@ -9,3 +9,6 @@ docker-compose.*.yml
 */bin
 */obj
 **/node_modules
+Dashboard.WebApi/developersDashboardFrontEnd/**/*
+Dashboard.WebApi/developersDashboardFrontEnd
+**/developersDashboardFrontEnd

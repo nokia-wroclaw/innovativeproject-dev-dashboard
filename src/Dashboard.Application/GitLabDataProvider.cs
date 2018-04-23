@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dashboard.Application.GitLabApi;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
+using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Application
 {
@@ -93,6 +96,11 @@ namespace Dashboard.Application
                                 });
 
             return stages;
+        }
+
+        public string GetProjectIdFromWebhookRequest(JObject body)
+        {
+            return body["project"]["id"].Value<string>();
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
+using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Application.Interfaces.Services
 {
@@ -14,5 +16,8 @@ namespace Dashboard.Application.Interfaces.Services
 
         Task<IEnumerable<string>> SearchForBranchInProject(int projectId, string searchValue);
         Task UpdateCiDataForProjectAsync(int projectId);
+
+        void FireProjectUpdate(string providerName, JObject body);
+        Task WebhookFunction(string providerName, JObject body);
     }
 }

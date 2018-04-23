@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
@@ -6,8 +7,11 @@ using Dashboard.Core.Entities;
 using Dashboard.Core.Exceptions;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
+using Hangfire;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
+using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Application.Services
 {
@@ -168,6 +172,28 @@ namespace Dashboard.Application.Services
             await _projectRepository.SaveAsync();
 
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
+        }
+
+        public void FireProjectUpdate(string providerName, JObject body)
+        {
+            BackgroundJob.Enqueue<IProjectService>(s => s.WebhookFunction(providerName, body));
+        }
+
+        public async Task WebhookFunction(string providerName, JObject body)
+        {
+            Uri uriAddress = new Uri(providerName);
+            var x = uriAddress.GetComponents(UriComponents.Host & ~UriComponents.Scheme, UriFormat.UriEscaped);
+            string provider = "";
+            if (x.StartsWith("www"))
+                provider = x.Split('.')[1];
+            else
+                provider = x.Split('.')[0];
+
+            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(provider);
+            string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
+
+            int projectId = (await _projectRepository.FindOneByAsync(p => new Uri(p.ApiHostUrl).DnsSafeHost.Equals(new Uri(providerName).DnsSafeHost) && p.ApiProjectId.Equals(apiProjectId))).Id;
+            await UpdateCiDataForProjectAsync(projectId);
         }
     }
 }
