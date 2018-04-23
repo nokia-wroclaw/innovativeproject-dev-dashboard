@@ -184,7 +184,7 @@ namespace Dashboard.Application.Services
             Uri uriAddress = new Uri(providerName);
             var x = uriAddress.GetComponents(UriComponents.Host & ~UriComponents.Scheme, UriFormat.UriEscaped);
             string provider = "";
-            if (x.Contains("www"))
+            if (x.StartsWith("www"))
                 provider = x.Split('.')[1];
             else
                 provider = x.Split('.')[0];
