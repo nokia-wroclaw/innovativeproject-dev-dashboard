@@ -181,18 +181,10 @@ namespace Dashboard.Application.Services
 
         public async Task WebhookFunction(string providerName, JObject body)
         {
-            Uri uriAddress = new Uri(providerName);
-            var x = uriAddress.GetComponents(UriComponents.Host & ~UriComponents.Scheme, UriFormat.UriEscaped);
-            string provider = "";
-            if (x.StartsWith("www"))
-                provider = x.Split('.')[1];
-            else
-                provider = x.Split('.')[0];
-
-            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(provider);
+            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
             string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
 
-            int projectId = (await _projectRepository.FindOneByAsync(p => new Uri(p.ApiHostUrl).DnsSafeHost.Equals(new Uri(providerName).DnsSafeHost) && p.ApiProjectId.Equals(apiProjectId))).Id;
+            int projectId = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId))).Id;
             await UpdateCiDataForProjectAsync(projectId);
         }
     }

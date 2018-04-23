@@ -22,10 +22,11 @@ namespace Dashboard.WebApi.Controllers
             _projectService = projectService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GitlabUpdateForProject([FromBody] JObject body)
+        //api/Webhook/gitlab
+        [HttpPost("{provider}")]
+        public async Task<IActionResult> Post(string provider, [FromBody] JObject body)
         {
-            _projectService.FireProjectUpdate(@"https://gitlab.com", body);
+            _projectService.FireProjectUpdate(provider, body);
 
             return new OkResult();
         }
