@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
+using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Core.Interfaces
 {
@@ -12,6 +13,6 @@ namespace Dashboard.Core.Interfaces
         Task<Pipeline> GetBranchPipeLine(string apiHost, string apiKey, string apiProjectId, string branchName);
         Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue);
         Task<Pipeline> GetSpecificPipeline(string apiHost, string apiKey, string apiProjectId, string pipeId);
-        Task<string> GetProjectIdFromWebhookRequest(string body);
+        string GetProjectIdFromWebhookRequest(JObject body);
     }
 }

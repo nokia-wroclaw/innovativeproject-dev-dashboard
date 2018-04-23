@@ -9,6 +9,7 @@ using Dashboard.Application.GitLabApi;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
+using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Application
 {
@@ -97,14 +98,9 @@ namespace Dashboard.Application
             return stages;
         }
 
-        public async Task<string> GetProjectIdFromWebhookRequest(string body)
+        public string GetProjectIdFromWebhookRequest(JObject body)
         {
-            //body.Position = 0;
-            //string tmp = new StreamReader(body).ReadToEnd();
-            string flag = "\"project\":{";
-            string newBody = body.Substring(body.IndexOf(flag), body.IndexOf("}"));
-            string id = Regex.Match(newBody, @"\d+").Value;
-            return id;
+            return body["project"]["id"].Value<string>();
         }
     }
 }

@@ -11,6 +11,7 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Application.Services
 {
@@ -173,43 +174,26 @@ namespace Dashboard.Application.Services
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
 
-        public async Task<int> GetProjectIdForWebhook(string providerName, string body)
-        {
-            string provider = ExtractProviderName(providerName);
-            //provider = provider.Split('.')[0];
-            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(provider);
-            string projectId = await dataProvider.GetProjectIdFromWebhookRequest(body);
-
-            Project tmpProject = await _projectRepository.FindOneByAsync(p => /*ExtractProviderName(p.ApiHostUrl).Equals(ExtractProviderName(providerName)) &&*/ p.ApiProjectId == projectId);
-            return tmpProject.Id;
-        }
-
-        public void FireProjectUpdate(string providerName, string body)
+        public void FireProjectUpdate(string providerName, JObject body)
         {
             BackgroundJob.Enqueue<IProjectService>(s => s.WebhookFunction(providerName, body));
         }
 
-        public async Task WebhookFunction(string providerName, string body)
+        public async Task WebhookFunction(string providerName, JObject body)
         {
-            //int projectId = await GetProjectIdForWebhook(providerName, body);
-            await UpdateCiDataForProjectAsync(2);
-        }
-
-        private string ExtractProviderName(string providerName)
-        {
+            Uri uriAddress = new Uri(providerName);
+            var x = uriAddress.GetComponents(UriComponents.Host & ~UriComponents.Scheme, UriFormat.UriEscaped);
             string provider = "";
-            //Uri u = new Uri(providerName);
-            //provider = u.DnsSafeHost.Contains("www") ? u.DnsSafeHost.Remove(0, 4) : u.DnsSafeHost;
-            if (providerName.Contains(@"https://"))
-                provider = providerName.Remove(0, 8);
-            else if (providerName.Contains(@"http://"))
-                provider = providerName.Remove(0, 7);
+            if (x.Contains("www"))
+                provider = x.Split('.')[1];
+            else
+                provider = x.Split('.')[0];
 
-            if (provider.Contains("www"))
-                provider = provider.Remove(0, 4);
+            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(provider);
+            string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
 
-            provider = provider.Split('.')[0];
-            return provider;
+            int projectId = (await _projectRepository.FindOneByAsync(p => new Uri(p.ApiHostUrl).DnsSafeHost.Equals(new Uri(providerName).DnsSafeHost) && p.ApiProjectId.Equals(apiProjectId))).Id;
+            await UpdateCiDataForProjectAsync(projectId);
         }
     }
 }

@@ -7,6 +7,8 @@ using Dashboard.Core.Interfaces;
 using SimpleJson;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Dashboard.WebApi.Controllers
 {
@@ -21,23 +23,11 @@ namespace Dashboard.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GitlabUpdateForProject()
+        public async Task<IActionResult> GitlabUpdateForProject([FromBody] JObject body)
         {
-            //use in local to tests
-            //int projectId = (await _projectService.GetProjectIdForWebhook(@"https://gitlab.com", Request.Body));
+            _projectService.FireProjectUpdate(@"https://gitlab.com", body);
 
-            //use in deploy
-            //int projectId = (await _projectService.GetProjectIdForWebhook(Request.Host.ToUriComponent(), Request.Body));
-
-            Stream stream = Request.Body;
-            stream.Position = 0;
-            StreamReader s = new StreamReader(stream);
-            string bdy = s.ReadToEnd();
-            
-
-            _projectService.FireProjectUpdate(@"https://gitlab.com", bdy);
-
-            return new OkResult();// Content(Request.Host.Host);
+            return new OkResult();
         }
     }
 }
