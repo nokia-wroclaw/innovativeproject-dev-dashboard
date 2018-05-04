@@ -24,7 +24,7 @@ namespace Dashboard.WebApi.Controllers
 
         //api/Webhook/gitlab
         [HttpPost("{provider}")]
-        public async Task<IActionResult> Post(string provider, [FromBody] JObject body)
+        public IActionResult Post(string provider, [FromBody] JObject body)
         {
             _projectService.FireProjectUpdate(provider, body);
 

@@ -11,7 +11,7 @@ namespace Dashboard.Application.Interfaces.Services
         Task<Project> GetProjectByIdAsync(int id);
         Task<IEnumerable<Project>> GetAllProjectsAsync();
         Task DeleteProjectAsync(int id);
-        Task<Project> UpdateProjectAsync(Project updatedProject);
+        Task<ObjectResult<Project>> UpdateProjectAsync(Project updatedProject);
         Task<Project> CreateProjectAsync(Project project);
 
         Task<IEnumerable<string>> SearchForBranchInProject(int projectId, string searchValue);

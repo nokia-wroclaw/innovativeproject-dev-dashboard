@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
+using Dashboard.WebApi.ApiModels;
 using Dashboard.WebApi.ApiModels.Requests;
 using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -74,7 +75,7 @@ namespace Dashboard.WebApi.Controllers
             };
 
             var r = await _projectService.UpdateProjectAsync(updatedProject);
-            return Json(r);
+            return r.IsSuccess ? Json(r) : Json(ApiResponse.Error(r.ValidationResult));
         }
 
         // DELETE api/Project/5
