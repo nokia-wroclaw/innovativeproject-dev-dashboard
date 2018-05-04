@@ -75,7 +75,8 @@ namespace Dashboard.WebApi.Controllers
             };
 
             var r = await _projectService.UpdateProjectAsync(updatedProject);
-            return r.IsSuccess ? Json(r) : Json(ApiResponse.Error(r.ValidationResult));
+
+            return ApiResponse.FromServiceResult(r);
         }
 
         // DELETE api/Project/5

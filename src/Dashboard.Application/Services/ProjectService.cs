@@ -71,11 +71,11 @@ namespace Dashboard.Application.Services
             await _projectRepository.SaveAsync();
         }
 
-        public async Task<ObjectResult<Project>> UpdateProjectAsync(Project updatedProject)
+        public async Task<ServiceObjectResult<Project>> UpdateProjectAsync(Project updatedProject)
         {
             var validationResult = await _validationService.ValidateAsync<UpdateProjectValidator, Project>(updatedProject);
             if (!validationResult.IsValid)
-                return ObjectResult<Project>.Error(validationResult);
+                return ServiceObjectResult<Project>.Error(validationResult);
 
             var project = await GetProjectByIdAsync(updatedProject.Id);
 
@@ -91,7 +91,7 @@ namespace Dashboard.Application.Services
             var r = await _projectRepository.UpdateAsync(project, updatedProject.Id);
             await _projectRepository.SaveAsync();
 
-            return ObjectResult<Project>.Ok(r);
+            return ServiceObjectResult<Project>.Ok(r);
         }
 
         public async Task<Project> CreateProjectAsync(Project project)
