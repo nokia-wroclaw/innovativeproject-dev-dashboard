@@ -11,6 +11,7 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using Dashboard.Application.Validators;
 using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Application.Services
@@ -24,6 +25,7 @@ namespace Dashboard.Application.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IDynamicPipelinePanelRepository _dynamicPipelinesPanelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
+        private readonly IValidationService _validationService;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
         private readonly ICronJobsManager _cronJobsManager;
 
@@ -32,6 +34,7 @@ namespace Dashboard.Application.Services
             IProjectRepository projectRepository,
             IDynamicPipelinePanelRepository dynamicPipelinesPanelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
+            IValidationService validationService,
             ICiDataProviderFactory ciDataProviderFactory,
             ICronJobsManager cronJobsManager,
             ILogger<ProjectService> logger)
@@ -40,6 +43,7 @@ namespace Dashboard.Application.Services
             _cronJobsManager = cronJobsManager;
             _dynamicPipelinesPanelRepository = dynamicPipelinesPanelRepository;
             _staticBranchPanelRepository = staticBranchPanelRepository;
+            _validationService = validationService;
             _projectRepository = projectRepository;
             _pipelineRepository = pipelineRepository;
             _logger = logger;
@@ -69,9 +73,12 @@ namespace Dashboard.Application.Services
 
         public async Task<Project> UpdateProjectAsync(Project updatedProject)
         {
-            var project = await GetProjectByIdAsync(updatedProject.Id);
-            if (project == null)
+            //TODO: edit service method with errors of validation
+            var validationResult = await _validationService.ValidateAsync<UpdateProjectValidator, Project>(updatedProject);
+            if (!validationResult.IsValid)
                 return null;
+
+            var project = await GetProjectByIdAsync(updatedProject.Id);
 
             //TODO: change when automapper
             project.ApiAuthenticationToken = updatedProject.ApiAuthenticationToken;
