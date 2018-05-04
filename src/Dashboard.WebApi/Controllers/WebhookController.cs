@@ -28,7 +28,7 @@ namespace Dashboard.WebApi.Controllers
         {
             _projectService.FireProjectUpdate(provider, body);
 
-            return new OkResult();
+            return Ok();
         }
     }
 }
