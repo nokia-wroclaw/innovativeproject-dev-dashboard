@@ -94,14 +94,18 @@ namespace Dashboard.Application.Services
             return ServiceObjectResult<Project>.Ok(r);
         }
 
-        public async Task<Project> CreateProjectAsync(Project project)
+        public async Task<ServiceObjectResult<Project>> CreateProjectAsync(Project project)
         {
+            var validationResult = await _validationService.ValidateAsync<CreateProjectValidator, Project>(project);
+            if (!validationResult.IsValid)
+                return ServiceObjectResult<Project>.Error(validationResult);
+
             var r = await _projectRepository.AddAsync(project);
             await _projectRepository.SaveAsync();
 
             _cronJobsManager.UpdateCiDataForProject(project);
 
-            return r;
+            return ServiceObjectResult<Project>.Ok(r);
         }
 
         /// <summary>

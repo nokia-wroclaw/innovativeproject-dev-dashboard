@@ -53,8 +53,8 @@ namespace Dashboard.WebApi.Controllers
                 CiDataUpdateCronExpression = model.CiDataUpdateCronExpression
             };
 
-            var createdProject = await _projectService.CreateProjectAsync(project);
-            return Json(createdProject);
+            var r = await _projectService.CreateProjectAsync(project);
+            return ApiResponse.FromServiceResult(r);
         }
 
         // PUT api/Project/5
@@ -75,7 +75,6 @@ namespace Dashboard.WebApi.Controllers
             };
 
             var r = await _projectService.UpdateProjectAsync(updatedProject);
-
             return ApiResponse.FromServiceResult(r);
         }
 

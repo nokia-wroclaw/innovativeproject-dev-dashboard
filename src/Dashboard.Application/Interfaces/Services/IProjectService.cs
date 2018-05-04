@@ -12,7 +12,7 @@ namespace Dashboard.Application.Interfaces.Services
         Task<IEnumerable<Project>> GetAllProjectsAsync();
         Task DeleteProjectAsync(int id);
         Task<ServiceObjectResult<Project>> UpdateProjectAsync(Project updatedProject);
-        Task<Project> CreateProjectAsync(Project project);
+        Task<ServiceObjectResult<Project>> CreateProjectAsync(Project project);
 
         Task<IEnumerable<string>> SearchForBranchInProject(int projectId, string searchValue);
         Task UpdateCiDataForProjectAsync(int projectId);
