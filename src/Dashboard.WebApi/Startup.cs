@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dashboard.Application;
@@ -8,6 +10,7 @@ using Dashboard.WebApi.Infrastructure;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -76,6 +79,14 @@ namespace Dashboard.WebApi
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            var locale = Configuration["SiteLocale"];
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                SupportedCultures = new List<CultureInfo> { new CultureInfo(locale) },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo(locale) },
+                DefaultRequestCulture = new RequestCulture(locale)
+            });
 
 
             if (env.IsDevelopment())
