@@ -11,6 +11,7 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using Dashboard.Application.Validators;
 using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Application.Services
@@ -24,6 +25,7 @@ namespace Dashboard.Application.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IDynamicPipelinePanelRepository _dynamicPipelinesPanelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
+        private readonly IValidationService _validationService;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
         private readonly ICronJobsManager _cronJobsManager;
 
@@ -32,6 +34,7 @@ namespace Dashboard.Application.Services
             IProjectRepository projectRepository,
             IDynamicPipelinePanelRepository dynamicPipelinesPanelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
+            IValidationService validationService,
             ICiDataProviderFactory ciDataProviderFactory,
             ICronJobsManager cronJobsManager,
             ILogger<ProjectService> logger)
@@ -40,6 +43,7 @@ namespace Dashboard.Application.Services
             _cronJobsManager = cronJobsManager;
             _dynamicPipelinesPanelRepository = dynamicPipelinesPanelRepository;
             _staticBranchPanelRepository = staticBranchPanelRepository;
+            _validationService = validationService;
             _projectRepository = projectRepository;
             _pipelineRepository = pipelineRepository;
             _logger = logger;
@@ -67,11 +71,13 @@ namespace Dashboard.Application.Services
             await _projectRepository.SaveAsync();
         }
 
-        public async Task<Project> UpdateProjectAsync(Project updatedProject)
+        public async Task<ServiceObjectResult<Project>> UpdateProjectAsync(Project updatedProject)
         {
+            var validationResult = await _validationService.ValidateAsync<UpdateProjectValidator, Project>(updatedProject);
+            if (!validationResult.IsValid)
+                return ServiceObjectResult<Project>.Error(validationResult);
+
             var project = await GetProjectByIdAsync(updatedProject.Id);
-            if (project == null)
-                return null;
 
             //TODO: change when automapper
             project.ApiAuthenticationToken = updatedProject.ApiAuthenticationToken;
@@ -85,17 +91,21 @@ namespace Dashboard.Application.Services
             var r = await _projectRepository.UpdateAsync(project, updatedProject.Id);
             await _projectRepository.SaveAsync();
 
-            return r;
+            return ServiceObjectResult<Project>.Ok(r);
         }
 
-        public async Task<Project> CreateProjectAsync(Project project)
+        public async Task<ServiceObjectResult<Project>> CreateProjectAsync(Project project)
         {
+            var validationResult = await _validationService.ValidateAsync<CreateProjectValidator, Project>(project);
+            if (!validationResult.IsValid)
+                return ServiceObjectResult<Project>.Error(validationResult);
+
             var r = await _projectRepository.AddAsync(project);
             await _projectRepository.SaveAsync();
 
             _cronJobsManager.UpdateCiDataForProject(project);
 
-            return r;
+            return ServiceObjectResult<Project>.Ok(r);
         }
 
         /// <summary>

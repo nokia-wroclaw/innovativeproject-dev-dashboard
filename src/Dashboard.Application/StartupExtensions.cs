@@ -1,10 +1,14 @@
 ﻿using System;
 using Autofac;
+using Dashboard.Application.AutofacModules;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Application.Services;
+using Dashboard.Application.Validators;
+using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
 using Dashboard.Data.Repositories;
+using FluentValidation;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
@@ -16,16 +20,7 @@ namespace Dashboard.Application
     {
         public static void AddApplication(this ContainerBuilder builder)
         {
-            //Register repositories
-            builder.RegisterType<PanelRepository>().As<IPanelRepository>();
-            builder.RegisterType<StaticBranchPanelRepository>().As<IStaticBranchPanelRepository>();
-            builder.RegisterType<PipelineRepository>().As<IPipelineRepository>();
-            builder.RegisterType<ProjectRepository>().As<IProjectRepository>();
-            builder.RegisterType<DynamicPipelinePanelRepository>().As<IDynamicPipelinePanelRepository>();
-
-            //Register services
-            builder.RegisterType<PanelService>().As<IPanelService>();
-            builder.RegisterType<ProjectService>().As<IProjectService>();
+            builder.RegisterAssemblyModules(typeof(ServiceModule).Assembly);
 
             builder.RegisterType<CronJobsManager>().As<ICronJobsManager>();
             builder.RegisterType<GitLabDataProvider>().As<ICiDataProvider>();
