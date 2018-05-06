@@ -19,5 +19,7 @@ namespace Dashboard.Application.Interfaces.Services
 
         void FireProjectUpdate(string providerName, JObject body);
         Task WebhookFunction(string providerName, JObject body);
+
+        Task<IEnumerable<Pipeline>> UpdateLocalDatabase(int projectId, IEnumerable<string> staticPipes);
     }
 }

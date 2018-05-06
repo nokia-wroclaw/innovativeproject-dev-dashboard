@@ -33,5 +33,11 @@ namespace Dashboard.WebApi.Controllers
             var result = await _projectService.SearchForBranchInProject(projectId, searchValue);
             return result;
         }
+
+        [HttpGet]
+        public async Task UpdateLocalDB(int projectId)
+        {
+            await _projectService.UpdateCiDataForProjectAsync(projectId);
+        }
     }
 }
