@@ -27,7 +27,7 @@ OnDestroy {
     responsiveView: true,
     resizable: true,
     useCSSTransforms: true,
-    widthHeightRatio: 1.4,
+    cellHeight: 175,
     responsiveOptions: [
       {
         breakpoint: 'sm',
