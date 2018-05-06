@@ -50,7 +50,7 @@ namespace Dashboard.WebApi.Controllers
         {
             var entity = model.MapEntity(model);
 
-            var createdResult = await _panelService.UpdatePanelAsync(entity);
+            var createdResult = await _panelService.CreatePanelAsync(entity);
             return ApiResponse.FromServiceResult(createdResult);
         }
 

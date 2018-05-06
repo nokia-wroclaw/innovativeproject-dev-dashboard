@@ -1,5 +1,6 @@
 ﻿using System;
 using Autofac;
+using Dashboard.Application.AutofacModules;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Application.Services;
 using Dashboard.Application.Validators;
@@ -19,27 +20,7 @@ namespace Dashboard.Application
     {
         public static void AddApplication(this ContainerBuilder builder)
         {
-            //TODO: move to autofac modules
-
-            //Register repositories
-            builder.RegisterType<PanelRepository>().As<IPanelRepository>();
-            builder.RegisterType<StaticBranchPanelRepository>().As<IStaticBranchPanelRepository>();
-            builder.RegisterType<PipelineRepository>().As<IPipelineRepository>();
-            builder.RegisterType<ProjectRepository>().As<IProjectRepository>();
-            builder.RegisterType<DynamicPipelinePanelRepository>().As<IDynamicPipelinePanelRepository>();
-
-            //Register services
-            builder.RegisterType<PanelService>().As<IPanelService>();
-            builder.RegisterType<ProjectService>().As<IProjectService>();
-
-            //Validation
-            builder.RegisterType<FluentValidationService>().As<IValidationService>();
-            builder.RegisterType<AutofacValidatorFactory>().As<IValidatorFactory>();
-
-            builder.RegisterType<UpdateProjectValidator>().AsSelf().AsImplementedInterfaces();
-            builder.RegisterType<CreateProjectValidator>().AsSelf().AsImplementedInterfaces();
-
-
+            builder.RegisterAssemblyModules(typeof(ServiceModule).Assembly);
 
             builder.RegisterType<CronJobsManager>().As<ICronJobsManager>();
             builder.RegisterType<GitLabDataProvider>().As<ICiDataProvider>();
