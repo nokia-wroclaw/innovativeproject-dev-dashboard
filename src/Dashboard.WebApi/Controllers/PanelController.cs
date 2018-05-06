@@ -88,9 +88,7 @@ namespace Dashboard.WebApi.Controllers
             };
 
             var r = await _panelService.UpdatePanelPosition(id, newPosition);
-            if (r == null) return NotFound();
-
-            return Json(r);
+            return ApiResponse.FromServiceResult(r);
         }
 
         // POST api/Panel/Positions

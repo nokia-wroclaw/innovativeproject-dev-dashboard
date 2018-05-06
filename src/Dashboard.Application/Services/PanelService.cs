@@ -92,8 +92,12 @@ namespace Dashboard.Application.Services
             return await _panelRepository.GetActiveProjects();
         }
 
-        public async Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position)
+        public async Task<ServiceObjectResult<Panel>> UpdatePanelPosition(int panelId, PanelPosition position)
         {
+            var validationResult = await _validationService.ValidateAsync<FullPanelPositionValidator, PanelPosition>(position);
+            if (!validationResult.IsValid)
+                return ServiceObjectResult<Panel>.Error(validationResult);
+
             var entity = await GetPanelByIdAsync(panelId);
             if (entity == null) return null;
 
@@ -106,7 +110,7 @@ namespace Dashboard.Application.Services
             var r = await _panelRepository.UpdateAsync(entity, panelId);
             await _panelRepository.SaveAsync();
 
-            return r;
+            return ServiceObjectResult<Panel>.Ok(r);
         }
     }
 }

@@ -19,6 +19,6 @@ namespace Dashboard.Application.Interfaces.Services
         /// <returns></returns>
         Task<IEnumerable<Project>> GetActiveProjects();
 
-        Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position);
+        Task<ServiceObjectResult<Panel>> UpdatePanelPosition(int panelId, PanelPosition position);
     }
 }
