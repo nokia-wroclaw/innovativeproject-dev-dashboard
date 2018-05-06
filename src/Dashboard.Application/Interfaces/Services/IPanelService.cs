@@ -10,8 +10,8 @@ namespace Dashboard.Application.Interfaces.Services
         Task<IEnumerable<Panel>> GetAllPanelsAsync();
         Task DeletePanelAsync(int id);
 
-        Task<Panel> UpdatePanelAsync(Panel updatedPanel);
-        Task<Panel> CreatePanelAsync(Panel model);
+        Task<ServiceObjectResult<Panel>> UpdatePanelAsync(Panel updatedPanel);
+        Task<ServiceObjectResult<Panel>> CreatePanelAsync(Panel model);
 
         /// <summary>
         /// Returns list of projects that are referenced by any panel

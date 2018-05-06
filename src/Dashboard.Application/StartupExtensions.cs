@@ -35,8 +35,11 @@ namespace Dashboard.Application
             //Validation
             builder.RegisterType<FluentValidationService>().As<IValidationService>();
             builder.RegisterType<AutofacValidatorFactory>().As<IValidatorFactory>();
+
             builder.RegisterType<UpdateProjectValidator>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<CreateProjectValidator>().AsSelf().AsImplementedInterfaces();
+
+
 
             builder.RegisterType<CronJobsManager>().As<ICronJobsManager>();
             builder.RegisterType<GitLabDataProvider>().As<ICiDataProvider>();

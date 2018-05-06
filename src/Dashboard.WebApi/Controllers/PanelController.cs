@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
+using Dashboard.WebApi.ApiModels;
 using Dashboard.WebApi.ApiModels.Requests;
 using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -48,8 +49,9 @@ namespace Dashboard.WebApi.Controllers
         public async Task<IActionResult> Post([FromBody]CreatePanel model)
         {
             var entity = model.MapEntity(model);
-            var created = await _panelService.CreatePanelAsync(entity);
-            return Json(created);
+
+            var createdResult = await _panelService.UpdatePanelAsync(entity);
+            return ApiResponse.FromServiceResult(createdResult);
         }
 
         // PUT api/Panel/5
@@ -60,8 +62,8 @@ namespace Dashboard.WebApi.Controllers
             var entity = model.MapEntity(model);
             entity.Id = id;
 
-            var created = await _panelService.UpdatePanelAsync(entity);
-            return Json(created);
+            var createdResult = await _panelService.UpdatePanelAsync(entity);
+            return ApiResponse.FromServiceResult(createdResult);
         }
 
         // DELETE api/Panel/5
