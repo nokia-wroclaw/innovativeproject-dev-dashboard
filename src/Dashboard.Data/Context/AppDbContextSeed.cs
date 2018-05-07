@@ -54,6 +54,7 @@ namespace Dashboard.Data.Context
                 ApiAuthenticationToken = "6h-Xjym_EFy8DBxPDR9z",
                 CiDataUpdateCronExpression = "*/4 * * * *",
                 //StaticPipelines = new List<Pipeline>()
+                PipelinesNumber = 100,
                 Pipelines = new List<Pipeline>()
                 {
                     new Pipeline()

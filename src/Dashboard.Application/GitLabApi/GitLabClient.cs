@@ -155,7 +155,7 @@ namespace Dashboard.Application.GitLabApi
                 var request = new RestRequest("projects/{projectId}/pipelines", Method.GET);
                 request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
 
-                request.AddQueryParameter("per_page", "20");
+                request.AddQueryParameter("per_page", "100");
                 request.AddQueryParameter("page", pageCounter.ToString());
 
                 var response = await Client.ExecuteTaskAsync<List<Pipeline>>(request);

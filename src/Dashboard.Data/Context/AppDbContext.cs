@@ -48,6 +48,7 @@ namespace Dashboard.Data.Context
                 m.Property(p => p.ApiAuthenticationToken).IsRequired();
                 m.Property(p => p.ApiHostUrl).IsRequired();
                 m.Property(p => p.DataProviderName).IsRequired();
+                m.Property(p => p.PipelinesNumber).HasDefaultValue(100);
 
                 m.HasMany(p => p.Pipelines);
 

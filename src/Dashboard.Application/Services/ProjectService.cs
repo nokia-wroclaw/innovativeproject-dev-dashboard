@@ -123,7 +123,7 @@ namespace Dashboard.Application.Services
                 return null;
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var targetPipelineNumber = 100 - project.Pipelines.Count;
+            var targetPipelineNumber = project.PipelinesNumber - project.Pipelines.Count;
             //var actualPipelineNumber = project.DynamicPipelines.Count;
             //dataProvider.GetLatestPipelines(targetPipelineNumber, project.DynamicPipelines);
             var actualPipelineNumber = project.Pipelines.Count;
@@ -163,15 +163,12 @@ namespace Dashboard.Application.Services
             var localPipelines = project.Pipelines;
             var output = localPipelines.Where(p => !staticBranches.Contains(p.Ref)).Select(p => p).ToList();
             output.AddRange(await Task.WhenAll(downloadedPipelinesSpecific));
-            //output.AddRange(downloadedPipelines);
             output.AddRange(await Task.WhenAll(updatedPipelinesSpecific));
 
-            //Za drugim razem łapie tylko jeden
-
-
             //Save update to DB
-            _pipelineRepository.DeleteRange(project.Pipelines);
-            project.Pipelines = output.TakeLast(200).ToList();
+            int howManyToDelete = output.Count - project.PipelinesNumber >= 0 ? output.Count - project.PipelinesNumber : 0;
+            _pipelineRepository.DeleteRange(output.Take(howManyToDelete));
+            project.Pipelines = output.TakeLast(project.PipelinesNumber).ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
