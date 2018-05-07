@@ -21,5 +21,6 @@ namespace Dashboard.Application.Interfaces.Services
         Task WebhookFunction(string providerName, JObject body);
 
         Task<IEnumerable<Pipeline>> UpdateLocalDatabase(int projectId, IEnumerable<string> staticPipes);
+        Task<StaticAndDynamicPanelDTO> GetPipelinesForPanel(int panelID);
     }
 }

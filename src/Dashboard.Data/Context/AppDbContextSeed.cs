@@ -37,8 +37,8 @@ namespace Dashboard.Data.Context
                 Title = "Fancy Title Dynamic",
                 Position = new PanelPosition() {Column = 1, Row = 2, Width = 2, Height = 3},
                 Project = SeedProjects.ElementAt(0),
-                HowManyLastPipelinesToRead = 2
-                
+                HowManyLastPipelinesToRead = 2,
+                PanelRegex = ".*"
             }
         });
 

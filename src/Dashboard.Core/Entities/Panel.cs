@@ -40,6 +40,7 @@ namespace Dashboard.Core.Entities
         public override string Discriminator => nameof(DynamicPipelinesPanel);
 
         public int HowManyLastPipelinesToRead { get; set; }
+        public string PanelRegex { get; set; }
     }
 
     public class PanelPosition

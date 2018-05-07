@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace Dashboard.Application.Services
 {
@@ -26,6 +27,7 @@ namespace Dashboard.Application.Services
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
         private readonly ICronJobsManager _cronJobsManager;
+        private readonly IPanelRepository _panelRepository;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
@@ -34,6 +36,7 @@ namespace Dashboard.Application.Services
             IStaticBranchPanelRepository staticBranchPanelRepository,
             ICiDataProviderFactory ciDataProviderFactory,
             ICronJobsManager cronJobsManager,
+            IPanelRepository panelRepository,
             ILogger<ProjectService> logger)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
@@ -42,6 +45,7 @@ namespace Dashboard.Application.Services
             _staticBranchPanelRepository = staticBranchPanelRepository;
             _projectRepository = projectRepository;
             _pipelineRepository = pipelineRepository;
+            _panelRepository = panelRepository;
             _logger = logger;
         }
 
@@ -251,6 +255,35 @@ namespace Dashboard.Application.Services
 
             int projectId = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId))).Id;
             await UpdateCiDataForProjectAsync(projectId);
+        }
+
+        public async Task<StaticAndDynamicPanelDTO> GetPipelinesForPanel(int panelID)
+        {
+            var panel = (await _panelRepository.GetByIdAsync(panelID));
+            int projectID = panel.ProjectId ?? throw new ArgumentException($"DB does NOT contain panel with ID={panelID}");
+            var projectPipelines = (await _projectRepository.GetByIdAsync(projectID)).Pipelines;
+            if (panel.Discriminator.Equals(nameof(StaticBranchPanel)))
+            {
+                //static panel
+                StaticBranchPanel staticPanel = (StaticBranchPanel)panel;
+                return new StaticAndDynamicPanelDTO()
+                {
+                    Pipelines = new List<Pipeline> { projectPipelines.LastOrDefault(p => p.Ref.Equals(staticPanel.StaticBranchName)) }
+                };
+            }
+            else if (panel.Discriminator.Equals(nameof(DynamicPipelinesPanel)))
+            {
+                //return info for dynamic panel
+                DynamicPipelinesPanel dynamicPanel = (DynamicPipelinesPanel)panel;
+                StaticAndDynamicPanelDTO returnDTO = new StaticAndDynamicPanelDTO();
+                return new StaticAndDynamicPanelDTO()
+                {
+                    Pipelines = projectPipelines.Where(p => Regex.IsMatch(p.Ref, dynamicPanel.PanelRegex)).Select(p => p).TakeLast(dynamicPanel.HowManyLastPipelinesToRead)
+                };
+            }
+
+            //Empty default, should never be reached
+            return new StaticAndDynamicPanelDTO();
         }
     }
 }

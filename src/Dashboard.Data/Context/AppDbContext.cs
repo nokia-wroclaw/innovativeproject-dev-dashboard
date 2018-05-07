@@ -78,6 +78,10 @@ namespace Dashboard.Data.Context
                     .HasValue<StaticBranchPanel>(nameof(StaticBranchPanel))
                     .HasValue<DynamicPipelinesPanel>(nameof(DynamicPipelinesPanel));
             });
+            builder.Entity<DynamicPipelinesPanel>(model =>
+            {
+                model.Property(p => p.PanelRegex).HasDefaultValue(".*");
+            });
             #endregion
         }
     }
