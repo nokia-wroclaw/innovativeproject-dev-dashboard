@@ -128,14 +128,10 @@ namespace Dashboard.Application.Services
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
             var targetPipelineNumber = project.PipelinesNumber - project.Pipelines.Count;
-            //var actualPipelineNumber = project.DynamicPipelines.Count;
-            //dataProvider.GetLatestPipelines(targetPipelineNumber, project.DynamicPipelines);
+
             var actualPipelineNumber = project.Pipelines.Count;
             var newPipelines = await dataProvider.GetLatestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, targetPipelineNumber, project.Pipelines, staticPipes);
             return newPipelines;
-            //var localPipelines = project.Pipelines;
-            //localPipelines.ToList().AddRange(newPipelines);
-            //return localPipelines.TakeLast(200 - staticPipes.Count());
         }
 
         /// <summary>
@@ -179,69 +175,6 @@ namespace Dashboard.Application.Services
 
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
-
-        ///// <summary>
-        /////     Downloads data from CiDataProvider for given project
-        ///// </summary>
-        ///// <param name="projectId"></param>
-        ///// <returns>All pipelines</returns>
-        //public async Task UpdateCiDataForProjectAsync(int projectId)
-        //{
-        //    await UpdateLocalDatabase(projectId);
-        //    var project = await GetProjectByIdAsync(projectId);
-        //    if (project == null) return;
-
-        //    //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
-        //    var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
-
-        //    var staticBranches = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
-        //    var updatePiplineTasks = staticBranches.Select(b =>
-        //        dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b));
-
-        //    var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
-
-        //    //Apparently faster way than LINQ, merge collections, discard duplicates
-        //    var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl,
-        //        project.ApiAuthenticationToken, project.ApiProjectId);
-
-        //    var dict = updatedPipelines.ToDictionary(k => k.Ref, v => v);
-        //    downloadedPipelines
-        //        .Where(pipe => !dict.ContainsKey(pipe.Ref))
-        //        .ToList()
-        //        .ForEach(pipe => dict[pipe.Ref] = pipe);
-
-
-        //    updatedPipelines = dict.Values
-        //        .Take(await _dynamicPipelinesPanelRepository.GetNumberOfDiscoverPipelinesForProject(projectId) +
-        //                staticBranches.Count()).ToList();
-
-        //    var updatedPipesWithFullInfoTasks = updatedPipelines.Select(p => dataProvider.GetSpecificPipeline(
-        //        project.ApiHostUrl,
-        //        project.ApiAuthenticationToken,
-        //        project.ApiProjectId,
-        //        p.DataProviderId.ToString())
-        //    );
-        //    var updatedPipesWithFullInfo = await Task.WhenAll(updatedPipesWithFullInfoTasks);
-
-
-        //    //Delete old Pipelines
-        //    //_pipelineRepository.DeleteRange(project.StaticPipelines);
-        //    //_pipelineRepository.DeleteRange(project.DynamicPipelines);
-
-        //    //project.StaticPipelines = updatedPipesWithFullInfo.Where(p => staticBranches.Contains(p.Ref)).Select(p => p)
-        //    //    .ToList();
-        //    //project.DynamicPipelines = updatedPipesWithFullInfo.Where(p => !staticBranches.Contains(p.Ref))
-        //    //    .Select(p => p).ToList();
-
-        //    _pipelineRepository.DeleteRange(project.Pipelines);
-        //    var newPipelines = updatedPipesWithFullInfo.Where(p => staticBranches.Contains(p.Ref)).Select(p => p).ToList();
-        //    newPipelines.AddRange(updatedPipesWithFullInfo.Where(p => !staticBranches.Contains(p.Ref)).Select(p => p).ToList());
-
-        //    await _projectRepository.UpdateAsync(project, project.Id);
-        //    await _projectRepository.SaveAsync();
-
-        //    _logger.LogInformation($"Updated cidata for project: {project.Id}");
-        //}
 
         public void FireProjectUpdate(string providerName, JObject body)
         {
