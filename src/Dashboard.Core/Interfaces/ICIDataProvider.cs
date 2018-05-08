@@ -14,5 +14,8 @@ namespace Dashboard.Core.Interfaces
         Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue);
         Task<Pipeline> GetSpecificPipeline(string apiHost, string apiKey, string apiProjectId, string pipeId);
         string GetProjectIdFromWebhookRequest(JObject body);
+
+        //localPipes
+        Task<IEnumerable<Pipeline>> GetLatestPipelines(string apiHost, string apiKey, string apiProjectId, int quantity, IEnumerable<Pipeline> localPipes, IEnumerable<string> staticPipes);
     }
 }

@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System;
 using Dashboard.Application.Validators;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace Dashboard.Application.Services
 {
@@ -23,29 +24,26 @@ namespace Dashboard.Application.Services
 
         private readonly IPipelineRepository _pipelineRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly IDynamicPipelinePanelRepository _dynamicPipelinesPanelRepository;
-        private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly IValidationService _validationService;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
         private readonly ICronJobsManager _cronJobsManager;
+        private readonly IPanelRepository _panelRepository;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
             IProjectRepository projectRepository,
-            IDynamicPipelinePanelRepository dynamicPipelinesPanelRepository,
-            IStaticBranchPanelRepository staticBranchPanelRepository,
             IValidationService validationService,
             ICiDataProviderFactory ciDataProviderFactory,
             ICronJobsManager cronJobsManager,
+            IPanelRepository panelRepository,
             ILogger<ProjectService> logger)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
             _cronJobsManager = cronJobsManager;
-            _dynamicPipelinesPanelRepository = dynamicPipelinesPanelRepository;
-            _staticBranchPanelRepository = staticBranchPanelRepository;
             _validationService = validationService;
             _projectRepository = projectRepository;
             _pipelineRepository = pipelineRepository;
+            _panelRepository = panelRepository;
             _logger = logger;
         }
 
@@ -76,7 +74,7 @@ namespace Dashboard.Application.Services
             var validationResult = await _validationService.ValidateAsync<UpdateProjectValidator, Project>(updatedProject);
             if (!validationResult.IsValid)
                 return ServiceObjectResult<Project>.Error(validationResult);
-
+        
             var project = await GetProjectByIdAsync(updatedProject.Id);
 
             //TODO: change when automapper
@@ -99,7 +97,7 @@ namespace Dashboard.Application.Services
             var validationResult = await _validationService.ValidateAsync<CreateProjectValidator, Project>(project);
             if (!validationResult.IsValid)
                 return ServiceObjectResult<Project>.Error(validationResult);
-
+        
             var r = await _projectRepository.AddAsync(project);
             await _projectRepository.SaveAsync();
 
@@ -126,6 +124,20 @@ namespace Dashboard.Application.Services
             return r;
         }
 
+        public async Task<IEnumerable<Pipeline>> UpdateLocalDatabase(int projectId, IEnumerable<string> staticPipes)
+        {
+            var project = await GetProjectByIdAsync(projectId);
+            if (project == null)
+                return null;
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
+
+            var targetPipelineNumber = project.PipelinesNumber - project.Pipelines.Count;
+
+            var actualPipelineNumber = project.Pipelines.Count;
+            var newPipelines = await dataProvider.GetLatestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, targetPipelineNumber, project.Pipelines, staticPipes);
+            return newPipelines;
+        }
+
         /// <summary>
         ///     Downloads data from CiDataProvider for given project
         /// </summary>
@@ -133,50 +145,34 @@ namespace Dashboard.Application.Services
         /// <returns>All pipelines</returns>
         public async Task UpdateCiDataForProjectAsync(int projectId)
         {
+            //await UpdateLocalDatabase(projectId);
             var project = await GetProjectByIdAsync(projectId);
             if (project == null) return;
 
             //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var staticBranches = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+            var staticBranches = (await _panelRepository.FindAllAsync(p => p.Discriminator.Equals(nameof(StaticBranchPanel)))).Select(p => ((StaticBranchPanel)p).StaticBranchName);//await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
             var updatePiplineTasks = staticBranches.Select(b =>
                 dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b));
 
-            var updatedPipelines = (await Task.WhenAll(updatePiplineTasks)).ToList();
+            var updatedPipelines = (await Task.WhenAll(updatePiplineTasks));
+            var updatedPipelinesSpecific = updatedPipelines.Select(p => dataProvider.GetSpecificPipeline(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, p.DataProviderId.ToString()));
 
-            //Apparently faster way than LINQ, merge collections, discard duplicates
-            var downloadedPipelines = await dataProvider.GetAllPipelines(project.ApiHostUrl,
-                project.ApiAuthenticationToken, project.ApiProjectId);
+            //Fill with dynamic
+            var downloadedPipelines = (await UpdateLocalDatabase(projectId, staticBranches));
+            var downloadedPipelinesSpecific = downloadedPipelines.Select(p => dataProvider.GetSpecificPipeline(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, p.DataProviderId.ToString()));
 
-            var dict = updatedPipelines.ToDictionary(k => k.Ref, v => v);
-            downloadedPipelines
-                .Where(pipe => !dict.ContainsKey(pipe.Ref))
-                .ToList()
-                .ForEach(pipe => dict[pipe.Ref] = pipe);
+            //Merge
+            var localPipelines = project.Pipelines;
+            var output = localPipelines.Where(p => !staticBranches.Contains(p.Ref)).Select(p => p).ToList();
+            output.AddRange(await Task.WhenAll(downloadedPipelinesSpecific));
+            output.AddRange(await Task.WhenAll(updatedPipelinesSpecific));
 
-
-            updatedPipelines = dict.Values
-                .Take(await _dynamicPipelinesPanelRepository.GetNumberOfDiscoverPipelinesForProject(projectId) +
-                        staticBranches.Count()).ToList();
-
-            var updatedPipesWithFullInfoTasks = updatedPipelines.Select(p => dataProvider.GetSpecificPipeline(
-                project.ApiHostUrl,
-                project.ApiAuthenticationToken,
-                project.ApiProjectId,
-                p.DataProviderId.ToString())
-            );
-            var updatedPipesWithFullInfo = await Task.WhenAll(updatedPipesWithFullInfoTasks);
-
-
-            //Delete old Pipelines
-            _pipelineRepository.DeleteRange(project.StaticPipelines);
-            _pipelineRepository.DeleteRange(project.DynamicPipelines);
-
-            project.StaticPipelines = updatedPipesWithFullInfo.Where(p => staticBranches.Contains(p.Ref)).Select(p => p)
-                .ToList();
-            project.DynamicPipelines = updatedPipesWithFullInfo.Where(p => !staticBranches.Contains(p.Ref))
-                .Select(p => p).ToList();
+            //Save update to DB
+            int howManyToDelete = output.Count - project.PipelinesNumber >= 0 ? output.Count - project.PipelinesNumber : 0;
+            _pipelineRepository.DeleteRange(output.Take(howManyToDelete));
+            project.Pipelines = output.TakeLast(project.PipelinesNumber).ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
@@ -196,6 +192,12 @@ namespace Dashboard.Application.Services
 
             int projectId = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId))).Id;
             await UpdateCiDataForProjectAsync(projectId);
+        }
+
+        public async Task<StaticAndDynamicPanel> GetPipelinesForPanel(int panelID)
+        {
+            var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
+            return await panel.GetPipelinesDTOForPanel(panelID, _projectRepository);
         }
     }
 }

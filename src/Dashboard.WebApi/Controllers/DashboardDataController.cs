@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Interfaces;
+using Dashboard.Core.Entities;
 
 namespace Dashboard.WebApi.Controllers
 {
@@ -32,6 +33,18 @@ namespace Dashboard.WebApi.Controllers
         {
             var result = await _projectService.SearchForBranchInProject(projectId, searchValue);
             return result;
+        }
+
+        [HttpGet]
+        public async Task UpdateLocalDB(int projectId)
+        {
+            await _projectService.UpdateCiDataForProjectAsync(projectId);
+        }
+
+        [HttpGet]
+        public async Task<StaticAndDynamicPanel> PipelinesForPanel(int panelID)
+        {
+            return await _projectService.GetPipelinesForPanel(panelID);
         }
     }
 }

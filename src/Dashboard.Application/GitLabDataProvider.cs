@@ -102,5 +102,32 @@ namespace Dashboard.Application
         {
             return body["project"]["id"].Value<string>();
         }
+
+        public async Task<IEnumerable<Pipeline>> GetLatestPipelines(string apiHost, string apiKey, string apiProjectId, int quantity, IEnumerable<Pipeline> localPipes, IEnumerable<string> staticPipes)
+        {
+            var client = new GitLabClient(apiHost, apiKey);
+            LinkedList<Pipeline> newPipes = new LinkedList<Pipeline>();
+            var latest = await client.PickNewestPipelinesExcludingSome(apiProjectId, quantity, staticPipes);
+            for (int i = 0; i < latest.Count(); i++)
+            {
+                var pipe = latest.ElementAt(i);
+                if (localPipes.Select(p => p.Sha).Contains(pipe.Sha))
+                    break;
+                else
+                //if(!localPipes.Last().Sha.Equals(latest.ElementAt(i).Sha))
+                {
+                    newPipes.AddFirst(new Pipeline()
+                    {
+                        ProjectId = apiHost + "/" + apiProjectId,
+                        DataProviderId = pipe.Id,
+                        Ref = pipe.Ref,
+                        Sha = pipe.Sha,
+                        Status = pipe.Status,
+                    });
+                }
+            }
+
+            return newPipes;
+        }
     }
 }

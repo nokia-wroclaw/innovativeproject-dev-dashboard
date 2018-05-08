@@ -52,6 +52,8 @@ namespace Dashboard.WebApi.ApiModels.Requests
         [Required]
         public int HowManyLastPipelinesToRead { get; set; }
         [Required]
+        public string PanelRegex { get; set; }
+        [Required]
         public int ProjectId { get; set; }
 
         public override Panel MapEntity(CreatePanel model)

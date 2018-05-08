@@ -1,6 +1,11 @@
-﻿using System;
+﻿using Dashboard.Core.Interfaces;
+using Dashboard.Core.Interfaces.Repositories;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Dashboard.Core.Entities
 {
@@ -28,18 +33,39 @@ namespace Dashboard.Core.Entities
         public string MemeApiToken { get; set; }
     }
 
-    public class StaticBranchPanel : Panel
+    public class StaticBranchPanel : Panel, IPanelPipelines
     {
         public override string Discriminator => nameof(StaticBranchPanel);
 
         public string StaticBranchName { get; set; }
+
+        public async Task<StaticAndDynamicPanel> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository)
+        {
+            int projID = ProjectId ?? throw new ArgumentException($"DB does NOT contain panel with ID={panelID}");
+            var projectPipelines = (await projectRepository.GetByIdAsync(projID)).Pipelines;
+            return new StaticAndDynamicPanel()
+            {
+                Pipelines = new List<Pipeline> { projectPipelines.LastOrDefault(p => p.Ref.Equals(StaticBranchName)) }
+            };
+        }
     }
 
-    public class DynamicPipelinesPanel : Panel
+    public class DynamicPipelinesPanel : Panel, IPanelPipelines
     {
         public override string Discriminator => nameof(DynamicPipelinesPanel);
 
         public int HowManyLastPipelinesToRead { get; set; }
+        public string PanelRegex { get; set; }
+
+        public async Task<StaticAndDynamicPanel> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository)
+        {
+            int projID = ProjectId ?? throw new ArgumentException($"DB does NOT contain panel with ID={panelID}");
+            var projectPipelines = (await projectRepository.GetByIdAsync(projID)).Pipelines;
+            return new StaticAndDynamicPanel()
+            {
+                Pipelines = projectPipelines.Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Select(p => p).TakeLast(HowManyLastPipelinesToRead)
+            };
+        }
     }
 
     public class PanelPosition
