@@ -23,8 +23,6 @@ namespace Dashboard.Application.Services
 
         private readonly IPipelineRepository _pipelineRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly IDynamicPipelinePanelRepository _dynamicPipelinesPanelRepository;
-        private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
         private readonly ICronJobsManager _cronJobsManager;
         private readonly IPanelRepository _panelRepository;
@@ -32,8 +30,6 @@ namespace Dashboard.Application.Services
         public ProjectService(
             IPipelineRepository pipelineRepository,
             IProjectRepository projectRepository,
-            IDynamicPipelinePanelRepository dynamicPipelinesPanelRepository,
-            IStaticBranchPanelRepository staticBranchPanelRepository,
             ICiDataProviderFactory ciDataProviderFactory,
             ICronJobsManager cronJobsManager,
             IPanelRepository panelRepository,
@@ -41,8 +37,6 @@ namespace Dashboard.Application.Services
         {
             _ciDataProviderFactory = ciDataProviderFactory;
             _cronJobsManager = cronJobsManager;
-            _dynamicPipelinesPanelRepository = dynamicPipelinesPanelRepository;
-            _staticBranchPanelRepository = staticBranchPanelRepository;
             _projectRepository = projectRepository;
             _pipelineRepository = pipelineRepository;
             _panelRepository = panelRepository;
@@ -148,7 +142,7 @@ namespace Dashboard.Application.Services
             //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var staticBranches = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+            var staticBranches = (await _panelRepository.FindAllAsync(p => p.Discriminator.Equals(nameof(StaticBranchPanel)))).Select(p => ((StaticBranchPanel)p).StaticBranchName);//await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
             var updatePiplineTasks = staticBranches.Select(b =>
                 dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b));
 

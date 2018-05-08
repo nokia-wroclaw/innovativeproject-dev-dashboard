@@ -18,10 +18,10 @@ namespace Dashboard.Application
         {
             //Register repositories
             builder.RegisterType<PanelRepository>().As<IPanelRepository>();
-            builder.RegisterType<StaticBranchPanelRepository>().As<IStaticBranchPanelRepository>();
+            //builder.RegisterType<StaticBranchPanelRepository>().As<IStaticBranchPanelRepository>();
             builder.RegisterType<PipelineRepository>().As<IPipelineRepository>();
             builder.RegisterType<ProjectRepository>().As<IProjectRepository>();
-            builder.RegisterType<DynamicPipelinePanelRepository>().As<IDynamicPipelinePanelRepository>();
+            //builder.RegisterType<DynamicPipelinePanelRepository>().As<IDynamicPipelinePanelRepository>();
 
             //Register services
             builder.RegisterType<PanelService>().As<IPanelService>();
