@@ -11,13 +11,16 @@ namespace Dashboard.Application.Interfaces.Services
         Task<Project> GetProjectByIdAsync(int id);
         Task<IEnumerable<Project>> GetAllProjectsAsync();
         Task DeleteProjectAsync(int id);
-        Task<ServiceObjectResult<Project>> UpdateProjectAsync(Project updatedProject);
-        Task<ServiceObjectResult<Project>> CreateProjectAsync(Project project);
+        Task<Project> UpdateProjectAsync(Project updatedProject);
+        Task<Project> CreateProjectAsync(Project project);
 
         Task<IEnumerable<string>> SearchForBranchInProject(int projectId, string searchValue);
         Task UpdateCiDataForProjectAsync(int projectId);
 
         void FireProjectUpdate(string providerName, JObject body);
         Task WebhookFunction(string providerName, JObject body);
+
+        Task<IEnumerable<Pipeline>> UpdateLocalDatabase(int projectId, IEnumerable<string> staticPipes);
+        Task<StaticAndDynamicPanelDTO> GetPipelinesForPanel(int panelID);
     }
 }

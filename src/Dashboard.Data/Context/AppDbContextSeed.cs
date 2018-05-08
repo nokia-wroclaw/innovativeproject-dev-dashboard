@@ -37,8 +37,8 @@ namespace Dashboard.Data.Context
                 Title = "Fancy Title Dynamic",
                 Position = new PanelPosition() {Column = 1, Row = 2, Width = 2, Height = 3},
                 Project = SeedProjects.ElementAt(0),
-                HowManyLastPipelinesToRead = 2
-                
+                HowManyLastPipelinesToRead = 2,
+                PanelRegex = ".*"
             }
         });
 
@@ -53,14 +53,16 @@ namespace Dashboard.Data.Context
                 ApiProjectId = "13083",
                 ApiAuthenticationToken = "6h-Xjym_EFy8DBxPDR9z",
                 CiDataUpdateCronExpression = "*/4 * * * *",
-                StaticPipelines = new List<Pipeline>()
+                //StaticPipelines = new List<Pipeline>()
+                PipelinesNumber = 100,
+                Pipelines = new List<Pipeline>()
                 {
                     new Pipeline()
                     {
-                        DataProviderId = 1901, // fakeid
+                        DataProviderId = 21584362, // fakeid
                         Ref = "master",
-                        Sha = "79aa00321063daf8f650683373db29832c8e13f1",
-                        Status = "running"
+                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                        Status = "passed"
                     }
                 }
             }

@@ -48,9 +48,12 @@ namespace Dashboard.Data.Context
                 m.Property(p => p.ApiAuthenticationToken).IsRequired();
                 m.Property(p => p.ApiHostUrl).IsRequired();
                 m.Property(p => p.DataProviderName).IsRequired();
+                m.Property(p => p.PipelinesNumber).HasDefaultValue(100);
 
-                m.HasMany(p => p.StaticPipelines);
-                m.HasMany(p => p.DynamicPipelines);
+                m.HasMany(p => p.Pipelines);
+
+                //m.HasMany(p => p.StaticPipelines);
+                //m.HasMany(p => p.DynamicPipelines);
             });
 
             builder.Entity<BranchName>(m =>
@@ -74,6 +77,10 @@ namespace Dashboard.Data.Context
                     .HasValue<MemePanel>(nameof(MemePanel))
                     .HasValue<StaticBranchPanel>(nameof(StaticBranchPanel))
                     .HasValue<DynamicPipelinesPanel>(nameof(DynamicPipelinesPanel));
+            });
+            builder.Entity<DynamicPipelinesPanel>(model =>
+            {
+                model.Property(p => p.PanelRegex).HasDefaultValue(".*");
             });
             #endregion
         }

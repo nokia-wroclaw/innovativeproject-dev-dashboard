@@ -1,10 +1,15 @@
-﻿using System;
+﻿using Dashboard.Core.Interfaces;
+using Dashboard.Core.Interfaces.Repositories;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Dashboard.Core.Entities
 {
-    public abstract class Panel
+    public abstract class Panel : IPanelPipelinesDTO
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -18,6 +23,11 @@ namespace Dashboard.Core.Entities
         public bool ShouldSerializeProject()
         {
             return false;
+        }
+
+        public virtual async Task<StaticAndDynamicPanelDTO> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository)
+        {
+            return await Task.Run(() => new StaticAndDynamicPanelDTO());
         }
     }
 
@@ -33,6 +43,16 @@ namespace Dashboard.Core.Entities
         public override string Discriminator => nameof(StaticBranchPanel);
 
         public string StaticBranchName { get; set; }
+
+        public override async Task<StaticAndDynamicPanelDTO> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository)
+        {
+            int projID = ProjectId ?? throw new ArgumentException($"DB does NOT contain panel with ID={panelID}");
+            var projectPipelines = (await projectRepository.GetByIdAsync(projID)).Pipelines;
+            return new StaticAndDynamicPanelDTO()
+            {
+                Pipelines = new List<Pipeline> { projectPipelines.LastOrDefault(p => p.Ref.Equals(StaticBranchName)) }
+            };
+        }
     }
 
     public class DynamicPipelinesPanel : Panel
@@ -40,6 +60,17 @@ namespace Dashboard.Core.Entities
         public override string Discriminator => nameof(DynamicPipelinesPanel);
 
         public int HowManyLastPipelinesToRead { get; set; }
+        public string PanelRegex { get; set; }
+
+        public override async Task<StaticAndDynamicPanelDTO> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository)
+        {
+            int projID = ProjectId ?? throw new ArgumentException($"DB does NOT contain panel with ID={panelID}");
+            var projectPipelines = (await projectRepository.GetByIdAsync(projID)).Pipelines;
+            return new StaticAndDynamicPanelDTO()
+            {
+                Pipelines = projectPipelines.Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Select(p => p).TakeLast(HowManyLastPipelinesToRead)
+            };
+        }
     }
 
     public class PanelPosition
