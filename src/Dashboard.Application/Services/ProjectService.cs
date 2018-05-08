@@ -193,30 +193,7 @@ namespace Dashboard.Application.Services
         public async Task<StaticAndDynamicPanelDTO> GetPipelinesForPanel(int panelID)
         {
             var panel = (await _panelRepository.GetByIdAsync(panelID));
-            int projectID = panel.ProjectId ?? throw new ArgumentException($"DB does NOT contain panel with ID={panelID}");
-            var projectPipelines = (await _projectRepository.GetByIdAsync(projectID)).Pipelines;
-            if (panel.Discriminator.Equals(nameof(StaticBranchPanel)))
-            {
-                //static panel
-                StaticBranchPanel staticPanel = (StaticBranchPanel)panel;
-                return new StaticAndDynamicPanelDTO()
-                {
-                    Pipelines = new List<Pipeline> { projectPipelines.LastOrDefault(p => p.Ref.Equals(staticPanel.StaticBranchName)) }
-                };
-            }
-            else if (panel.Discriminator.Equals(nameof(DynamicPipelinesPanel)))
-            {
-                //return info for dynamic panel
-                DynamicPipelinesPanel dynamicPanel = (DynamicPipelinesPanel)panel;
-                StaticAndDynamicPanelDTO returnDTO = new StaticAndDynamicPanelDTO();
-                return new StaticAndDynamicPanelDTO()
-                {
-                    Pipelines = projectPipelines.Where(p => Regex.IsMatch(p.Ref, dynamicPanel.PanelRegex)).Select(p => p).TakeLast(dynamicPanel.HowManyLastPipelinesToRead)
-                };
-            }
-
-            //Empty default, should never be reached
-            return new StaticAndDynamicPanelDTO();
+            return await panel.GetPipelinesDTOForPanel(panelID, _projectRepository);
         }
     }
 }
