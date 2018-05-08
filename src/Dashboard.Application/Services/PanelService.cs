@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
+using Dashboard.Application.Validators;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces.Repositories;
 using Dashboard.Data.Repositories;
@@ -13,11 +14,13 @@ namespace Dashboard.Application.Services
     {
         private readonly IPanelRepository _panelRepository;
         private readonly IProjectRepository _projectRepository;
+        private readonly IValidationService _validationService;
 
-        public PanelService(IPanelRepository panelRepository, IProjectRepository projectRepository)
+        public PanelService(IPanelRepository panelRepository, IProjectRepository projectRepository, IValidationService validationService)
         {
             _panelRepository = panelRepository;
             _projectRepository = projectRepository;
+            _validationService = validationService;
         }
 
         public Task<Panel> GetPanelByIdAsync(int id)
@@ -40,8 +43,12 @@ namespace Dashboard.Application.Services
             await _panelRepository.SaveAsync();
         }
 
-        public async Task<Panel> UpdatePanelAsync(Panel updatedPanel)
+        public async Task<ServiceObjectResult<Panel>> UpdatePanelAsync(Panel updatedPanel)
         {
+            var validationResult = await _validationService.ValidateAsync<UpdatePanelValidator, Panel>(updatedPanel);
+            if (!validationResult.IsValid)
+                return ServiceObjectResult<Panel>.Error(validationResult);
+
             var model = await GetPanelByIdAsync(updatedPanel.Id);
             if (model == null) return null;
 
@@ -56,11 +63,15 @@ namespace Dashboard.Application.Services
             var r = await _panelRepository.UpdateAsync(updatedPanel, model.Id);
             await _panelRepository.SaveAsync();
 
-            return r;
+            return ServiceObjectResult<Panel>.Ok(r);
         }
 
-        public async Task<Panel> CreatePanelAsync(Panel model)
+        public async Task<ServiceObjectResult<Panel>> CreatePanelAsync(Panel model)
         {
+            var validationResult = await _validationService.ValidateAsync<CreatePanelValidator, Panel>(model);
+            if (!validationResult.IsValid)
+                return ServiceObjectResult<Panel>.Error(validationResult);
+
             if (model.ProjectId.HasValue)
             {
                 var existingProject = await _projectRepository.GetByIdAsync(model.ProjectId.Value);
@@ -73,7 +84,7 @@ namespace Dashboard.Application.Services
             if(model.Project != null)
                 BackgroundJob.Enqueue<IProjectService>(s => s.UpdateCiDataForProjectAsync(model.Project.Id));
 
-            return r;
+            return ServiceObjectResult<Panel>.Ok(r);
         }
 
         public async Task<IEnumerable<Project>> GetActiveProjects()
@@ -81,8 +92,12 @@ namespace Dashboard.Application.Services
             return await _panelRepository.GetActiveProjects();
         }
 
-        public async Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position)
+        public async Task<ServiceObjectResult<Panel>> UpdatePanelPosition(int panelId, PanelPosition position)
         {
+            var validationResult = await _validationService.ValidateAsync<FullPanelPositionValidator, PanelPosition>(position);
+            if (!validationResult.IsValid)
+                return ServiceObjectResult<Panel>.Error(validationResult);
+
             var entity = await GetPanelByIdAsync(panelId);
             if (entity == null) return null;
 
@@ -95,7 +110,7 @@ namespace Dashboard.Application.Services
             var r = await _panelRepository.UpdateAsync(entity, panelId);
             await _panelRepository.SaveAsync();
 
-            return r;
+            return ServiceObjectResult<Panel>.Ok(r);
         }
     }
 }
