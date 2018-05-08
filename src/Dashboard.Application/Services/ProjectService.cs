@@ -11,6 +11,7 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using Dashboard.Application.Validators;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 
@@ -169,7 +170,7 @@ namespace Dashboard.Application.Services
 
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
-
+        
         public void FireProjectUpdate(string providerName, JObject body)
         {
             BackgroundJob.Enqueue<IProjectService>(s => s.WebhookFunction(providerName, body));

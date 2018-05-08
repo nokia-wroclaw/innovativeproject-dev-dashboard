@@ -9,8 +9,9 @@ namespace Dashboard.Application.Interfaces.Services
         Task<Panel> GetPanelByIdAsync(int id);
         Task<IEnumerable<Panel>> GetAllPanelsAsync();
         Task DeletePanelAsync(int id);
-        Task<Panel> UpdatePanelAsync(Panel updatedPanel);
-        Task<Panel> CreatePanelAsync(Panel model);
+
+        Task<ServiceObjectResult<Panel>> UpdatePanelAsync(Panel updatedPanel);
+        Task<ServiceObjectResult<Panel>> CreatePanelAsync(Panel model);
 
         /// <summary>
         /// Returns list of projects that are referenced by any panel
@@ -18,6 +19,6 @@ namespace Dashboard.Application.Interfaces.Services
         /// <returns></returns>
         Task<IEnumerable<Project>> GetActiveProjects();
 
-        Task<Panel> UpdatePanelPosition(int panelId, PanelPosition position);
+        Task<ServiceObjectResult<Panel>> UpdatePanelPosition(int panelId, PanelPosition position);
     }
 }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
+using Dashboard.WebApi.ApiModels;
 using Dashboard.WebApi.ApiModels.Requests;
 using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -53,8 +54,8 @@ namespace Dashboard.WebApi.Controllers
                 PipelinesNumber = model.PipelineNumber
             };
 
-            var createdProject = await _projectService.CreateProjectAsync(project);
-            return Json(createdProject);
+            var r = await _projectService.CreateProjectAsync(project);
+            return ApiResponse.FromServiceResult(r);
         }
 
         // PUT api/Project/5
@@ -76,7 +77,7 @@ namespace Dashboard.WebApi.Controllers
             };
 
             var r = await _projectService.UpdateProjectAsync(updatedProject);
-            return Json(r);
+            return ApiResponse.FromServiceResult(r);
         }
 
         // DELETE api/Project/5
