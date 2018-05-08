@@ -7,8 +7,8 @@ using Dashboard.Core.Interfaces.Repositories;
 
 namespace Dashboard.Core.Interfaces
 {
-    public interface IPanelPipelinesDTO
+    public interface IPanelPipelines
     {
-        Task<StaticAndDynamicPanelDTO> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository);
+        Task<StaticAndDynamicPanel> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository);
     }
 }

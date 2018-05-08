@@ -184,9 +184,9 @@ namespace Dashboard.Application.Services
             await UpdateCiDataForProjectAsync(projectId);
         }
 
-        public async Task<StaticAndDynamicPanelDTO> GetPipelinesForPanel(int panelID)
+        public async Task<StaticAndDynamicPanel> GetPipelinesForPanel(int panelID)
         {
-            var panel = (await _panelRepository.GetByIdAsync(panelID));
+            var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
             return await panel.GetPipelinesDTOForPanel(panelID, _projectRepository);
         }
     }

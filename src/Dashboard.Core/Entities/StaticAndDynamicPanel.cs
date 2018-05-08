@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Dashboard.Core.Entities
 {
-    public class StaticAndDynamicPanelDTO
+    public class StaticAndDynamicPanel
     {
         public IEnumerable<Pipeline> Pipelines { get; set; }
     }
