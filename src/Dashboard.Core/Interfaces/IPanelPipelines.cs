@@ -9,6 +9,6 @@ namespace Dashboard.Core.Interfaces
 {
     public interface IPanelPipelines
     {
-        Task<StaticAndDynamicPanel> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository);
+        Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository);
     }
 }
