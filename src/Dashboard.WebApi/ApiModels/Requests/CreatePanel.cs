@@ -147,6 +147,7 @@ namespace Dashboard.WebApi.ApiModels.Requests
                 Title = "Dynami Pipelines Title",
                 ProjectId = 1,
                 HowManyLastPipelinesToRead = 3,
+                PanelRegex = ".*",
                 Position = new PanelPosition()
                 {
                     Width = 1,
