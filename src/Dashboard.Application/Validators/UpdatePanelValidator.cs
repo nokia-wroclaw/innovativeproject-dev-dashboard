@@ -6,7 +6,7 @@ namespace Dashboard.Application.Validators
 {
     public class UpdatePanelValidator : PanelValidator
     {
-        public UpdatePanelValidator(FullPanelPositionValidator panelPositionValidator)
+        public UpdatePanelValidator(PanelPositionValidator panelPositionValidator)
         {
             base.ValidateTitle();
             base.ValidatePanelPosition(panelPositionValidator);

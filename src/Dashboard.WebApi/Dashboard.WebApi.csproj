@@ -40,6 +40,7 @@
     <None Remove="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel.component.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme.service.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-service\pipeline.service.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.spec.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel-config.component.ts" />
@@ -112,6 +113,7 @@
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel.component.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme-panel.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\random-meme-panel\random-meme.service.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-service\pipeline.service.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.spec.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel-config.component.ts" />

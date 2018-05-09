@@ -8,6 +8,15 @@ namespace Dashboard.Application.Validators
 {
     public class PanelPositionValidator : AbstractValidator<PanelPosition>
     {
+        public PanelPositionValidator()
+        {
+            ValidateColumn();
+            ValidateRow();
+
+            ValidateHeight();
+            ValidateWidth();
+        }
+
         public void ValidateHeight()
         {
             RuleFor(p => p.Height)

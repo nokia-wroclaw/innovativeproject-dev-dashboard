@@ -94,7 +94,7 @@ namespace Dashboard.Application.Services
 
         public async Task<ServiceObjectResult<Panel>> UpdatePanelPosition(int panelId, PanelPosition position)
         {
-            var validationResult = await _validationService.ValidateAsync<FullPanelPositionValidator, PanelPosition>(position);
+            var validationResult = await _validationService.ValidateAsync<PanelPositionValidator, PanelPosition>(position);
             if (!validationResult.IsValid)
                 return ServiceObjectResult<Panel>.Error(validationResult);
 
