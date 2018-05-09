@@ -65,6 +65,7 @@ import { LastPipelinesPanelComponent } from './panels/last-pipelines-panel/last-
 import { LastPipelinesPanelConfigComponent } from './panels/last-pipelines-panel/last-pipelines-panel-config.component';
 import { PipelineViewComponent } from './panels/shared/pipeline-view/pipeline-view.component';
 import { NotificationService } from './snackbar/notification.service';
+import { PipelineService } from './panels/shared/pipeline-view/pipeline-service/pipeline.service';
 
 const appRoutes : Routes = [
   {
@@ -155,7 +156,8 @@ const appRoutes : Routes = [
     ProjectsApiService,
     RandomMemeService,
     AdminModeService,
-    NotificationService
+    NotificationService,
+    PipelineService
   ],
   bootstrap: [AppComponent],
   entryComponents: [RandomMemePanelComponent, RandomMemePanelConfigComponent, StaticBranchPanelComponent, StaticBranchPanelConfigComponent, LastPipelinesPanelComponent, LastPipelinesPanelConfigComponent]
