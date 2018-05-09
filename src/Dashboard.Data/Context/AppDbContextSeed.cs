@@ -24,7 +24,7 @@ namespace Dashboard.Data.Context
             {
                 Title = "Fancy Title 1",
                 Position = new PanelPosition() {Column = 0, Row = 0, Width = 2, Height = 2},
-                MemeApiToken = "JakisAPiTokenZ"
+                StaticMemeUrl = "https://cdn-images-1.medium.com/max/1600/1*l_T-OzVE9gp0fOAf8vOwbw.png"
             },
             new StaticBranchPanel()
             {
