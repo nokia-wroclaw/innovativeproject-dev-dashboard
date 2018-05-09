@@ -42,7 +42,7 @@ namespace Dashboard.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<StaticAndDynamicPanel> PipelinesForPanel(int panelID)
+        public async Task<IEnumerable<Pipeline>> PipelinesForPanel(int panelID)
         {
             return await _projectService.GetPipelinesForPanel(panelID);
         }

@@ -152,7 +152,8 @@ namespace Dashboard.Application.Services
             //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var staticBranches = (await _panelRepository.FindAllAsync(p => p.Discriminator.Equals(nameof(StaticBranchPanel)))).Select(p => ((StaticBranchPanel)p).StaticBranchName);//await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+            var staticPanels = _panelRepository.FindAllAsync(p => p.Discriminator.Equals(nameof(StaticBranchPanel)));
+            var staticBranches = (await staticPanels).Select(p => ((StaticBranchPanel)p).StaticBranchName);
             var updatePiplineTasks = staticBranches.Select(b =>
                 dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b));
 
@@ -166,7 +167,11 @@ namespace Dashboard.Application.Services
             //Merge
             var localPipelines = project.Pipelines;
             var output = localPipelines.Where(p => !staticBranches.Contains(p.Ref)).Select(p => p).ToList();
+
+            //Sometimes HttpRequestExceptions here, don't know why
             output.AddRange(await Task.WhenAll(downloadedPipelinesSpecific));
+
+
             output.AddRange(await Task.WhenAll(updatedPipelinesSpecific));
 
             //Save update to DB
@@ -194,10 +199,10 @@ namespace Dashboard.Application.Services
             await UpdateCiDataForProjectAsync(projectId);
         }
 
-        public async Task<StaticAndDynamicPanel> GetPipelinesForPanel(int panelID)
+        public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
         {
             var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
-            return await panel.GetPipelinesDTOForPanel(panelID, _projectRepository);
+            return await panel.GetPipelinesDTOForPanel(_projectRepository);
         }
     }
 }

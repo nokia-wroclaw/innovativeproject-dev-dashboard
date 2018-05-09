@@ -39,14 +39,12 @@ namespace Dashboard.Core.Entities
 
         public string StaticBranchName { get; set; }
 
-        public async Task<StaticAndDynamicPanel> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository)
+        public async Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository)
         {
-            int projID = ProjectId ?? throw new ArgumentException($"DB does NOT contain panel with ID={panelID}");
-            var projectPipelines = (await projectRepository.GetByIdAsync(projID)).Pipelines;
-            return new StaticAndDynamicPanel()
-            {
-                Pipelines = new List<Pipeline> { projectPipelines.LastOrDefault(p => p.Ref.Equals(StaticBranchName)) }
-            };
+            int projID = ProjectId ?? -1;
+            if (projID == -1) return new List<Pipeline>();
+
+            return new List<Pipeline> { Project.Pipelines.LastOrDefault(p => p.Ref.Equals(StaticBranchName)) };
         }
     }
 
@@ -57,14 +55,12 @@ namespace Dashboard.Core.Entities
         public int HowManyLastPipelinesToRead { get; set; }
         public string PanelRegex { get; set; }
 
-        public async Task<StaticAndDynamicPanel> GetPipelinesDTOForPanel(int panelID, IProjectRepository projectRepository)
+        public async Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository)
         {
-            int projID = ProjectId ?? throw new ArgumentException($"DB does NOT contain panel with ID={panelID}");
-            var projectPipelines = (await projectRepository.GetByIdAsync(projID)).Pipelines;
-            return new StaticAndDynamicPanel()
-            {
-                Pipelines = projectPipelines.Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Select(p => p).TakeLast(HowManyLastPipelinesToRead)
-            };
+            int projID = ProjectId ?? -1;
+            if (projID == -1) return new List<Pipeline>();
+
+            return Project.Pipelines.Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Select(p => p).TakeLast(HowManyLastPipelinesToRead);
         }
     }
 
