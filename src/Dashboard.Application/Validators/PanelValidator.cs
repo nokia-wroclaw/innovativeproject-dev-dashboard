@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Dashboard.Application.Validators.Common;
 using Dashboard.Core.Entities;
 using FluentValidation;
 
@@ -18,6 +19,15 @@ namespace Dashboard.Application.Validators
         {
             RuleFor(p => p.Position)
                 .SetValidator(panelPositionValidator);
+        }
+
+        public void ValidatePanelRegex()
+        {
+            When(model => model.GetType() == typeof(DynamicPipelinesPanel), () =>
+            {
+                RuleFor(model => ((DynamicPipelinesPanel) model).PanelRegex)
+                    .Regex();
+            });
         }
     }
 }

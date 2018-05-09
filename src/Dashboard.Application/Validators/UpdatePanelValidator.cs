@@ -10,12 +10,7 @@ namespace Dashboard.Application.Validators
         {
             base.ValidateTitle();
             base.ValidatePanelPosition(panelPositionValidator);
-            ValidateProject();
-        }
-
-        private void ValidateProject()
-        {
-            
+            base.ValidatePanelRegex();
         }
     }
 }
