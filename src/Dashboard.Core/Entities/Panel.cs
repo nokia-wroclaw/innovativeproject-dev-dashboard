@@ -30,7 +30,7 @@ namespace Dashboard.Core.Entities
     {
         public override string Discriminator => nameof(MemePanel);
 
-        public string MemeApiToken { get; set; }
+        public string StaticMemeUrl { get; set; }
     }
 
     public class StaticBranchPanel : Panel, IPanelPipelines

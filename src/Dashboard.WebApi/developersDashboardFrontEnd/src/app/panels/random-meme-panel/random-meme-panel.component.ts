@@ -7,7 +7,7 @@ import {RandomMemeService} from "./random-meme.service";
 @Component({templateUrl: './random-meme-panel.component.html'})
 export class RandomMemePanelComponent implements OnInit, IPanelComponent<RandomMemePanel> {
 
-  private panel : RandomMemePanel;
+  panel : RandomMemePanel;
 
   setPanel(panel : RandomMemePanel) {
     this.panel = panel;

@@ -107,7 +107,7 @@ namespace Dashboard.WebApi.ApiModels.Requests
     public class UpdateMemePanel : UpdatePanel
     {
         [Required]
-        public string MemeApiToken { get; set; }
+        public string StaticMemeUrl { get; set; }
 
         public override Panel MapEntity(UpdatePanel model)
         {
@@ -124,7 +124,7 @@ namespace Dashboard.WebApi.ApiModels.Requests
                     Width = realModel.Position.Width,
                     Height = realModel.Position.Height
                 },
-                MemeApiToken = realModel.MemeApiToken,
+                StaticMemeUrl = realModel.StaticMemeUrl,
             };
             return entity;
         }

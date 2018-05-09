@@ -6,7 +6,7 @@ import { PanelApiService } from '../../panel-manager/service/api/panel-api.servi
 
 @Component({template: `
     <mat-form-field class="example-full-width">
-        <input matInput placeholder="Imgur token" required [(ngModel)]="panel.memeApiToken" name="token">
+        <input matInput placeholder="Meme url" required [(ngModel)]="panel.staticMemeUrl" name="url">
     </mat-form-field>
 `, styleUrls: ['./../../configuration/panel.shared.css']})
 export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigComponent<RandomMemePanel> {
@@ -18,7 +18,7 @@ export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigCompo
     constructor(private panelsApi : PanelApiService) {}
 
     isValid() : boolean {
-        return this.panel.memeApiToken != null && this.panel.memeApiToken != '';
+        return this.panel.staticMemeUrl != null && this.panel.staticMemeUrl != '';
     }
 
     setPanel(panel : any) {
