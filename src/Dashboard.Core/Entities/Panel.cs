@@ -41,7 +41,7 @@ namespace Dashboard.Core.Entities
 
         public async Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository)
         {
-            int projID = ProjectId ?? -1;
+            int projID = ProjectId ?? -1;//TODO: Jantos, kiedy to bedzie -1? wydaje mi sie ze nigdy
             if (projID == -1) return new List<Pipeline>();
 
             return new List<Pipeline> { Project.Pipelines.LastOrDefault(p => p.Ref.Equals(StaticBranchName)) };

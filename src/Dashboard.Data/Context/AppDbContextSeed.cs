@@ -53,8 +53,26 @@ namespace Dashboard.Data.Context
                 ApiProjectId = "13083",
                 ApiAuthenticationToken = "6h-Xjym_EFy8DBxPDR9z",
                 CiDataUpdateCronExpression = "*/4 * * * *",
-                //StaticPipelines = new List<Pipeline>()
                 PipelinesNumber = 100,
+                Pipelines = new List<Pipeline>()
+                {
+                    new Pipeline()
+                    {
+                        DataProviderId = 21584362, // fakeid
+                        Ref = "master",
+                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                        Status = "passed"
+                    }
+                }
+            },
+            new Project()
+            {
+                ProjectTitle = "Rust",
+                DataProviderName = "Travis",
+                ApiProjectId = "rust-lang/26199",
+                ApiHostUrl = "https://api.travis-ci.com",
+                ApiAuthenticationToken = "DrIZnsWaqOgyJzMrNQnQkA",
+                CiDataUpdateCronExpression = "*/4 * * * *",
                 Pipelines = new List<Pipeline>()
                 {
                     new Pipeline()

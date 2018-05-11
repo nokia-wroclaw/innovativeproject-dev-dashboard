@@ -15,12 +15,13 @@
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
     <PackageReference Include="ncrontab" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="RestSharp" Version="106.2.1" />
+    <PackageReference Include="RestSharp" Version="106.2.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Dashboard.Core\Dashboard.Core.csproj" />
     <ProjectReference Include="..\Dashboard.Data\Dashboard.Data.csproj" />
+    <ProjectReference Include="..\TravisApi\TravisApi.csproj" />
   </ItemGroup>
 
 </Project>

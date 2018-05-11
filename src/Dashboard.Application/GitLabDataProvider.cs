@@ -29,6 +29,7 @@ namespace Dashboard.Application
                     DataProviderId = p.Id,
                     Sha = p.Sha,
                     Ref = p.Ref,
+                    //TODO: map state to status, change Status to enum
                     Status = p.Status
                 }
             );
