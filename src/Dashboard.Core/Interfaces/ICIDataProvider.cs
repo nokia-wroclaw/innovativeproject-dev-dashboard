@@ -9,13 +9,46 @@ namespace Dashboard.Core.Interfaces
     public interface ICiDataProvider
     {
         string Name { get; }
-        Task<IEnumerable<Pipeline>> GetAllPipelines(string apiHost, string apiKey, string apiProjectId);
-        Task<Pipeline> GetBranchPipeLine(string apiHost, string apiKey, string apiProjectId, string branchName);
-        Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue);
-        Task<Pipeline> GetSpecificPipeline(string apiHost, string apiKey, string apiProjectId, string pipeId);
-        string GetProjectIdFromWebhookRequest(JObject body);
 
-        //localPipes
-        Task<IEnumerable<Pipeline>> GetLatestPipelines(string apiHost, string apiKey, string apiProjectId, int quantity, IEnumerable<Pipeline> localPipes, IEnumerable<string> staticPipes);
+        /// <summary>
+        /// Fetches all pipelines with all info
+        /// </summary>
+        /// <param name="apiHost"></param>
+        /// <param name="apiKey"></param>
+        /// <param name="apiProjectId"></param>
+        /// <param name="limit">How many pipelines to fetch</param>
+        /// <param name="branchName">Pipelines for specific branch</param>
+        /// <returns></returns>
+        Task<IEnumerable<Pipeline>> FetchPipelines(string apiHost, string apiKey, string apiProjectId, int limit, string branchName = default(string));
+
+
+
+        Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string apiHost, string apiKey, string apiProjectId, int page, int perPage);
+
+        /// <summary>
+        /// Fetches specific pipeline with all info
+        /// </summary>
+        /// <param name="apiHost"></param>
+        /// <param name="apiKey"></param>
+        /// <param name="apiProjectId"></param>
+        /// <param name="pipelineId"></param>
+        /// <returns></returns>
+        Task<Pipeline> FetchPipelineById(string apiHost, string apiKey, string apiProjectId, int pipelineId);
+
+
+        /// <summary>
+        /// Fetches newest pipeline for specific branch name
+        /// </summary>
+        /// <param name="apiHost"></param>
+        /// <param name="apiKey"></param>
+        /// <param name="apiProjectId"></param>
+        /// <param name="branchName"></param>
+        /// <returns></returns>
+        Task<Pipeline> FetchPipeLineByBranch(string apiHost, string apiKey, string apiProjectId, string branchName);
+
+
+        Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue);
+
+        string GetProjectIdFromWebhookRequest(JObject body);
     }
 }

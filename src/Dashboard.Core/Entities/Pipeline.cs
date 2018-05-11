@@ -4,20 +4,19 @@ using System.Text;
 
 namespace Dashboard.Core.Entities
 {
-    public class Pipelines : List<Pipeline>
-    {
-        //public List<Pipeline> AllPipelines { get; set; }
-    }
-
+    /// <summary>
+    /// Pipeline
+    ///     Stages
+    /// </summary>
     public class Pipeline
     {
         public int Id { get; set; }
 
-        public int DataProviderId { get; set; }
+        public int DataProviderPipelineId { get; set; }
         public string ProjectId { get; set; }
         public string Sha{ get; set; }
         public string Ref { get; set; }
-        public string Status { get; set; }
+        public Status Status { get; set; }
 
         public string CommitTitle { get; set; }
         public string CommiterName { get; set; }

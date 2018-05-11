@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -27,23 +28,10 @@ namespace Dashboard.Application.GitLabApi
             };
         }
 
-        public async Task<Pipeline> GetPipelineById(string projectId, string pipelineId)
+        public Task<IEnumerable<Pipeline>> GetBriefPipelines(string projectId, int numberOfPipelines = 100, string branchName = "")
         {
-            var r = await GetPipelines(projectId, pipelineId : pipelineId);
-            return r.FirstOrDefault();
-        }
-
-        public async Task<Pipeline> GetPipelineByBranch(string projectId, string pipelineBranch)
-        {
-            var r = await GetPipelines(projectId, branchName : pipelineBranch);
-            return r.FirstOrDefault();
-        }
-
-        public Task<IEnumerable<Pipeline>> GetPipelines(string projectId, string pipelineId = "", int numberOfPipelines = 100, string branchName = "")
-        {
-            var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}", Method.GET);
+            var request = new RestRequest("projects/{projectId}/pipelines/", Method.GET);
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
-            request.AddUrlSegment("pipelineId", pipelineId);
 
             request.AddQueryParameter("per_page", numberOfPipelines.ToString());
 
@@ -53,19 +41,20 @@ namespace Dashboard.Application.GitLabApi
             return Client.ExecuteTaskAsync<IEnumerable<Pipeline>>(request).EnsureSuccess();
         }
 
-        public async Task<Branch> GetBranch(string projectId, string branchName)
+        public Task<Pipeline> GetPipelineById(string projectId, int pipelineId)
         {
-            var r = await GetBranches(projectId, branchName : branchName);
-            return r.FirstOrDefault();
+            var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}", Method.GET);
+            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("pipelineId", pipelineId);
+
+            return Client.ExecuteTaskAsync<Pipeline>(request).EnsureSuccess();
         }
 
-        public Task<IEnumerable<Branch>> GetBranches(string projectId, string branchName = "")
-        {
-            var request = new RestRequest("projects/{projectId}/repository/branches/{branchName}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
-            request.AddUrlSegment("branchName", branchName);
 
-            return Client.ExecuteTaskAsync<IEnumerable<Branch>>(request).EnsureSuccess();
+        public async Task<Pipeline> GetPipelineByBranch(string projectId, string pipelineBranch)
+        {
+            var r = await GetBriefPipelines(projectId, branchName: pipelineBranch);
+            return r.FirstOrDefault();
         }
 
         public async Task<Commit> GetCommitBySHA(string projectId, string commitSHA)
@@ -83,18 +72,7 @@ namespace Dashboard.Application.GitLabApi
             return Client.ExecuteTaskAsync<IEnumerable<Commit>>(request).EnsureSuccess();
         }
 
-        //public Task<IEnumerable<Job>> GetJobs(string projectId, string pipelineId)
-        //{
-        //    var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}/jobs", Method.GET);
-        //    request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
-        //    request.AddUrlSegment("pipelineId", pipelineId);
-
-        //    request.AddQueryParameter("per_page", "10000");//Arbitrary value
-
-        //    return Client.ExecuteTaskAsync<IEnumerable<Job>>(request).EnsureSuccess();
-        //}
-
-        public async Task<IEnumerable<Job>> GetJobs(string projectId, string pipelineId)
+        public async Task<IEnumerable<Job>> GetJobs(string projectId, int pipelineId)
         {
             var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}/jobs", Method.GET);
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
@@ -135,6 +113,23 @@ namespace Dashboard.Application.GitLabApi
             request.AddQueryParameter("per_page", "10000");
 
             return Client.ExecuteTaskAsync<IEnumerable<Branch>>(request).EnsureSuccess();
+        }
+
+
+        public async Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string projectId, int page, int perPage)
+        {
+            var request = new RestRequest("projects/{projectId}/pipelines", Method.GET);
+            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+
+            request.AddQueryParameter("per_page", perPage.ToString());
+            request.AddQueryParameter("page", page.ToString());
+
+            var response = await Client.ExecuteTaskAsync<List<Pipeline>>(request);
+
+            if (!int.TryParse(response.Headers.FirstOrDefault(p => p.Name == "X-Total-Pages").Value.ToString(), out int totalPages))
+                throw new InvalidCastException("Bad conversion of X-Total-Pages");
+
+            return (response.Data, totalPages);
         }
 
         /// <summary>

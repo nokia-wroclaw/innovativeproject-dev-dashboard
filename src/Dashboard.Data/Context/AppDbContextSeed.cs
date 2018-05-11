@@ -58,10 +58,10 @@ namespace Dashboard.Data.Context
                 {
                     new Pipeline()
                     {
-                        DataProviderId = 21584362, // fakeid
+                        DataProviderPipelineId = 21584362, // fakeid
                         Ref = "master",
                         Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                        Status = "passed"
+                        Status = Status.Running
                     }
                 }
             },
@@ -77,10 +77,10 @@ namespace Dashboard.Data.Context
                 {
                     new Pipeline()
                     {
-                        DataProviderId = 21584362, // fakeid
+                        DataProviderPipelineId = 21584362, // fakeid
                         Ref = "master",
                         Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                        Status = "passed"
+                        Status = Status.Running
                     }
                 }
             }

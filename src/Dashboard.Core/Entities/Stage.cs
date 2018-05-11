@@ -8,6 +8,6 @@ namespace Dashboard.Core.Entities
     {
         public int Id { get; set; }
         public string StageName { get; set; }
-        public string StageStatus { get; set; }
+        public Status StageStatus { get; set; }
     }
 }
