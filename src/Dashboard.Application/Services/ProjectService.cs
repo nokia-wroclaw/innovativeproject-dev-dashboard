@@ -127,12 +127,13 @@ namespace Dashboard.Application.Services
 
         private async Task<IEnumerable<Pipeline>> DownloadNewestPipelinesNotInBrancNameList(ICiDataProvider dataProvider, Project project, int howMany, IEnumerable<string> branchNames)
         {
+            var branchNamesSet = new HashSet<string>(branchNames);
             var newestPipes = new List<Pipeline>();
             var pageCounter = 1;
             while (newestPipes.Count < howMany)
             {
-                var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: 100);
-                var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNames.Contains(p.Ref));
+                var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
+                var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNamesSet.Contains(p.Ref));
 
                 newestPipes.InsertRange(0, pagePipelinesNotInLocalStatic);
                 pageCounter++;

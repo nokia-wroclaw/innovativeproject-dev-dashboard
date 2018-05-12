@@ -29,7 +29,7 @@ namespace TravisApi
             Client.AddDefaultHeader("Accept", "application/vnd.travis-ci.2.1+json");
         }
 
-        public Task<GetRepoBuildsResponse> GetBuilds(string projectId, int? limit)
+        public Task<GetRepoBuildsResponse> FetchBuilds(string projectId, int? limit)
         {
             var request = new RestRequest("repo/{projectId}/builds/", Method.GET);
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
@@ -38,6 +38,16 @@ namespace TravisApi
                 request.AddQueryParameter("limit", limit.ToString());
 
             return Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request).EnsureSuccess();
+        }
+
+
+        public Task<Build> FetchBuildById(string projectId, int buildId)
+        {
+            var request = new RestRequest("build/{buildId}", Method.GET);
+            //request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("buildId", buildId);
+
+            return Client.ExecuteTaskAsync<Build>(request).EnsureSuccess();
         }
 
         public Task<GetRepoBranches> GetBranches(string projectId, int? limit, bool? existsOnGithub)

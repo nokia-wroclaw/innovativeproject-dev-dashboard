@@ -116,9 +116,12 @@ namespace Dashboard.Application
                     return Status.Success;
                 case "created":
                     return Status.Created;
+                case "canceled":
+                    return Status.Canceled;
+
             }
 
-            throw new InvalidEnumArgumentException(nameof(gitlabStatus));
+            throw new InvalidEnumArgumentException($"{nameof(gitlabStatus)} {gitlabStatus}");
         }
 
 

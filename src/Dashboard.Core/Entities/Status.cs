@@ -11,6 +11,7 @@ namespace Dashboard.Core.Entities
         Failed,
         Skipped,
         Success,
-        Created
+        Created,
+        Canceled
     }
 }
