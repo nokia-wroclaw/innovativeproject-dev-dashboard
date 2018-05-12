@@ -96,11 +96,11 @@ namespace Dashboard.Application
                 case "running":
                     return Status.Running;
                 case "manual":
-                    return Status.Manual;
+                    return Status.Running;
                 case "failed":
                     return Status.Failed;
                 case "skipped":
-                    return Status.Skipped;
+                    return Status.Canceled;
                 case "success":
                     return Status.Success;
                 case "created":
