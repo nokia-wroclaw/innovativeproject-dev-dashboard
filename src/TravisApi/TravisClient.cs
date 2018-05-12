@@ -29,23 +29,13 @@ namespace TravisApi
             Client.AddDefaultHeader("Accept", "application/vnd.travis-ci.2.1+json");
         }
 
-        public Task<GetRepoBuildsResponse> FetchBuilds(string projectId, int? limit)
-        {
-            var request = new RestRequest("repo/{projectId}/builds/", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
-
-            if (limit.HasValue)
-                request.AddQueryParameter("limit", limit.ToString());
-
-            return Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request).EnsureSuccess();
-        }
-
-
-        public Task<Build> FetchBuildById(string projectId, int buildId)
+        public Task<Build> FetchBuildById(int buildId, bool includeJobs)
         {
             var request = new RestRequest("build/{buildId}", Method.GET);
-            //request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
             request.AddUrlSegment("buildId", buildId);
+
+            if (includeJobs)
+                request.AddQueryParameter("include", "build.jobs");
 
             return Client.ExecuteTaskAsync<Build>(request).EnsureSuccess();
         }
@@ -59,13 +49,16 @@ namespace TravisApi
             return Client.ExecuteTaskAsync<GetBranchResponse>(request).EnsureSuccess();
         }
 
-        public async Task<(IEnumerable<Build> builds, int totalPages)> GetNewestBuilds(string projectId, int page, int perPage)
+        public async Task<(IEnumerable<Build> builds, int totalPages)> GetNewestBuilds(string projectId, int page, int perPage, bool includeJobs)
         {
             var request = new RestRequest("repo/{projectId}/builds", Method.GET);
             request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
 
             request.AddQueryParameter("limit", perPage.ToString());
             request.AddQueryParameter("offset", (page * perPage).ToString());
+
+            if (includeJobs)
+                request.AddQueryParameter("include", "build.jobs");
 
             var response = await Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request);
 

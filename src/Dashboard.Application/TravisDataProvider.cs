@@ -25,9 +25,9 @@ namespace Dashboard.Application
         {
             var apiClient = new TravisClient(apiHost, apiKey);
 
-            var apiResult = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage); // -1 cuz in service pages are counted from 1
+            var apiResult = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage, true); // -1 cuz in service pages are counted from 1
 
-            var fullInfoPipelines = await Task.WhenAll(apiResult.builds.Select(b => FetchPipelineById(apiHost, apiKey, apiProjectId, b.Id)));
+            var fullInfoPipelines = apiResult.builds.Select(MapBuildToPipeline);
 
             return (fullInfoPipelines, apiResult.totalPages);
         }
@@ -36,10 +36,9 @@ namespace Dashboard.Application
         {
             var apiClient = new TravisClient(apiHost, apiKey);
 
-            var buildBriefJobs = await apiClient.FetchBuildById(apiProjectId, pipelineId);
-            buildBriefJobs.Jobs = (await apiClient.GetJobs(buildBriefJobs.Id)).Jobs;
+            var build = await apiClient.FetchBuildById(pipelineId, true);
 
-            return MapBuildToPipeline(buildBriefJobs);
+            return MapBuildToPipeline(build);
         }
 
         public async Task<Pipeline> FetchPipeLineByBranch(string apiHost, string apiKey, string apiProjectId, string branchName)
