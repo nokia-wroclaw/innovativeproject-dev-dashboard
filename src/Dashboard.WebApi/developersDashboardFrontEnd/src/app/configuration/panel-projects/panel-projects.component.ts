@@ -11,7 +11,7 @@ import { NotificationService, SnackBar, NotificationType } from '../../snackbar/
 })
 export class PanelProjectsComponent implements OnInit {
 
-  project = new Project('', '', '', '', '', '', undefined);
+  project = new Project('', '', '', '', '', '');
   projectCiDataUpdateIntervalMinutes: number;
   dataProviderNames = new SupportedProviders(undefined);
 

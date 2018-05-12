@@ -7,7 +7,7 @@
     </mat-card-title>
   </mat-card-header>
 
-  <form #panelForm="ngForm" (ngSubmit)="submitPanel()">
+  <form #panelForm="ngForm">
     <mat-card-content>
       <mat-form-field class=" example-full-width ">
         <input matInput placeholder="Panel title" required [(ngModel)]="panel.title" name="title">
@@ -37,7 +37,7 @@
 
 
     <mat-card-actions>
-      <button  type="submit" [disabled]="!panelForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
+      <button  type="submit" (click)="submitPanel()" [disabled]="!panelForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
       <button  [routerLink]="'/'" mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
       <button  *ngIf="editMode" (click)="onDelete()" mat-button class="pull-right " style=" font-size: 1em; color: #d22e2b;">DELETE</button>
     </mat-card-actions>
