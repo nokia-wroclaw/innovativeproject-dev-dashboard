@@ -44,7 +44,8 @@ namespace Dashboard.WebApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<Pipeline>> PipelinesForPanel(int panelID)
         {
-            return await _projectService.GetPipelinesForPanel(panelID);
+            var pipelinesForPanel = await _projectService.GetPipelinesForPanel(panelID);
+            return pipelinesForPanel;
         }
     }
 }

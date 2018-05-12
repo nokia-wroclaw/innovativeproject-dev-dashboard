@@ -72,7 +72,7 @@ namespace Dashboard.Application
                 CommitTitle = b.Commit.Message,
                 CommiterEmail = b.CreatedBy.Login,
                 CommiterName = b.CreatedBy.Login,
-                Ref = b.Commit.Ref,
+                Ref = b.Branch.Name,
                 Sha = b.Commit.Sha,
                 //CreatedAt = 
                 StartedAt = b.StartedAt,

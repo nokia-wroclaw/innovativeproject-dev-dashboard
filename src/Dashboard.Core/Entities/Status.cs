@@ -6,7 +6,7 @@ namespace Dashboard.Core.Entities
 {
     public enum Status
     {
-        Running,
+        Running = 0,
         Manual,
         Failed,
         Skipped,

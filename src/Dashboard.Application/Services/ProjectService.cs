@@ -165,12 +165,12 @@ namespace Dashboard.Application.Services
 
             //Merge
             _pipelineRepository.DeleteRange(project.Pipelines);
-            var pipesList = project.Pipelines.ToList();
+            var pipesList = new List<Pipeline>();
             pipesList.AddRange(staticBranchesPipelines);
             pipesList.AddRange(newestPipes);
 
             //Save update to DB
-            project.Pipelines = pipesList.TakeLast(project.PipelinesNumber).ToList();
+            project.Pipelines = pipesList.Take(project.PipelinesNumber).ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
@@ -195,7 +195,8 @@ namespace Dashboard.Application.Services
         public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
         {
             var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
-            return await panel.GetPipelinesDTOForPanel(_projectRepository);
+            var pipes = await panel.GetPipelinesDTOForPanel(_projectRepository);
+            return pipes;
         }
     }
 }
