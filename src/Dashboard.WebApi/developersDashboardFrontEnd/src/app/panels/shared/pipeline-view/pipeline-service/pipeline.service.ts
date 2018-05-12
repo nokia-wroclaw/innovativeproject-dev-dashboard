@@ -15,11 +15,7 @@ export class PipelineService {
     getPipelines(panelId : number) : Observable < Pipeline[] > {
         const options = panelId ? { params: new HttpParams().set('panelID', panelId.toString()) } : {};
 
-        return this.http.get < PipelinesResponse > (this.baseUrl, options).map(response => response.pipelines);
+        return this.http.get < Pipeline[] > (this.baseUrl, options);
     }
 
-}
-
-interface PipelinesResponse {
-    pipelines: Pipeline[];
 }
