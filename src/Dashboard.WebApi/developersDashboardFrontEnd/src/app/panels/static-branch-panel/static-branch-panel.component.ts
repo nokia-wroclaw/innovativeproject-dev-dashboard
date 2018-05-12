@@ -33,7 +33,8 @@ IPanelComponent < StaticBranchPanel > {
         this
           .pipelineService
           .getPipelines(this.panel.id)
-          .subscribe(pipelines => this.pipeline = pipelines.length > 0 ? pipelines[0] : null)
+          .filter(pipelines => pipelines.length > 0)
+          .subscribe(pipelines => this.pipeline = pipelines[0]);
       })
   }
 
