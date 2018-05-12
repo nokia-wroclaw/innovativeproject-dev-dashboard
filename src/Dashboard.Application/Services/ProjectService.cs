@@ -11,6 +11,7 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using System;
 using Dashboard.Application.Validators;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace Dashboard.Application.Services
@@ -27,6 +28,7 @@ namespace Dashboard.Application.Services
         private readonly ICronJobsManager _cronJobsManager;
         private readonly IPanelRepository _panelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
+        private readonly IConfiguration _configuration;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
@@ -36,6 +38,7 @@ namespace Dashboard.Application.Services
             ICronJobsManager cronJobsManager,
             IPanelRepository panelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
+            IConfiguration configuration,
             ILogger<ProjectService> logger)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
@@ -45,6 +48,7 @@ namespace Dashboard.Application.Services
             _pipelineRepository = pipelineRepository;
             _panelRepository = panelRepository;
             _staticBranchPanelRepository = staticBranchPanelRepository;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -130,8 +134,8 @@ namespace Dashboard.Application.Services
             var branchNamesSet = new HashSet<string>(branchNames);
             var newestPipes = new List<Pipeline>();
             var pageCounter = 1;
-            //TODO: Move to config 
-            while (newestPipes.Count < howMany && pageCounter <= 10)//Search max 10 pages
+            var maxPagesToLookFor = int.Parse(_configuration["DataProviders:NewestPipelinesMaxPages"]);
+            while (newestPipes.Count < howMany && pageCounter <= maxPagesToLookFor)//Search max 10 pages
             {
                 var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
                 var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNamesSet.Contains(p.Ref));
