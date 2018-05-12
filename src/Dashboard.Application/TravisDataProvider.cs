@@ -89,20 +89,18 @@ namespace Dashboard.Application
         {
             switch (travisStatus)
             {
-                case "started":
-                    return Status.Running;
-                case "failed":
-                    return Status.Failed;
                 case "created":
                     return Status.Created;
+                case "started":
+                case "received":
+                    return Status.Running;//Or Created, not sure when it is "received"
+                case "errored":
+                case "failed":
+                    return Status.Failed;
                 case "canceled":
                     return Status.Canceled;
                 case "passed":
                     return Status.Success;
-                case "received":
-                    return Status.Running;//Or Created, not sure when it is "received"
-                case "errored":
-                    return Status.Failed;
             }
 
             throw new InvalidEnumArgumentException($"{nameof(travisStatus)} {travisStatus}");

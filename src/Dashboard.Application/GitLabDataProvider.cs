@@ -94,19 +94,17 @@ namespace Dashboard.Application
             switch (gitlabStatus)
             {
                 case "running":
-                    return Status.Running;
                 case "manual":
                     return Status.Running;
                 case "failed":
                     return Status.Failed;
                 case "skipped":
+                case "canceled":
                     return Status.Canceled;
                 case "success":
                     return Status.Success;
                 case "created":
                     return Status.Created;
-                case "canceled":
-                    return Status.Canceled;
 
             }
 
