@@ -25,9 +25,15 @@ namespace Dashboard.Application
             return r.Builds.Select(MapBuildToPipeline);
         }
 
-        public Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string apiHost, string apiKey, string apiProjectId, int page, int perPage)
+        public async Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string apiHost, string apiKey, string apiProjectId, int page, int perPage)
         {
-            throw new NotImplementedException();
+            var apiClient = new TravisClient(apiHost, apiKey);
+
+            var apiResult = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage); // -1 cuz in service pages are counted from 1
+
+            var fullInfoPipelines = apiResult.builds.Select(MapBuildToPipeline);
+
+            return (fullInfoPipelines, apiResult.totalPages);
         }
 
         public async Task<Pipeline> FetchPipelineById(string apiHost, string apiKey, string apiProjectId, int pipelineId)
@@ -39,9 +45,13 @@ namespace Dashboard.Application
             return MapBuildToPipeline(build);
         }
 
-        public Task<Pipeline> FetchPipeLineByBranch(string apiHost, string apiKey, string apiProjectId, string branchName)
+        public async Task<Pipeline> FetchPipeLineByBranch(string apiHost, string apiKey, string apiProjectId, string branchName)
         {
-            throw new NotImplementedException();
+            var apiClient = new TravisClient(apiHost, apiKey);
+            var branch = await apiClient.GetBranch(apiProjectId, branchName);
+
+            //TODO: branch last build may be null?
+            return await FetchPipelineById(apiHost, apiKey, apiProjectId, branch.LastBuild.Id);
         }
 
         public Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue)
@@ -70,21 +80,21 @@ namespace Dashboard.Application
                 UpdatedAt = b.UpdatedAt,
                 ProjectId = b.Repository.Slug,
                 Status = MapTravisStatus(b.State),
-                Stages = (List<Stage>) b.Stages.Select(s => new Stage()
+                Stages = b.Stages.Select(s => new Stage()
                 {
                     Id = s.Id,
                     StageName = s.Name,
                     StageStatus = MapTravisStatus(s.State)
-                })
+                }).ToList()
             };
         }
 
 
-    private Status MapTravisStatus(string gitlabStatus)
+    private Status MapTravisStatus(string travisStatus)
         {
-            switch (gitlabStatus)
+            switch (travisStatus)
             {
-                case "running":
+                case "started":
                     return Status.Running;
                 case "manual":
                     return Status.Manual;
@@ -92,16 +102,16 @@ namespace Dashboard.Application
                     return Status.Failed;
                 case "skipped":
                     return Status.Skipped;
-                case "success":
-                    return Status.Success;
                 case "created":
                     return Status.Created;
                 case "canceled":
                     return Status.Canceled;
+                case "passed":
+                    return Status.Success;
 
             }
 
-            throw new InvalidEnumArgumentException($"{nameof(gitlabStatus)} {gitlabStatus}");
+            throw new InvalidEnumArgumentException($"{nameof(travisStatus)} {travisStatus}");
         }
 
     }

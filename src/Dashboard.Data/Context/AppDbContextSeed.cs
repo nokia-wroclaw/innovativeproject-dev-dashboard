@@ -69,20 +69,20 @@ namespace Dashboard.Data.Context
             {
                 ProjectTitle = "Rust",
                 DataProviderName = "Travis",
-                ApiProjectId = "rust-lang/26199",
-                ApiHostUrl = "https://api.travis-ci.com",
+                ApiProjectId = "26199",
+                ApiHostUrl = "https://api.travis-ci.org",
                 ApiAuthenticationToken = "DrIZnsWaqOgyJzMrNQnQkA",
                 CiDataUpdateCronExpression = "*/50 * * * *",
                 PipelinesNumber = 10,
                 Pipelines = new List<Pipeline>()
                 {
-                    new Pipeline()
-                    {
-                        DataProviderPipelineId = 21584362, // fakeid
-                        Ref = "master",
-                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                        Status = Status.Running
-                    }
+                    //new Pipeline()
+                    //{
+                    //    DataProviderPipelineId = 21584362, // fakeid
+                    //    Ref = "master",
+                    //    Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                    //    Status = Status.Running
+                    //}
                 }
             }
         });

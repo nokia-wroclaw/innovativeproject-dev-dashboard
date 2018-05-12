@@ -50,6 +50,15 @@ namespace TravisApi
             return Client.ExecuteTaskAsync<Build>(request).EnsureSuccess();
         }
 
+        public Task<GetBranchResponse> GetBranch(string projectId, string branch)
+        {
+            var request = new RestRequest("repo/{projectId}/branch/{branchName}", Method.GET);
+            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("branchName", branch);
+
+            return Client.ExecuteTaskAsync<GetBranchResponse>(request).EnsureSuccess();
+        }
+
         public Task<GetRepoBranches> GetBranches(string projectId, int? limit, bool? existsOnGithub)
         {
             var request = new RestRequest("repo/{projectId}/branches", Method.GET);
@@ -62,6 +71,20 @@ namespace TravisApi
                 request.AddQueryParameter("exists_on_github", existsOnGithub.ToString());
 
             return Client.ExecuteTaskAsync<GetRepoBranches>(request).EnsureSuccess();
+        }
+
+        public async Task<(IEnumerable<Build> builds, int totalPages)> GetNewestBuilds(string projectId, int page, int perPage)
+        {
+            var request = new RestRequest("repo/{projectId}/builds", Method.GET);
+            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+
+            request.AddQueryParameter("limit", perPage.ToString());
+            request.AddQueryParameter("offset", (page * perPage).ToString());
+
+            var response = await Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request);
+
+
+            return (response.Data.Builds, response.Data.Pagination.Count);
         }
 
     }
