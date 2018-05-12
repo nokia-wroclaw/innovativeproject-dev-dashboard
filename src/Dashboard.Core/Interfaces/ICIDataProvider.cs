@@ -10,19 +10,6 @@ namespace Dashboard.Core.Interfaces
     {
         string Name { get; }
 
-        /// <summary>
-        /// Fetches all pipelines with all info
-        /// </summary>
-        /// <param name="apiHost"></param>
-        /// <param name="apiKey"></param>
-        /// <param name="apiProjectId"></param>
-        /// <param name="limit">How many pipelines to fetch</param>
-        /// <param name="branchName">Pipelines for specific branch</param>
-        /// <returns></returns>
-        Task<IEnumerable<Pipeline>> FetchPipelines(string apiHost, string apiKey, string apiProjectId, int limit, string branchName = default(string));
-
-
-
         Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string apiHost, string apiKey, string apiProjectId, int page, int perPage);
 
         /// <summary>

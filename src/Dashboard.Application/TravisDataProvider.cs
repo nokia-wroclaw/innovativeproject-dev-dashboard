@@ -13,17 +13,13 @@ using Stage = Dashboard.Core.Entities.Stage;
 
 namespace Dashboard.Application
 {
+   /*
+    * Build
+    *   Jobs
+    */
     public class TravisDataProvider : ICiDataProvider
     {
         public string Name => "Travis";
-        public async Task<IEnumerable<Pipeline>> FetchPipelines(string apiHost, string apiKey, string apiProjectId, int limit, string branchName = default(string))
-        {
-            var apiClient = new TravisClient(apiHost, apiKey);
-
-            var r = await apiClient.FetchBuilds(apiProjectId, 100);
-
-            return r.Builds.Select(MapBuildToPipeline);
-        }
 
         public async Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string apiHost, string apiKey, string apiProjectId, int page, int perPage)
         {
@@ -31,7 +27,7 @@ namespace Dashboard.Application
 
             var apiResult = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage); // -1 cuz in service pages are counted from 1
 
-            var fullInfoPipelines = apiResult.builds.Select(MapBuildToPipeline);
+            var fullInfoPipelines = await Task.WhenAll(apiResult.builds.Select(b => FetchPipelineById(apiHost, apiKey, apiProjectId, b.Id)));
 
             return (fullInfoPipelines, apiResult.totalPages);
         }
@@ -40,9 +36,10 @@ namespace Dashboard.Application
         {
             var apiClient = new TravisClient(apiHost, apiKey);
 
-            var build = await apiClient.FetchBuildById(apiProjectId, pipelineId);
+            var buildBriefJobs = await apiClient.FetchBuildById(apiProjectId, pipelineId);
+            buildBriefJobs.Jobs = (await apiClient.GetJobs(buildBriefJobs.Id)).Jobs;
 
-            return MapBuildToPipeline(build);
+            return MapBuildToPipeline(buildBriefJobs);
         }
 
         public async Task<Pipeline> FetchPipeLineByBranch(string apiHost, string apiKey, string apiProjectId, string branchName)
@@ -80,16 +77,16 @@ namespace Dashboard.Application
                 UpdatedAt = b.UpdatedAt,
                 ProjectId = b.Repository.Slug,
                 Status = MapTravisStatus(b.State),
-                Stages = b.Stages.Select(s => new Stage()
+                Stages = b.Jobs.Select(j => new Stage()
                 {
-                    StageName = s.Name,
-                    StageStatus = MapTravisStatus(s.State)
+                    StageName = j.Queue,
+                    StageStatus = MapTravisStatus(j.State)
                 }).ToList()
             };
         }
 
 
-    private Status MapTravisStatus(string travisStatus)
+        private Status MapTravisStatus(string travisStatus)
         {
             switch (travisStatus)
             {
@@ -98,6 +95,7 @@ namespace Dashboard.Application
                 case "manual":
                     return Status.Manual;
                 case "failed":
+                case "errored":
                     return Status.Failed;
                 case "skipped":
                     return Status.Skipped;

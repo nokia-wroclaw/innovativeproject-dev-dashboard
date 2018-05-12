@@ -130,7 +130,8 @@ namespace Dashboard.Application.Services
             var branchNamesSet = new HashSet<string>(branchNames);
             var newestPipes = new List<Pipeline>();
             var pageCounter = 1;
-            while (newestPipes.Count < howMany)
+            //TODO: Move to config 
+            while (newestPipes.Count < howMany && pageCounter <= 10)//Search max 10 pages
             {
                 var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
                 var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNamesSet.Contains(p.Ref));

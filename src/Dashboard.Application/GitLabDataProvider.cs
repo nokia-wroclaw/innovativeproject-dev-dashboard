@@ -18,17 +18,6 @@ namespace Dashboard.Application
     {
         public string Name => "GitLab";
 
-        public async Task<IEnumerable<Pipeline>> FetchPipelines(string apiHost, string apiKey, string apiProjectId, int limit, string branchName = default(string))
-        {
-            var apiClient = new GitLabClient(apiHost, apiKey);
-
-            var briefInfoPipelines = await apiClient.GetBriefPipelines(apiProjectId, numberOfPipelines: limit, branchName: branchName);
-            var tasks = briefInfoPipelines.Select(bp => FetchPipelineById(apiHost, apiKey, apiProjectId, bp.Id));
-
-            var fullInfoPipelines = await Task.WhenAll(tasks);
-            return fullInfoPipelines;
-        }
-
         public async Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string apiHost, string apiKey, string apiProjectId, int page, int perPage)
         {
             var apiClient = new GitLabClient(apiHost, apiKey);

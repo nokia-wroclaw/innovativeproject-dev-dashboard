@@ -59,20 +59,6 @@ namespace TravisApi
             return Client.ExecuteTaskAsync<GetBranchResponse>(request).EnsureSuccess();
         }
 
-        public Task<GetRepoBranches> GetBranches(string projectId, int? limit, bool? existsOnGithub)
-        {
-            var request = new RestRequest("repo/{projectId}/branches", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
-
-            if (limit.HasValue)
-                request.AddQueryParameter("limit", limit.ToString());
-
-            if (existsOnGithub.HasValue)
-                request.AddQueryParameter("exists_on_github", existsOnGithub.ToString());
-
-            return Client.ExecuteTaskAsync<GetRepoBranches>(request).EnsureSuccess();
-        }
-
         public async Task<(IEnumerable<Build> builds, int totalPages)> GetNewestBuilds(string projectId, int page, int perPage)
         {
             var request = new RestRequest("repo/{projectId}/builds", Method.GET);
@@ -85,6 +71,14 @@ namespace TravisApi
 
 
             return (response.Data.Builds, response.Data.Pagination.Count);
+        }
+
+        public Task<GetJobsResponse> GetJobs(int buildId)
+        {
+            var request = new RestRequest("build/{buildId}/jobs", Method.GET);
+            request.AddUrlSegment("buildId", buildId);
+
+            return Client.ExecuteTaskAsync<GetJobsResponse>(request).EnsureSuccess();
         }
 
     }
