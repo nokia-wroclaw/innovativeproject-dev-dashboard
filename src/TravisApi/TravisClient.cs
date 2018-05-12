@@ -61,10 +61,10 @@ namespace TravisApi
             if (includeJobs)
                 request.AddQueryParameter("include", "build.jobs");
 
-            var response = await Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request);
+            var response = await Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request).EnsureSuccess();
 
 
-            return (response.Data.Builds, response.Data.Pagination.Count);
+            return (response.Builds, response.Pagination.Count);
         }
 
         public Task<GetJobsResponse> GetJobs(int buildId)

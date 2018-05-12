@@ -133,18 +133,17 @@ namespace Dashboard.Application.Services
         {
             var branchNamesSet = new HashSet<string>(branchNames);
             var newestPipes = new List<Pipeline>();
-            var pageCounter = 1;
+            var pageCounter = 0;
             var maxPagesToLookFor = int.Parse(_configuration["DataProviders:NewestPipelinesMaxPages"]);
-            while (newestPipes.Count < howMany && pageCounter <= maxPagesToLookFor)//Search max 10 pages
+            while (newestPipes.Count < howMany && pageCounter++ <= maxPagesToLookFor)
             {
                 var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
                 var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNamesSet.Contains(p.Ref));
 
                 newestPipes.InsertRange(0, pagePipelinesNotInLocalStatic);
-                pageCounter++;
 
                 if (pageCounter >= pagedNewest.totalPages) //If last page
-                    break; ;
+                    break;
             }
 
             return newestPipes;
