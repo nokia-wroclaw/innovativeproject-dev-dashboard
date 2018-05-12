@@ -39,7 +39,21 @@ namespace Dashboard.Data.Context
                 Project = SeedProjects.ElementAt(0),
                 HowManyLastPipelinesToRead = 2,
                 PanelRegex = ".*"
-            }
+            },
+            new StaticBranchPanel()
+            {
+                Title = "Fancy Title Rust",
+                Position = new PanelPosition() {Column = 2, Row = 3, Width = 4, Height = 1},
+                Project = SeedProjects.ElementAt(1),
+                StaticBranchName = "master",
+            },
+            new DynamicPipelinesPanel() {
+                Title = "Fancy Title Dynamic Rust",
+                Position = new PanelPosition() {Column = 1, Row = 2, Width = 5, Height = 3},
+                Project = SeedProjects.ElementAt(1),
+                HowManyLastPipelinesToRead = 2,
+                PanelRegex = ".*"
+            },
         });
 
         private static List<Project> _seedProjects;
@@ -56,13 +70,13 @@ namespace Dashboard.Data.Context
                 PipelinesNumber = 10,
                 Pipelines = new List<Pipeline>()
                 {
-                    //new Pipeline()
-                    //{
-                    //    DataProviderPipelineId = 21584362, // fakeid
-                    //    Ref = "master",
-                    //    Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                    //    Status = Status.Running
-                    //}
+                    new Pipeline()
+                    {
+                        DataProviderPipelineId = 21584362, // fakeid
+                        Ref = "master",
+                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                        Status = Status.Running
+                    }
                 }
             },
             new Project()
@@ -76,13 +90,13 @@ namespace Dashboard.Data.Context
                 PipelinesNumber = 10,
                 Pipelines = new List<Pipeline>()
                 {
-                    //new Pipeline()
-                    //{
-                    //    DataProviderPipelineId = 21584362, // fakeid
-                    //    Ref = "master",
-                    //    Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                    //    Status = Status.Running
-                    //}
+                    new Pipeline()
+                    {
+                        DataProviderPipelineId = 21584362, // fakeid
+                        Ref = "master",
+                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                        Status = Status.Running
+                    }
                 }
             }
         });

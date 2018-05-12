@@ -82,7 +82,6 @@ namespace Dashboard.Application
                 Status = MapTravisStatus(b.State),
                 Stages = b.Stages.Select(s => new Stage()
                 {
-                    Id = s.Id,
                     StageName = s.Name,
                     StageStatus = MapTravisStatus(s.State)
                 }).ToList()
