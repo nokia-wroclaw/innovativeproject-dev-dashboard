@@ -81,9 +81,9 @@ namespace Dashboard.Data.Context
             },
             new Project()
             {
-                ProjectTitle = "Pandas",
+                ProjectTitle = "Rust",
                 DataProviderName = "Travis",
-                ApiProjectId = "53976",
+                ApiProjectId = "26199",
                 ApiHostUrl = "https://api.travis-ci.org",
                 ApiAuthenticationToken = "DrIZnsWaqOgyJzMrNQnQkA",
                 CiDataUpdateCronExpression = "*/50 * * * *",
