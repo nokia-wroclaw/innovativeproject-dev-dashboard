@@ -83,7 +83,7 @@ namespace Dashboard.Data.Context
             {
                 ProjectTitle = "Rust",
                 DataProviderName = "Travis",
-                ApiProjectId = "26199",
+                ApiProjectId = "rust-lang/rust",
                 ApiHostUrl = "https://api.travis-ci.org",
                 ApiAuthenticationToken = "DrIZnsWaqOgyJzMrNQnQkA",
                 CiDataUpdateCronExpression = "*/50 * * * *",

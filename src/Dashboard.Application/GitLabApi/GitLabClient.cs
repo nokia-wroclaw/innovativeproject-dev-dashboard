@@ -31,7 +31,7 @@ namespace Dashboard.Application.GitLabApi
         public Task<IEnumerable<Pipeline>> GetBriefPipelines(string projectId, int numberOfPipelines = 100, string branchName = "")
         {
             var request = new RestRequest("projects/{projectId}/pipelines/", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
 
             request.AddQueryParameter("per_page", numberOfPipelines.ToString());
 
@@ -44,7 +44,7 @@ namespace Dashboard.Application.GitLabApi
         public Task<Pipeline> GetPipelineById(string projectId, int pipelineId)
         {
             var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
             request.AddUrlSegment("pipelineId", pipelineId);
 
             return Client.ExecuteTaskAsync<Pipeline>(request).EnsureSuccess();
@@ -66,7 +66,7 @@ namespace Dashboard.Application.GitLabApi
         public Task<IEnumerable<Commit>> GetCommits(string projectId, string commitSHA = "")
         {
             var request = new RestRequest("projects/{projectId}/repository/commits/{commitSHA}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
             request.AddUrlSegment("commitSHA", commitSHA);
 
             return Client.ExecuteTaskAsync<IEnumerable<Commit>>(request).EnsureSuccess();
@@ -75,7 +75,7 @@ namespace Dashboard.Application.GitLabApi
         public async Task<IEnumerable<Job>> GetJobs(string projectId, int pipelineId)
         {
             var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}/jobs", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
             request.AddUrlSegment("pipelineId", pipelineId);
 
             request.AddQueryParameter("per_page", "100");
@@ -91,7 +91,7 @@ namespace Dashboard.Application.GitLabApi
             for (int i = 2; i <= totalPages; i++)
             {
                 var req = new RestRequest("projects/{projectId}/pipelines/{pipelineId}/jobs", Method.GET);
-                req.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+                req.AddUrlSegment("projectId", projectId);
                 req.AddQueryParameter("per_page", "100");
                 req.AddQueryParameter("page", i.ToString());
 
@@ -107,7 +107,7 @@ namespace Dashboard.Application.GitLabApi
         public Task<IEnumerable<Branch>> SearchForBranchInProject(string projectId, string branchPartialName)
         {
             var request = new RestRequest("projects/{projectId}/repository/branches?search={branchPartialName}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
             request.AddUrlSegment("branchPartialName", branchPartialName);
 
             request.AddQueryParameter("per_page", "10000");
@@ -119,7 +119,7 @@ namespace Dashboard.Application.GitLabApi
         public async Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string projectId, int page, int perPage)
         {
             var request = new RestRequest("projects/{projectId}/pipelines", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
 
             request.AddQueryParameter("per_page", perPage.ToString());
             request.AddQueryParameter("page", page.ToString());
@@ -148,7 +148,7 @@ namespace Dashboard.Application.GitLabApi
             {
                 //Make request
                 var request = new RestRequest("projects/{projectId}/pipelines", Method.GET);
-                request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+                request.AddUrlSegment("projectId", projectId);
 
                 request.AddQueryParameter("per_page", "100");
                 request.AddQueryParameter("page", pageCounter.ToString());

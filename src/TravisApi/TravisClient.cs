@@ -43,7 +43,8 @@ namespace TravisApi
         public Task<GetBranchResponse> GetBranch(string projectId, string branch)
         {
             var request = new RestRequest("repo/{projectId}/branch/{branchName}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+
+            request.AddUrlSegment("projectId", projectId);
             request.AddUrlSegment("branchName", branch);
 
             return Client.ExecuteTaskAsync<GetBranchResponse>(request).EnsureSuccess();
@@ -52,7 +53,7 @@ namespace TravisApi
         public async Task<(IEnumerable<Build> builds, int totalPages)> GetNewestBuilds(string projectId, int page, int perPage, bool includeJobs)
         {
             var request = new RestRequest("repo/{projectId}/builds", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
 
             request.AddQueryParameter("limit", perPage.ToString());
             request.AddQueryParameter("offset", (page * perPage).ToString());
