@@ -65,7 +65,7 @@ namespace Dashboard.Application
         {
             //If build has no stages, map jobs as stages -> otherwise map stages
             var stages = !b.Stages.Any()
-                ? b.Jobs.Select(j => new Stage { StageName = j.Queue, StageStatus = MapTravisStatus(j.State) }).ToList()
+                ? b.Jobs.Select(j => new Stage { StageName = j.Number, StageStatus = MapTravisStatus(j.State) }).ToList()
                 : b.Stages.Select(s => new Stage { StageName = s.Name, StageStatus = MapTravisStatus(s.State) }).ToList();
 
             return new Pipeline()

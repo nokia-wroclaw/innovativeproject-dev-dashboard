@@ -126,43 +126,10 @@ namespace Dashboard.Application.GitLabApi
 
             var response = await Client.ExecuteTaskAsync<List<Pipeline>>(request);
 
-            if (!int.TryParse(response.Headers.FirstOrDefault(p => p.Name == "X-Total-Pages").Value.ToString(), out int totalPages))
+            if (!int.TryParse(response.Headers.FirstOrDefault(p => p.Name == "X-Total-Pages")?.Value.ToString(), out var totalPages))
                 throw new InvalidCastException("Bad conversion of X-Total-Pages");
 
             return (response.Data, totalPages);
-        }
-
-        /// <summary>
-        /// Return newest pipelines NOT FULL INFO, used to fullfill existing ones
-        /// </summary>
-        /// <param name="projectId"></param>
-        /// <param name="howMany"></param>
-        /// <param name="staticPipes"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<Pipeline>> PickNewestPipelinesExcludingSome(string projectId, int howMany, IEnumerable<string> staticPipes)
-        {
-            List<Pipeline> downloadedPipelines = new List<Pipeline>();
-            int pageCounter = 1;
-            int totalPages = 1;
-            while (downloadedPipelines.Count < howMany && pageCounter <= totalPages)
-            {
-                //Make request
-                var request = new RestRequest("projects/{projectId}/pipelines", Method.GET);
-                request.AddUrlSegment("projectId", projectId);
-
-                request.AddQueryParameter("per_page", "100");
-                request.AddQueryParameter("page", pageCounter.ToString());
-
-                var response = await Client.ExecuteTaskAsync<List<Pipeline>>(request);
-                if (!int.TryParse(response.Headers.FirstOrDefault(p => p.Name == "X-Total-Pages").Value.ToString(), out totalPages))
-                    throw new InvalidCastException("Bad conversion of X-Total-Pages in GitlabClient.cs");
-
-                //Process data
-                downloadedPipelines.AddRange(response.Data.Where(p => !staticPipes.Contains(p.Ref)).Select(p => p));
-                pageCounter++;
-            }
-
-            return downloadedPipelines.Take(howMany);
         }
     }
 }

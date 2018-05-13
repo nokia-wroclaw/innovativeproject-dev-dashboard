@@ -42,13 +42,13 @@ namespace Dashboard.Data.Context
             },
             new StaticBranchPanel()
             {
-                Title = "Fancy Title Rust",
+                Title = "Fancy Title Ember",
                 Position = new PanelPosition() {Column = 2, Row = 3, Width = 4, Height = 1},
                 Project = SeedProjects.ElementAt(1),
                 StaticBranchName = "master",
             },
             new DynamicPipelinesPanel() {
-                Title = "Fancy Title Dynamic Rust",
+                Title = "Fancy Title Dynamic Ember",
                 Position = new PanelPosition() {Column = 1, Row = 2, Width = 5, Height = 3},
                 Project = SeedProjects.ElementAt(1),
                 HowManyLastPipelinesToRead = 2,
