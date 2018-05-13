@@ -15,7 +15,8 @@ namespace Dashboard.Application
 {
     /*
      * Build
-     *   Jobs
+     *   Stages
+     *      Jobs
      */
     public class TravisDataProvider : ICiDataProvider
     {
