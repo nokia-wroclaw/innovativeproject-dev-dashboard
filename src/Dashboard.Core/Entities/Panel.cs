@@ -41,9 +41,6 @@ namespace Dashboard.Core.Entities
 
         public async Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository)
         {
-            int projID = ProjectId ?? -1;
-            if (projID == -1) return new List<Pipeline>();
-
             return new List<Pipeline> { Project.Pipelines.LastOrDefault(p => p.Ref.Equals(StaticBranchName)) };
         }
     }

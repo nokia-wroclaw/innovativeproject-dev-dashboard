@@ -4,16 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
-using Dashboard.Core.Exceptions;
+using Dashboard.Core;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
 using Hangfire;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using Dashboard.Application.Validators;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using System.Text.RegularExpressions;
 
 namespace Dashboard.Application.Services
 {
@@ -28,6 +27,8 @@ namespace Dashboard.Application.Services
         private readonly ICiDataProviderFactory _ciDataProviderFactory;
         private readonly ICronJobsManager _cronJobsManager;
         private readonly IPanelRepository _panelRepository;
+        private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
+        private readonly IConfiguration _configuration;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
@@ -36,6 +37,8 @@ namespace Dashboard.Application.Services
             ICiDataProviderFactory ciDataProviderFactory,
             ICronJobsManager cronJobsManager,
             IPanelRepository panelRepository,
+            IStaticBranchPanelRepository staticBranchPanelRepository,
+            IConfiguration configuration,
             ILogger<ProjectService> logger)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
@@ -44,6 +47,8 @@ namespace Dashboard.Application.Services
             _projectRepository = projectRepository;
             _pipelineRepository = pipelineRepository;
             _panelRepository = panelRepository;
+            _staticBranchPanelRepository = staticBranchPanelRepository;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -124,18 +129,24 @@ namespace Dashboard.Application.Services
             return r;
         }
 
-        public async Task<IEnumerable<Pipeline>> UpdateLocalDatabase(int projectId, IEnumerable<string> staticPipes)
+        private async Task<IEnumerable<Pipeline>> DownloadNewestPipelinesNotInBrancNameList(ICiDataProvider dataProvider, Project project, int howMany, IEnumerable<string> branchNames)
         {
-            var project = await GetProjectByIdAsync(projectId);
-            if (project == null)
-                return null;
-            var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
+            var branchNamesSet = new HashSet<string>(branchNames);
+            var newestPipes = new List<Pipeline>();
+            var pageCounter = 0;
+            var maxPagesToLookFor = int.Parse(_configuration["DataProviders:NewestPipelinesMaxPages"]);
+            while (newestPipes.Count < howMany && pageCounter++ <= maxPagesToLookFor)
+            {
+                var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
+                var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNamesSet.Contains(p.Ref));
 
-            var targetPipelineNumber = project.PipelinesNumber - project.Pipelines.Count;
+                newestPipes.InsertRange(0, pagePipelinesNotInLocalStatic);
 
-            var actualPipelineNumber = project.Pipelines.Count;
-            var newPipelines = await dataProvider.GetLatestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, targetPipelineNumber, project.Pipelines, staticPipes);
-            return newPipelines;
+                if (pageCounter >= pagedNewest.totalPages) //If last page
+                    break;
+            }
+
+            return newestPipes;
         }
 
         /// <summary>
@@ -145,39 +156,25 @@ namespace Dashboard.Application.Services
         /// <returns>All pipelines</returns>
         public async Task UpdateCiDataForProjectAsync(int projectId)
         {
-            //await UpdateLocalDatabase(projectId);
             var project = await GetProjectByIdAsync(projectId);
             if (project == null) return;
 
-            //TODO: Refactor so this method returns error string and piplines, some validation, maybe move to CiDataService?
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
-            var staticPanels = _panelRepository.FindAllAsync(p => p.Discriminator.Equals(nameof(StaticBranchPanel)));
-            var staticBranches = (await staticPanels).Select(p => ((StaticBranchPanel)p).StaticBranchName);
-            var updatePiplineTasks = staticBranches.Select(b =>
-                dataProvider.GetBranchPipeLine(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b));
+            var staticBranchesNamesDb = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(projectId);
+            var staticBranchesPipelines = await Task.WhenAll(staticBranchesNamesDb.Select(b => dataProvider.FetchPipeLineByBranch(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b)));
 
-            var updatedPipelines = (await Task.WhenAll(updatePiplineTasks));
-            var updatedPipelinesSpecific = updatedPipelines.Select(p => dataProvider.GetSpecificPipeline(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, p.DataProviderId.ToString()));
-
-            //Fill with dynamic
-            var downloadedPipelines = (await UpdateLocalDatabase(projectId, staticBranches));
-            var downloadedPipelinesSpecific = downloadedPipelines.Select(p => dataProvider.GetSpecificPipeline(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, p.DataProviderId.ToString()));
+            var targetPipelineNumber = project.PipelinesNumber - project.Pipelines.Count;
+            var newestPipes = await DownloadNewestPipelinesNotInBrancNameList(dataProvider, project, targetPipelineNumber, staticBranchesNamesDb);
 
             //Merge
-            var localPipelines = project.Pipelines;
-            var output = localPipelines.Where(p => !staticBranches.Contains(p.Ref)).Select(p => p).ToList();
-
-            //Sometimes HttpRequestExceptions here, don't know why
-            output.AddRange(await Task.WhenAll(downloadedPipelinesSpecific));
-
-
-            output.AddRange(await Task.WhenAll(updatedPipelinesSpecific));
+            _pipelineRepository.DeleteRange(project.Pipelines);
+            var pipesList = new List<Pipeline>();
+            pipesList.AddRange(staticBranchesPipelines);
+            pipesList.AddRange(newestPipes);
 
             //Save update to DB
-            int howManyToDelete = output.Count - project.PipelinesNumber >= 0 ? output.Count - project.PipelinesNumber : 0;
-            _pipelineRepository.DeleteRange(output.Take(howManyToDelete));
-            project.Pipelines = output.TakeLast(project.PipelinesNumber).ToList();
+            project.Pipelines = pipesList.Take(project.PipelinesNumber).ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
@@ -202,7 +199,8 @@ namespace Dashboard.Application.Services
         public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
         {
             var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
-            return await panel.GetPipelinesDTOForPanel(_projectRepository);
+            var pipes = await panel.GetPipelinesDTOForPanel(_projectRepository);
+            return pipes;
         }
     }
 }

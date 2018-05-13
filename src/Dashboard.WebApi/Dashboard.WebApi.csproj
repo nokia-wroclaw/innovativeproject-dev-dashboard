@@ -43,6 +43,7 @@
     <None Remove="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-service\pipeline.service.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.spec.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\panels\shared\validators\valid-regex.directive.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel-config.component.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel.component.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch.ts" />
@@ -116,6 +117,7 @@
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-service\pipeline.service.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.spec.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\pipeline-view\pipeline-view.component.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\shared\validators\valid-regex.directive.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel-config.component.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch-panel.component.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch.ts" />

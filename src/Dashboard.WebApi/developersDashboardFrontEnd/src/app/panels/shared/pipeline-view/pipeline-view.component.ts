@@ -16,22 +16,26 @@ export class PipelineViewComponent implements OnInit {
 
   statusColors : any[] = [
     {
-      status: "failed",
+      status: 2, //Failed
       color: '#d9534f'
     }, {
-      status: "running",
+      status: 0, //Running
       color: 'blue'
     }, {
-      status: "manual",
+      status: 1, //Manual
       color: 'pink'
     }, {
-      status: "success",
+      status: 4, //Success
       color: 'green'
     }, {
-      status: "created",
+      status: 5, //Created
       color: "white"
     }, {
-      status: "skipped",
+      status: 3, //Skipped
+      color: "gray"
+    },
+    {
+      status: 6, //Canceled
       color: "gray"
     }
   ];
@@ -39,7 +43,7 @@ export class PipelineViewComponent implements OnInit {
   getColorOfStage(stage : Stage) {
     return this
       .statusColors
-      .find(statusColor => statusColor.status == stage.stageStatus)
+      .find(statusColor => statusColor.status === stage.stageStatus)
       .color;
   }
   

@@ -23,7 +23,9 @@ namespace Dashboard.Application
             builder.RegisterAssemblyModules(typeof(ServiceModule).Assembly);
 
             builder.RegisterType<CronJobsManager>().As<ICronJobsManager>();
+
             builder.RegisterType<GitLabDataProvider>().As<ICiDataProvider>();
+            builder.RegisterType<TravisDataProvider>().As<ICiDataProvider>();
             builder.RegisterType<CiDataProviderFactory>().As<ICiDataProviderFactory>();
         }
 
