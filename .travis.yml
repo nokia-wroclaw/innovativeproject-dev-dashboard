@@ -20,7 +20,7 @@ before_install:
 
 stages:
   - name: build_all
-      if: (branch != develop) AND (type IN (push))
+    if: (branch != develop) AND (type IN (push))
   #- test
   - name: deploy_images_to_registry
     if: (branch = develop) AND (type IN (push))
