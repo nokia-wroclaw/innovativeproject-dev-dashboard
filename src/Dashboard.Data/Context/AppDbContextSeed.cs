@@ -81,9 +81,9 @@ namespace Dashboard.Data.Context
             },
             new Project()
             {
-                ProjectTitle = "Rust",
+                ProjectTitle = "Emberjs",
                 DataProviderName = "Travis",
-                ApiProjectId = "rust-lang/rust",
+                ApiProjectId = "emberjs/ember.js",
                 ApiHostUrl = "https://api.travis-ci.org",
                 ApiAuthenticationToken = "DrIZnsWaqOgyJzMrNQnQkA",
                 CiDataUpdateCronExpression = "*/50 * * * *",

@@ -13,10 +13,10 @@ using Stage = Dashboard.Core.Entities.Stage;
 
 namespace Dashboard.Application
 {
-   /*
-    * Build
-    *   Jobs
-    */
+    /*
+     * Build
+     *   Jobs
+     */
     public class TravisDataProvider : ICiDataProvider
     {
         public string Name => "Travis";
@@ -25,7 +25,7 @@ namespace Dashboard.Application
         {
             var apiClient = new TravisClient(apiHost, apiKey);
 
-            var apiResult = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage, true); // -1 cuz in service pages are counted from 1
+            var apiResult = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage, true, true); // -1 cuz in service pages are counted from 1
 
             var fullInfoPipelines = apiResult.builds.Select(MapBuildToPipeline);
 
@@ -36,7 +36,7 @@ namespace Dashboard.Application
         {
             var apiClient = new TravisClient(apiHost, apiKey);
 
-            var build = await apiClient.FetchBuildById(pipelineId, true);
+            var build = await apiClient.GetBuildById(pipelineId, true, true);
 
             return MapBuildToPipeline(build);
         }
@@ -62,6 +62,11 @@ namespace Dashboard.Application
 
         private Pipeline MapBuildToPipeline(Build b)
         {
+            //If build has no stages, map jobs as stages -> otherwise map stages
+            var stages = !b.Stages.Any()
+                ? b.Jobs.Select(j => new Stage { StageName = j.Queue, StageStatus = MapTravisStatus(j.State) }).ToList()
+                : b.Stages.Select(s => new Stage { StageName = s.Name, StageStatus = MapTravisStatus(s.State) }).ToList();
+
             return new Pipeline()
             {
                 DataProviderPipelineId = b.Id,
@@ -70,17 +75,13 @@ namespace Dashboard.Application
                 CommiterName = b.CreatedBy.Login,
                 Ref = b.Branch.Name,
                 Sha = b.Commit.Sha,
-                //CreatedAt = 
+                CreatedAt = b.StartedAt,
                 StartedAt = b.StartedAt,
                 FinishedAt = b.FinishedAt,
                 UpdatedAt = b.UpdatedAt,
                 ProjectId = b.Repository.Slug,
                 Status = MapTravisStatus(b.State),
-                Stages = b.Jobs.Select(j => new Stage()
-                {
-                    StageName = j.Queue,
-                    StageStatus = MapTravisStatus(j.State)
-                }).ToList()
+                Stages = stages
             };
         }
 

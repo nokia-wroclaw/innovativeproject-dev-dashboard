@@ -29,13 +29,15 @@ namespace TravisApi
             Client.AddDefaultHeader("Accept", "application/vnd.travis-ci.2.1+json");
         }
 
-        public Task<Build> FetchBuildById(int buildId, bool includeJobs)
+        public Task<Build> GetBuildById(int buildId, bool includeJobs, bool includeStages)
         {
             var request = new RestRequest("build/{buildId}", Method.GET);
             request.AddUrlSegment("buildId", buildId);
 
             if (includeJobs)
                 request.AddQueryParameter("include", "build.jobs");
+            if (includeStages)
+                request.AddQueryParameter("include", "build.stages");
 
             return Client.ExecuteTaskAsync<Build>(request).EnsureSuccess();
         }
@@ -50,7 +52,7 @@ namespace TravisApi
             return Client.ExecuteTaskAsync<GetBranchResponse>(request).EnsureSuccess();
         }
 
-        public async Task<(IEnumerable<Build> builds, int totalPages)> GetNewestBuilds(string projectId, int page, int perPage, bool includeJobs)
+        public async Task<(IEnumerable<Build> builds, int totalPages)> GetNewestBuilds(string projectId, int page, int perPage, bool includeJobs, bool includeStages)
         {
             var request = new RestRequest("repo/{projectId}/builds", Method.GET);
             request.AddUrlSegment("projectId", projectId);
@@ -60,20 +62,13 @@ namespace TravisApi
 
             if (includeJobs)
                 request.AddQueryParameter("include", "build.jobs");
+            if (includeStages)
+                request.AddQueryParameter("include", "build.stages");
 
             var response = await Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request).EnsureSuccess();
 
 
             return (response.Builds, response.Pagination.Count);
         }
-
-        public Task<GetJobsResponse> GetJobs(int buildId)
-        {
-            var request = new RestRequest("build/{buildId}/jobs", Method.GET);
-            request.AddUrlSegment("buildId", buildId);
-
-            return Client.ExecuteTaskAsync<GetJobsResponse>(request).EnsureSuccess();
-        }
-
     }
 }
