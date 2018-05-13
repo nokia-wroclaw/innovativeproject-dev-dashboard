@@ -25,7 +25,7 @@ export const panelTypes : PanelType[] = [
         apiTypeNameUpdate: 'UpdateMemePanel'
     }, {
         discriminator: "StaticBranchPanel",
-        name: "Pipelines for static branch",
+        name: "Latest pipeline for static branch",
         dynamic: false,
         bounds: {
             minWidth: 3,
