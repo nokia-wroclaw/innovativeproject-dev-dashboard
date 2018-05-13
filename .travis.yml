@@ -19,7 +19,7 @@ before_install:
   - docker ps
 
 stages:
-  - build_all
+  - name: build_all
       if: (branch != develop) AND (type IN (push))
   #- test
   - name: deploy_images_to_registry
