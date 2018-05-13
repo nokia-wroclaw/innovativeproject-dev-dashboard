@@ -24,19 +24,19 @@ namespace Dashboard.Data.Context
             new MemePanel()
             {
                 Title = "Fancy Title 1",
-                Position = new PanelPosition() {Column = 0, Row = 0, Width = 2, Height = 2},
+                Position = new PanelPosition() {Column = 6, Row = 0, Width = 4, Height = 2},
                 StaticMemeUrl = "https://cdn-images-1.medium.com/max/1600/1*l_T-OzVE9gp0fOAf8vOwbw.png"
             },
             new StaticBranchPanel()
             {
                 Title = "Fancy Title 2",
-                Position = new PanelPosition() {Column = 2, Row = 0, Width = 4, Height = 1},
+                Position = new PanelPosition() {Column = 0, Row = 0, Width = 6, Height = 1},
                 Project = SeedProjects.ElementAt(0),
                 StaticBranchName = "master",
             },
             new DynamicPipelinesPanel() {
                 Title = "Fancy Title Dynamic",
-                Position = new PanelPosition() {Column = 1, Row = 2, Width = 2, Height = 3},
+                Position = new PanelPosition() {Column = 0, Row = 1, Width = 6, Height = 2},
                 Project = SeedProjects.ElementAt(0),
                 HowManyLastPipelinesToRead = 2,
                 PanelRegex = ".*"
@@ -44,13 +44,13 @@ namespace Dashboard.Data.Context
             new StaticBranchPanel()
             {
                 Title = "Fancy Title Ember",
-                Position = new PanelPosition() {Column = 2, Row = 3, Width = 4, Height = 1},
+                Position = new PanelPosition() {Column = 10, Row = 0, Width = 6, Height = 1},
                 Project = SeedProjects.ElementAt(1),
                 StaticBranchName = "master",
             },
             new DynamicPipelinesPanel() {
                 Title = "Fancy Title Dynamic Ember",
-                Position = new PanelPosition() {Column = 1, Row = 2, Width = 5, Height = 3},
+                Position = new PanelPosition() {Column = 10, Row = 1, Width = 6, Height = 2},
                 Project = SeedProjects.ElementAt(1),
                 HowManyLastPipelinesToRead = 2,
                 PanelRegex = ".*"
