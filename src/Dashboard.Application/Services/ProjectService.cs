@@ -192,8 +192,19 @@ namespace Dashboard.Application.Services
             var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
             string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
 
-            int projectId = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId))).Id;
-            await UpdateCiDataForProjectAsync(projectId);
+            var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
+
+            try
+            {
+                IProviderWithJobWebhook provider = (IProviderWithJobWebhook) dataProvider;
+                UpdatePipelineStage(ref project, provider.ExtractJobFromWebhook(body), provider);
+                await _projectRepository.UpdateAsync(project, project.Id);
+                await _projectRepository.SaveAsync();
+            }
+            catch (Exception)
+            {
+                await UpdateCiDataForProjectAsync(project.Id);
+            }
         }
 
         public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
@@ -201,6 +212,25 @@ namespace Dashboard.Application.Services
             var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
             var pipes = await panel.GetPipelinesDTOForPanel(_projectRepository);
             return pipes;
+        }
+
+        private void UpdatePipelineStage(ref Project project, Job job, IProviderWithJobWebhook provider)
+        {
+            var queryablePipelines = project.Pipelines.AsQueryable();
+            var queryableStages = project.Pipelines.AsQueryable().SelectMany(p => p.Stages.AsQueryable().Select(s => s));
+            var stage = queryableStages.FirstOrDefault(s => s.StageName.Equals(job.Stage));
+            var pipeline = queryablePipelines.FirstOrDefault(p => p.Stages.Contains(stage));
+            foreach (var item in stage.Jobs)
+            {
+                if (item.DataProviderJobId == job.DataProviderJobId)
+                    item.Status = job.Status;
+            }
+
+            foreach (var item in project.Pipelines.SelectMany(p => p.Stages))
+            {
+                if(item.Id == stage.Id)
+                    item.StageStatus = provider.RecalculateStageStatus(stage.Jobs);
+            }
         }
     }
 }

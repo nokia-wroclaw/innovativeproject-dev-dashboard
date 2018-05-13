@@ -32,6 +32,12 @@ namespace Dashboard.Data.Context
             builder.Entity<Stage>(m =>
             {
                 m.HasKey(p => p.Id);
+                m.HasMany(p => p.Jobs);
+            });
+
+            builder.Entity<Job>(m =>
+            {
+                m.HasKey(p => p.Id);
             });
 
             builder.Entity<Project>(m =>
