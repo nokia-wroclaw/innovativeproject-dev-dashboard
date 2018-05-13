@@ -19,8 +19,6 @@ import { PanelApiService } from '../../panel-manager/service/api/panel-api.servi
 export class StaticBranchPanelConfigComponent implements OnInit,
 IPanelConfigComponent < StaticBranchPanel > {
 
-    createPanelUrl : string = "/api/Panel/CreateStaticBranchPanel";
-
     panel : StaticBranchPanel;
 
     branchNameControl : FormControl = new FormControl();
