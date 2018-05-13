@@ -26,11 +26,11 @@ namespace Dashboard.Application
         {
             var apiClient = new TravisClient(apiHost, apiKey);
 
-            var apiResult = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage, true, true); // -1 cuz in service pages are counted from 1
+            var (builds, totalpages) = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage, true, true);
 
-            var fullInfoPipelines = apiResult.builds.Select(MapBuildToPipeline);
+            var fullInfoPipelines = builds.Select(MapBuildToPipeline);
 
-            return (fullInfoPipelines, apiResult.totalPages);
+            return (fullInfoPipelines, totalpages);
         }
 
         public async Task<Pipeline> FetchPipelineById(string apiHost, string apiKey, string apiProjectId, int pipelineId)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using RestSharp;
 using TravisApi.Models;
 using TravisApi.Models.Responses;
@@ -34,10 +34,11 @@ namespace TravisApi
             var request = new RestRequest("build/{buildId}", Method.GET);
             request.AddUrlSegment("buildId", buildId);
 
-            if (includeJobs)
-                request.AddQueryParameter("include", "build.jobs");
-            if (includeStages)
-                request.AddQueryParameter("include", "build.stages");
+            var includeQueryParams = new List<string>();
+            if (includeJobs) includeQueryParams.Add("build.jobs");
+            if (includeStages) includeQueryParams.Add("build.stages");
+            if(includeQueryParams.Any())
+                request.AddQueryParameter("include", string.Join(",", includeQueryParams));
 
             return Client.ExecuteTaskAsync<Build>(request).EnsureSuccess();
         }
@@ -60,13 +61,13 @@ namespace TravisApi
             request.AddQueryParameter("limit", perPage.ToString());
             request.AddQueryParameter("offset", (page * perPage).ToString());
 
-            if (includeJobs)
-                request.AddQueryParameter("include", "build.jobs");
-            if (includeStages)
-                request.AddQueryParameter("include", "build.stages");
+            var includeQueryParams = new List<string>();
+            if (includeJobs) includeQueryParams.Add("build.jobs");
+            if (includeStages) includeQueryParams.Add("build.stages");
+            if (includeQueryParams.Any())
+                request.AddQueryParameter("include", string.Join(",", includeQueryParams));
 
             var response = await Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request).EnsureSuccess();
-
 
             return (response.Builds, response.Pagination.Count);
         }
