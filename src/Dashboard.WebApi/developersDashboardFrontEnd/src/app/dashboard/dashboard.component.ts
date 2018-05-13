@@ -20,38 +20,14 @@ OnDestroy {
   private updatePositionsRequestThrottle : number = 1000;
 
   gridsterOptions = {
-    lanes: 2,
+    lanes: 16,
     direction: 'vertical',
     floating: true,
     dragAndDrop: true,
     responsiveView: true,
     resizable: true,
     useCSSTransforms: true,
-    cellHeight: 175,
-    responsiveOptions: [
-      {
-        breakpoint: 'sm',
-        lanes: 3
-      }, {
-        breakpoint: 'md',
-        minWidth: 980,
-        lanes: 4,
-        dragAndDrop: true,
-        resizable: true
-      }, {
-        breakpoint: 'lg',
-        minWidth: 1400,
-        lanes: 6,
-        dragAndDrop: true,
-        resizable: true
-      }, {
-        breakpoint: 'xl',
-        minWidth: 1800,
-        lanes: 8,
-        dragAndDrop: true,
-        resizable: true
-      }
-    ]
+    cellHeight: 175
   };
 
   ngOnInit() {
