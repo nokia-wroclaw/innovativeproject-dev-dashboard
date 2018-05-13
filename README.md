@@ -19,7 +19,7 @@ Project is divided into frontend and backend. Technologies in use
 | [Angular](https://angular.io/)| [Autofac](https://autofac.org/)| [Docker](https://www.docker.com/)|
 | [Angular Material](https://material.angular.io/)| [Hangfire](https://www.hangfire.io/)| [Swagger](https://swagger.io/)|
 | [Bootstrap](https://getbootstrap.com/)| [RestSHarp](http://restsharp.org/)| [Heroku](https://www.heroku.com/)|
-| [angular2gridster](https://github.com/swiety85/angular2gridster)| [.NET Core 2.0](https://docs.microsoft.com/pl-pl/aspnet/core/)||
+| [angular2gridster](https://github.com/swiety85/angular2gridster)| [.NET Core 2.1](https://docs.microsoft.com/pl-pl/aspnet/core/)||
 
 ## Deployment
 After push to **develop** branch and **successful** Travis build, applications will be deployed to Heroku and can be accessed here:
