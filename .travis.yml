@@ -4,6 +4,7 @@ sudo: required
 notifications:
    slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
    webhooks: https://webhook.site/d3c078e7-1a7d-4bf9-9d27-ff4d19d4db8b
+   on_start: always
 env:
   - DOCKER_COMPOSE_VERSION=1.20.1
 cache:
