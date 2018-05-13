@@ -11,8 +11,6 @@ import { PanelApiService } from '../../panel-manager/service/api/panel-api.servi
 `, styleUrls: ['./../../configuration/panel.shared.css']})
 export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigComponent<RandomMemePanel> {
 
-    createPanelUrl : string = "/api/Panel/CreateMemePanel";
-
     panel : RandomMemePanel;
 
     constructor(private panelsApi : PanelApiService) {}

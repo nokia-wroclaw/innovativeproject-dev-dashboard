@@ -1,25 +1,22 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {IPanelConfigComponent} from "../panel.component";
 import {Observable} from "rxjs/Observable";
 import {LastPipelinesPanel} from "./last-pipelines";
 import { PanelApiService } from '../../panel-manager/service/api/panel-api.service';
+import { isUndefined } from 'util';
+import { Form } from '@angular/forms';
 
-@Component({template: `
-    <mat-form-field class="example-full-width">
-        <input matInput placeholder="How many last pipelines to read?" required [(ngModel)]="panel.howManyLastPipelinesToRead" name="howMany">
-    </mat-form-field>
-`, styleUrls: ['./../../configuration/panel.shared.css']})
+@Component({templateUrl: 'last-pipelines-panel-config.template.html', styleUrls: ['./../../configuration/panel.shared.css']})
 export class LastPipelinesPanelConfigComponent implements OnInit, IPanelConfigComponent<LastPipelinesPanel> {
 
-    createPanelUrl : string = "/api/Panel/CreateDynamicPipelinesPanel";
-
     panel : LastPipelinesPanel;
+
+    @ViewChild('lastPipelinesPanelForm') form: any;
 
     constructor(private panelApi : PanelApiService) {}
 
     isValid() : boolean {
-        const value = this.panel.howManyLastPipelinesToRead;
-        return value != null && (!isNaN(value) && value >= 1 && value <= 10) ;
+        return this.form.valid ;
     }
 
     setPanel(panel : any) {
@@ -33,7 +30,13 @@ export class LastPipelinesPanelConfigComponent implements OnInit, IPanelConfigCo
     }
 
     ngOnInit() {
+        if(isUndefined(this.panel.panelRegex)) {
+            this.panel.panelRegex = ".*";
+        }
 
+        if(isUndefined(this.panel.howManyLastPipelinesToRead)) {
+            this.panel.howManyLastPipelinesToRead = 2;
+        }
     }
 
 }
