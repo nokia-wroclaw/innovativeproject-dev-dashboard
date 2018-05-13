@@ -39,7 +39,21 @@ namespace Dashboard.Data.Context
                 Project = SeedProjects.ElementAt(0),
                 HowManyLastPipelinesToRead = 2,
                 PanelRegex = ".*"
-            }
+            },
+            new StaticBranchPanel()
+            {
+                Title = "Fancy Title Ember",
+                Position = new PanelPosition() {Column = 2, Row = 3, Width = 4, Height = 1},
+                Project = SeedProjects.ElementAt(1),
+                StaticBranchName = "master",
+            },
+            new DynamicPipelinesPanel() {
+                Title = "Fancy Title Dynamic Ember",
+                Position = new PanelPosition() {Column = 1, Row = 2, Width = 5, Height = 3},
+                Project = SeedProjects.ElementAt(1),
+                HowManyLastPipelinesToRead = 2,
+                PanelRegex = ".*"
+            },
         });
 
         private static List<Project> _seedProjects;
@@ -52,17 +66,36 @@ namespace Dashboard.Data.Context
                 ApiHostUrl = "https://gitlab.com",
                 ApiProjectId = "13083",
                 ApiAuthenticationToken = "6h-Xjym_EFy8DBxPDR9z",
-                CiDataUpdateCronExpression = "*/4 * * * *",
-                //StaticPipelines = new List<Pipeline>()
-                PipelinesNumber = 100,
+                CiDataUpdateCronExpression = "*/40 * * * *",
+                PipelinesNumber = 10,
                 Pipelines = new List<Pipeline>()
                 {
                     new Pipeline()
                     {
-                        DataProviderId = 21584362, // fakeid
+                        DataProviderPipelineId = 21584362, // fakeid
                         Ref = "master",
                         Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                        Status = "passed"
+                        Status = Status.Running
+                    }
+                }
+            },
+            new Project()
+            {
+                ProjectTitle = "Emberjs",
+                DataProviderName = "Travis",
+                ApiProjectId = "emberjs/ember.js",
+                ApiHostUrl = "https://api.travis-ci.org",
+                ApiAuthenticationToken = "DrIZnsWaqOgyJzMrNQnQkA",
+                CiDataUpdateCronExpression = "*/50 * * * *",
+                PipelinesNumber = 10,
+                Pipelines = new List<Pipeline>()
+                {
+                    new Pipeline()
+                    {
+                        DataProviderPipelineId = 21584362, // fakeid
+                        Ref = "master",
+                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                        Status = Status.Running
                     }
                 }
             }

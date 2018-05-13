@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dashboard.Core.Entities
+namespace TravisApi.Models
 {
-    public class Job
+    public class Repository
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Status { get; set; }
+        public string Slug { get; set; }
     }
 }

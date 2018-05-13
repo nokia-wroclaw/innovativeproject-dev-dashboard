@@ -34,11 +34,6 @@ namespace Dashboard.Data.Context
                 m.HasKey(p => p.Id);
             });
 
-            builder.Entity<Job>(m =>
-            {
-                m.HasKey(p => p.Id);
-            });
-
             builder.Entity<Project>(m =>
             {
                 m.HasKey(p => p.Id);

@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.Application", "Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.UnitTests", "Dashboard.UnitTests\Dashboard.UnitTests.csproj", "{72EBAA41-1BAB-4181-AA0D-BD7804216DE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravisApi", "TravisApi\TravisApi.csproj", "{016CB329-06FD-42FC-A7DA-117435B3E3D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		ci-docker|Any CPU = ci-docker|Any CPU
@@ -50,6 +52,12 @@ Global
 		{72EBAA41-1BAB-4181-AA0D-BD7804216DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72EBAA41-1BAB-4181-AA0D-BD7804216DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72EBAA41-1BAB-4181-AA0D-BD7804216DE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.ci-docker|Any CPU.ActiveCfg = Debug|Any CPU
+		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.ci-docker|Any CPU.Build.0 = Debug|Any CPU
+		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
