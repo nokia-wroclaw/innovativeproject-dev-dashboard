@@ -66,6 +66,7 @@ import { LastPipelinesPanelConfigComponent } from './panels/last-pipelines-panel
 import { PipelineViewComponent } from './panels/shared/pipeline-view/pipeline-view.component';
 import { NotificationService } from './snackbar/notification.service';
 import { PipelineService } from './panels/shared/pipeline-view/pipeline-service/pipeline.service';
+import { RegexValidatorDirective } from './panels/shared/validators/valid-regex.directive';
 
 const appRoutes : Routes = [
   {
@@ -105,7 +106,9 @@ const appRoutes : Routes = [
     StaticBranchPanelConfigComponent,
     LastPipelinesPanelComponent,
     LastPipelinesPanelConfigComponent,
-    PipelineViewComponent
+    PipelineViewComponent,
+    RegexValidatorDirective
+
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),
