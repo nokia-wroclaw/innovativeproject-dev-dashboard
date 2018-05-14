@@ -79,6 +79,7 @@ namespace Dashboard.Data.Context
                     }
                 }
             },
+            
             new Project()
             {
                 ProjectTitle = "Emberjs",

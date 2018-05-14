@@ -17,9 +17,14 @@ namespace Dashboard.Application.Interfaces.Services
         Task<IEnumerable<string>> SearchForBranchInProject(int projectId, string searchValue);
         Task UpdateCiDataForProjectAsync(int projectId);
 
-        void FireProjectUpdate(string providerName, object body);
-        Task WebhookFunction(string providerName, object body);
-
         Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID);
+
+        void FireJobUpdate(string providerName, object body);
+        void FirePipelineUpdate(string providerName, object body);
+        //void FireProjectUpdate(string providerName, object body);
+
+        Task WebhookJobUpdate(string providerName, object body);
+        Task WebhookPipelineUpdate(string providerName, object body);
+        //Task WebhookProjectUpdate(string providerName, object body);
     }
 }

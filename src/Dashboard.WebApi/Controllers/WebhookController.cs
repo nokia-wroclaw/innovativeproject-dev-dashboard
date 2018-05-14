@@ -14,7 +14,7 @@ using Dashboard.Application.GitLabApi;
 
 namespace Dashboard.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class WebhookController : Controller
     {
         private readonly IProjectService _projectService;
@@ -26,11 +26,29 @@ namespace Dashboard.WebApi.Controllers
 
         //api/Webhook/gitlab
         [HttpPost("{provider}")]
-        public IActionResult Post(string provider, [FromBody] object body)
+        public IActionResult JobWebhook(string provider, [FromBody] object body)
         {
-            _projectService.FireProjectUpdate(provider, body);
+            _projectService.FireJobUpdate(provider, body);
 
             return Ok();
         }
+
+        //api/Webhook/gitlab
+        [HttpPost("{provider}")]
+        public IActionResult PipelineWebhook(string provider, [FromBody] object body)
+        {
+            _projectService.FirePipelineUpdate(provider, body);
+
+            return Ok();
+        }
+
+        ////api/Webhook/gitlab
+        //[HttpPost("{provider}")]
+        //public IActionResult ProjectWebhook(string provider, [FromBody] object body)
+        //{
+        //    _projectService.FireProjectUpdate(provider, body);
+
+        //    return Ok();
+        //}
     }
 }

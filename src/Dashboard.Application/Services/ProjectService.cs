@@ -141,7 +141,7 @@ namespace Dashboard.Application.Services
             var branchNamesSet = new HashSet<string>(branchNames);
             var newestPipes = new List<Pipeline>();
             var pageCounter = 0;
-            var maxPagesToLookFor = int.Parse(_configuration["DataProviders:NewestPipelinesMaxPages"]);
+            var maxPagesToLookFor = 2;// int.Parse(_configuration["DataProviders:NewestPipelinesMaxPages"]);
             while (newestPipes.Count < howMany && pageCounter++ <= maxPagesToLookFor)
             {
                 var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
@@ -214,54 +214,52 @@ namespace Dashboard.Application.Services
         }
 
         #region Webhooks
-        public void FireProjectUpdate(string providerName, object body)
+        public void FireJobUpdate(string providerName, object body)
         {
-            BackgroundJob.Enqueue<IProjectService>(s => s.WebhookFunction(providerName, body));
+            BackgroundJob.Enqueue<IProjectService>(s => s.WebhookJobUpdate(providerName, body));
         }
 
-        public async Task WebhookFunction(string providerName, object body)
+        public void FirePipelineUpdate(string providerName, object body)
+        {
+            BackgroundJob.Enqueue<IProjectService>(s => s.WebhookPipelineUpdate(providerName, body));
+        }
+
+        //public void FireProjectUpdate(string providerName, object body)
+        //{
+        //    BackgroundJob.Enqueue<IProjectService>(s => s.WebhookProjectUpdate(providerName, body));
+        //}
+
+        public async Task WebhookJobUpdate(string providerName, object body)
         {
             var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
-            string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
+            IProviderWithJobWebhook provider = dataProvider as IProviderWithJobWebhook;
+            if (provider == null)
+                return;
+
+            await UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider);
+        }
+
+        public async Task WebhookPipelineUpdate(string providerName, object body)
+        {
+            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
+            IProviderWithPipelineWebhook provider = dataProvider as IProviderWithPipelineWebhook;
+            if (provider == null)
+                return;
+            string apiProjectId = provider.ExtractProjectIdFromPipelineWebhook(body);
 
             var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
-
-            switch (dataProvider.WhichWebhookMethod(body))
-            {
-                case WebhookType.None:
-                    await UpdateCiDataForProjectAsync(project.Id);
-                    break;
-                case WebhookType.Pipeline:
-                    IProviderWithPipelineWebhook pipelineProvider = dataProvider as IProviderWithPipelineWebhook;
-                    await UpdatePipeline(pipelineProvider.ExtractPipelineFromWebhook(body), project, dataProvider);
-                    break;
-                case WebhookType.Job:
-                    IProviderWithJobWebhook jobProvider = dataProvider as IProviderWithJobWebhook;
-                    await UpdatePipelineStage(jobProvider.ExtractJobFromWebhook(body), jobProvider);
-                    break;
-                default:
-                    break;
-            }
-
-            //IProviderWithJobWebhook provider = dataProvider as IProviderWithJobWebhook;
-            //if(provider != null)
-            //{
-            //    try
-            //    {
-            //        UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider);
-            //        await _projectRepository.UpdateAsync(project, project.Id);
-            //        await _projectRepository.SaveAsync();
-            //    }
-            //    catch (FormatException)
-            //    {
-            //        await UpdateCiDataForProjectAsync(project.Id);
-            //    }
-            //}
-            //else
-            //{
-            //    await UpdateCiDataForProjectAsync(project.Id);
-            //}
+            await UpdatePipeline(provider.ExtractPipelineFromWebhook(body), project, dataProvider);
         }
+
+        //public async Task WebhookProjectUpdate(string providerName, object body)
+        //{
+        //    var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
+        //    string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
+
+        //    var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
+
+        //    await UpdateCiDataForProjectAsync(project.Id);
+        //}
 
         private async Task UpdatePipelineStage(Job job, IProviderWithJobWebhook provider)
         {

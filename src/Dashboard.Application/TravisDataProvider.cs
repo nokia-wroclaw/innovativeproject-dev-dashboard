@@ -64,19 +64,6 @@ namespace Dashboard.Application
             return jo["repository"]["id"].Value<string>();
         }
 
-        public WebhookType WhichWebhookMethod(object body)
-        {
-            try
-            {
-                var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(body.ToString(), new SnakeJsonSerializerStrategy());
-                return WebhookType.Pipeline;
-            }
-            catch (Exception)
-            {
-                return WebhookType.None;
-            }
-        }
-
         public Pipeline ExtractPipelineFromWebhook(object body)
         {
             var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(body.ToString(), new SnakeJsonSerializerStrategy());
@@ -128,6 +115,11 @@ namespace Dashboard.Application
             }
 
             throw new InvalidEnumArgumentException($"{nameof(travisStatus)} {travisStatus}");
+        }
+
+        public string ExtractProjectIdFromPipelineWebhook(object body)
+        {
+            return GetProjectIdFromWebhookRequest(body);
         }
     }
 }

@@ -36,7 +36,6 @@ namespace Dashboard.Core.Interfaces
 
         Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue);
 
-        WebhookType WhichWebhookMethod(object body);
         string GetProjectIdFromWebhookRequest(object body);
     }
 }

@@ -136,20 +136,6 @@ namespace Dashboard.Application
             return branches;
         }
 
-        public WebhookType WhichWebhookMethod(object body)
-        {
-            var jo = (JObject)body;
-            switch (jo["object_kind"].Value<string>())
-            {
-                case "pipeline":
-                    return WebhookType.Pipeline;
-                case "build":
-                    return WebhookType.Job;
-                default:
-                    return WebhookType.None;
-            }
-        }
-
         public string GetProjectIdFromWebhookRequest(object body)
         {
             var jo = (JObject)body;
@@ -169,6 +155,11 @@ namespace Dashboard.Application
         public Status RecalculateStageStatus(ICollection<Job> jobs)
         {
             return CalculateStageStatus(jobs);
+        }
+
+        public string ExtractProjectIdFromPipelineWebhook(object body)
+        {
+            return ((JObject)body)["project"]["id"].Value<string>();
         }
 
         public Pipeline ExtractPipelineFromWebhook(object body)
