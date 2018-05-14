@@ -2,7 +2,10 @@ language: csharp
 mono: none
 sudo: required
 notifications:
-   webhooks: https://webhook.site/d3c078e7-1a7d-4bf9-9d27-ff4d19d4db8b
+   webhooks:
+      urls:
+      - https://webhook.site/d3c078e7-1a7d-4bf9-9d27-ff4d19d4db8b
+      - https://agile-beach-74761.herokuapp.com/api/Webhook/PipelineWebhook/travis
    on_success: always # default: always
    on_failure: always # default: always
    on_start: always   # default: never
