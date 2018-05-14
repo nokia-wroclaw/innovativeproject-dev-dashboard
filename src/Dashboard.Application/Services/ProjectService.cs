@@ -136,24 +136,21 @@ namespace Dashboard.Application.Services
             return r;
         }
 
-        private async Task<IEnumerable<Pipeline>> DownloadNewestPipelinesNotInBrancNameList(ICiDataProvider dataProvider, Project project, int howMany, IEnumerable<string> branchNames)
+        private async Task DownloadNewestPipelinesNotInBrancNameList(ICiDataProvider dataProvider, Project project, int howMany, IEnumerable<string> branchNames, PipelinesMerger merger)
         {
             var branchNamesSet = new HashSet<string>(branchNames);
-            var newestPipes = new List<Pipeline>();
             var pageCounter = 0;
-            var maxPagesToLookFor = 2;// int.Parse(_configuration["DataProviders:NewestPipelinesMaxPages"]);
-            while (newestPipes.Count < howMany && pageCounter++ <= maxPagesToLookFor)
+            var maxPagesToLookFor = int.Parse(_configuration["DataProviders:NewestPipelinesMaxPages"]);
+            while (merger.NewestPipelinesCount < howMany && pageCounter++ <= maxPagesToLookFor)
             {
                 var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
                 var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNamesSet.Contains(p.Ref));
 
-                newestPipes.AddRange(pagePipelinesNotInLocalStatic);
+                merger.AddPipelinesPageAtEnd(pagePipelinesNotInLocalStatic);
 
                 if (pageCounter >= pagedNewest.totalPages) //If last page
                     break;
             }
-
-            return newestPipes;
         }
 
         /// <summary>
@@ -166,22 +163,21 @@ namespace Dashboard.Application.Services
             var project = await GetProjectByIdAsync(projectId);
             if (project == null) return;
 
+            PipelinesMerger merger = new PipelinesMerger();
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
             var staticBranchesNamesDb = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(projectId);
             var staticBranchesPipelines = await Task.WhenAll(staticBranchesNamesDb.Select(b => dataProvider.FetchPipeLineByBranch(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b)));
 
             var targetPipelineNumber = project.PipelinesNumber - project.Pipelines.Count;
-            var newestPipes = await DownloadNewestPipelinesNotInBrancNameList(dataProvider, project, targetPipelineNumber, staticBranchesNamesDb);
+            await DownloadNewestPipelinesNotInBrancNameList(dataProvider, project, targetPipelineNumber, staticBranchesNamesDb, merger);
 
             //Merge
+            var mergeResult = merger.MergePipelines(project.Pipelines, staticBranchesPipelines, project.PipelinesNumber);
             _pipelineRepository.DeleteRange(project.Pipelines);
-            var pipesList = new List<Pipeline>();
-            pipesList.AddRange(staticBranchesPipelines);
-            pipesList.AddRange(newestPipes);
 
             //Save update to DB
-            project.Pipelines = pipesList.Take(project.PipelinesNumber).ToList();
+            project.Pipelines = mergeResult.ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
@@ -236,7 +232,7 @@ namespace Dashboard.Application.Services
             if (provider == null)
                 return;
 
-            await UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider);
+            await UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider, providerName);
         }
 
         public async Task WebhookPipelineUpdate(string providerName, object body)
@@ -248,7 +244,7 @@ namespace Dashboard.Application.Services
             string apiProjectId = provider.ExtractProjectIdFromPipelineWebhook(body);
 
             var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
-            await UpdatePipeline(provider.ExtractPipelineFromWebhook(body), project, dataProvider);
+            await UpdatePipeline(provider.ExtractPipelineFromWebhook(body), project, dataProvider, providerName);
         }
 
         //public async Task WebhookProjectUpdate(string providerName, object body)
@@ -261,7 +257,7 @@ namespace Dashboard.Application.Services
         //    await UpdateCiDataForProjectAsync(project.Id);
         //}
 
-        private async Task UpdatePipelineStage(Job job, IProviderWithJobWebhook provider)
+        private async Task UpdatePipelineStage(Job job, IProviderWithJobWebhook provider, string providerName)
         {
             var repoJob = await _jobRepository.FindOneByAsync(j => j.DataProviderJobId == job.DataProviderJobId);
             if (repoJob == null)
@@ -276,7 +272,7 @@ namespace Dashboard.Application.Services
             await _stageRepository.SaveAsync();
         }
 
-        private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider)
+        private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider, string providerName)
         {
             var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
             if(repoPipeline == null)

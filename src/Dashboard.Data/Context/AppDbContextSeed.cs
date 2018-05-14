@@ -65,7 +65,7 @@ namespace Dashboard.Data.Context
                 DataProviderName = "GitLab",
                 ApiHostUrl = "https://gitlab.com",
                 ApiProjectId = "13083",
-                ApiAuthenticationToken = "6h-Xjym_EFy8DBxPDR9z",
+                ApiAuthenticationToken = "_3xydmKE2tpyWFVWgw7c",
                 CiDataUpdateCronExpression = "*/40 * * * *",
                 PipelinesNumber = 10,
                 Pipelines = new List<Pipeline>()
@@ -79,7 +79,6 @@ namespace Dashboard.Data.Context
                     }
                 }
             },
-            
             new Project()
             {
                 ProjectTitle = "Emberjs",

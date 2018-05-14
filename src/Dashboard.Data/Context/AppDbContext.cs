@@ -8,6 +8,8 @@ namespace Dashboard.Data.Context
     {
         public DbSet<Pipeline> Pipelines { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<Stage> Stages { get; set; }
+        public DbSet<Job> Jobs { get; set; }
 
         public DbSet<Panel> Panels { get; set; }
         public DbSet<MemePanel> MemePanels { get; set; }
