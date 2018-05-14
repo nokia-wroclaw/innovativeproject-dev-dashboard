@@ -7,17 +7,18 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dashboard.Application.GitLabApi;
-using GitLabModel = Dashboard.Application.GitLabApi.Models;
+using GitLabModel = Dashboard.Application.GitLabApi.Models.Webhooks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Dashboard.Core.Interfaces.WebhookProviders;
 
 namespace Dashboard.Application
 {
-    public class GitLabDataProvider : ICiDataProvider, IProviderWithJobWebhook
+    public class GitLabDataProvider : ICiDataProvider, IProviderWithJobWebhook, IProviderWithPipelineWebhook
     {
         public string Name => "GitLab";
 
@@ -135,6 +136,20 @@ namespace Dashboard.Application
             return branches;
         }
 
+        public WebhookType WhichWebhookMethod(object body)
+        {
+            var jo = (JObject)body;
+            switch (jo["object_kind"].Value<string>())
+            {
+                case "pipeline":
+                    return WebhookType.Pipeline;
+                case "build":
+                    return WebhookType.Job;
+                default:
+                    return WebhookType.None;
+            }
+        }
+
         public string GetProjectIdFromWebhookRequest(object body)
         {
             var jo = (JObject)body;
@@ -147,8 +162,6 @@ namespace Dashboard.Application
         public Job ExtractJobFromWebhook(object body)
         {
             var gitlabJob = SimpleJson.SimpleJson.DeserializeObject<GitLabModel.JobWebhook>(body.ToString(), new SnakeJsonSerializerStrategy());
-            if (gitlabJob.ObjectKind != "build")
-                throw new FormatException("GitLab JobWebhook invalid format");
 
             return new Job() { DataProviderJobId = gitlabJob.BuildId, Status = MapGitlabStatus(gitlabJob.BuildStatus), StageName = gitlabJob.BuildStage };
         }
@@ -156,6 +169,19 @@ namespace Dashboard.Application
         public Status RecalculateStageStatus(ICollection<Job> jobs)
         {
             return CalculateStageStatus(jobs);
+        }
+
+        public Pipeline ExtractPipelineFromWebhook(object body)
+        {
+            var attributes = SimpleJson.SimpleJson.DeserializeObject<GitLabModel.PipelineWebhook>(body.ToString(), new SnakeJsonSerializerStrategy()).ObjectAttributes;
+
+            return new Pipeline()
+            {
+                DataProviderPipelineId = attributes.Id,
+                Ref = attributes.Ref,
+                Sha = attributes.Sha,
+                Status = MapGitlabStatus(attributes.Status)
+            };
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dashboard.Application.GitLabApi.Models
+namespace Dashboard.Application.GitLabApi.Models.Webhooks
 {
     public class JobWebhook
     {

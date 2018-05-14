@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dashboard.Core.Interfaces
+namespace Dashboard.Core.Interfaces.WebhookProviders
 {
     public interface IProviderWithJobWebhook
     {

@@ -41,7 +41,7 @@ namespace Dashboard.Core.Entities
 
         public async Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository)
         {
-            return new List<Pipeline> { Project.Pipelines.LastOrDefault(p => p.Ref.Equals(StaticBranchName)) };
+            return new List<Pipeline> { Project.Pipelines.FirstOrDefault(p => p.Ref.Equals(StaticBranchName)) };
         }
     }
 
@@ -57,7 +57,7 @@ namespace Dashboard.Core.Entities
             int projID = ProjectId ?? -1;
             if (projID == -1) return new List<Pipeline>();
 
-            return Project.Pipelines.Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Select(p => p).TakeLast(HowManyLastPipelinesToRead);
+            return Project.Pipelines.Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Select(p => p).Take(HowManyLastPipelinesToRead);
         }
     }
 

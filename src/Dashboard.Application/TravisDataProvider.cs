@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
+using Dashboard.Core.Interfaces.WebhookProviders;
 using Newtonsoft.Json.Linq;
 using TravisApi;
 using TravisApi.Models;
+using TravisApi.Models.Responses;
 using Stage = Dashboard.Core.Entities.Stage;
 
 namespace Dashboard.Application
@@ -18,7 +20,7 @@ namespace Dashboard.Application
      *   Stages
      *      Jobs
      */
-    public class TravisDataProvider : ICiDataProvider
+    public class TravisDataProvider : ICiDataProvider, IProviderWithPipelineWebhook
     {
         public string Name => "Travis";
 
@@ -58,7 +60,27 @@ namespace Dashboard.Application
 
         public string GetProjectIdFromWebhookRequest(object body)
         {
-            throw new NotImplementedException();
+            var jo = (JObject)body;
+            return jo["repository"]["id"].Value<string>();
+        }
+
+        public WebhookType WhichWebhookMethod(object body)
+        {
+            try
+            {
+                var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(body.ToString(), new SnakeJsonSerializerStrategy());
+                return WebhookType.Pipeline;
+            }
+            catch (Exception)
+            {
+                return WebhookType.None;
+            }
+        }
+
+        public Pipeline ExtractPipelineFromWebhook(object body)
+        {
+            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(body.ToString(), new SnakeJsonSerializerStrategy());
+            return new Pipeline() { DataProviderPipelineId = travisWebhookResponse.Id };
         }
 
         private Pipeline MapBuildToPipeline(Build b)
@@ -107,6 +129,5 @@ namespace Dashboard.Application
 
             throw new InvalidEnumArgumentException($"{nameof(travisStatus)} {travisStatus}");
         }
-
     }
 }

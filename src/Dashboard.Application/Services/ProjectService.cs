@@ -13,6 +13,7 @@ using System;
 using Dashboard.Application.Validators;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using Dashboard.Core.Interfaces.WebhookProviders;
 
 namespace Dashboard.Application.Services
 {
@@ -146,7 +147,7 @@ namespace Dashboard.Application.Services
                 var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
                 var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNamesSet.Contains(p.Ref));
 
-                newestPipes.InsertRange(0, pagePipelinesNotInLocalStatic);
+                newestPipes.AddRange(pagePipelinesNotInLocalStatic);
 
                 if (pageCounter >= pagedNewest.totalPages) //If last page
                     break;
@@ -188,6 +189,31 @@ namespace Dashboard.Application.Services
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
 
+        public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
+        {
+            var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
+            var pipes = await panel.GetPipelinesDTOForPanel(_projectRepository);
+            return pipes;
+        }
+
+        private async Task InsertPipelineToDB(Pipeline pipeline, Project project)
+        {
+            var staticBranchesNamesDb = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+            if(staticBranchesNamesDb.Contains(pipeline.Ref))
+            {
+                //Insert at beginning
+                project.Pipelines.ToList().Insert(0, pipeline);
+            }
+            else
+            {
+                //Insert after statics, on start of dynamics
+                project.Pipelines.ToList().Insert(staticBranchesNamesDb.Count(), pipeline);
+            }
+            await _projectRepository.UpdateAsync(project, project.Id);
+            await _projectRepository.SaveAsync();
+        }
+
+        #region Webhooks
         public void FireProjectUpdate(string providerName, object body)
         {
             BackgroundJob.Enqueue<IProjectService>(s => s.WebhookFunction(providerName, body));
@@ -199,35 +225,45 @@ namespace Dashboard.Application.Services
             string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
 
             var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
-            
-            IProviderWithJobWebhook provider = dataProvider as IProviderWithJobWebhook;
-            if(provider != null)
+
+            switch (dataProvider.WhichWebhookMethod(body))
             {
-                try
-                {
-                    UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider);
-                    await _projectRepository.UpdateAsync(project, project.Id);
-                    await _projectRepository.SaveAsync();
-                }
-                catch (FormatException)
-                {
+                case WebhookType.None:
                     await UpdateCiDataForProjectAsync(project.Id);
-                }
+                    break;
+                case WebhookType.Pipeline:
+                    IProviderWithPipelineWebhook pipelineProvider = dataProvider as IProviderWithPipelineWebhook;
+                    await UpdatePipeline(pipelineProvider.ExtractPipelineFromWebhook(body), project, dataProvider);
+                    break;
+                case WebhookType.Job:
+                    IProviderWithJobWebhook jobProvider = dataProvider as IProviderWithJobWebhook;
+                    await UpdatePipelineStage(jobProvider.ExtractJobFromWebhook(body), jobProvider);
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                await UpdateCiDataForProjectAsync(project.Id);
-            }
+
+            //IProviderWithJobWebhook provider = dataProvider as IProviderWithJobWebhook;
+            //if(provider != null)
+            //{
+            //    try
+            //    {
+            //        UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider);
+            //        await _projectRepository.UpdateAsync(project, project.Id);
+            //        await _projectRepository.SaveAsync();
+            //    }
+            //    catch (FormatException)
+            //    {
+            //        await UpdateCiDataForProjectAsync(project.Id);
+            //    }
+            //}
+            //else
+            //{
+            //    await UpdateCiDataForProjectAsync(project.Id);
+            //}
         }
 
-        public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
-        {
-            var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
-            var pipes = await panel.GetPipelinesDTOForPanel(_projectRepository);
-            return pipes;
-        }
-
-        private async void UpdatePipelineStage(Job job, IProviderWithJobWebhook provider)
+        private async Task UpdatePipelineStage(Job job, IProviderWithJobWebhook provider)
         {
             var repoJob = await _jobRepository.FindOneByAsync(j => j.DataProviderJobId == job.DataProviderJobId);
             if (repoJob == null)
@@ -241,5 +277,24 @@ namespace Dashboard.Application.Services
             await _stageRepository.UpdateAsync(repoStage, repoStage.Id);
             await _stageRepository.SaveAsync();
         }
+
+        private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider)
+        {
+            var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
+            if(repoPipeline == null)
+            {
+                //Add new to db
+                repoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
+                await InsertPipelineToDB(repoPipeline, project);
+            }
+            else
+            {
+                repoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
+                await _pipelineRepository.UpdateAsync(repoPipeline, repoPipeline.Id);
+                await _pipelineRepository.SaveAsync();
+            }
+        }
+
+        #endregion
     }
 }
