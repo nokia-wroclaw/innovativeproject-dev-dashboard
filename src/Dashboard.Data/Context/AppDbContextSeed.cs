@@ -81,6 +81,26 @@ namespace Dashboard.Data.Context
             },
             new Project()
             {
+                ProjectTitle = "ourProjectTest",
+                DataProviderName = "GitLab",
+                ApiHostUrl = "https://gitlab.com",
+                ApiProjectId = "6040381",
+                ApiAuthenticationToken = "QyRj5LynKFppMjrLPWQY",
+                CiDataUpdateCronExpression = "*/40 * * * *",
+                PipelinesNumber = 10,
+                Pipelines = new List<Pipeline>()
+                {
+                    new Pipeline()
+                    {
+                        DataProviderPipelineId = 21584362, // fakeid
+                        Ref = "master",
+                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                        Status = Status.Running
+                    }
+                }
+            },
+            new Project()
+            {
                 ProjectTitle = "Emberjs",
                 DataProviderName = "Travis",
                 ApiProjectId = "emberjs/ember.js",

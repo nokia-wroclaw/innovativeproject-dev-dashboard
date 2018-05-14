@@ -10,7 +10,11 @@ namespace Dashboard.Core.Interfaces
     public interface IProviderWithJobWebhook
     {
         Status RecalculateStageStatus(ICollection<Job> jobs);
-        Job ExtractJobFromWebhook(JObject body);
-        //Task<IEnumerable<Stage>> ExtractUpdatedJobInfo(string apiHost, string apiKey, string apiProjectId, JObject body, IEnumerable<Stage> projectStages);
+        /// <summary>
+        /// Should throw FormatException if body can't be parsed to Job
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        Job ExtractJobFromWebhook(object body);
     }
 }

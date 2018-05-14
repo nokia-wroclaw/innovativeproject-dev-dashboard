@@ -56,7 +56,7 @@ namespace Dashboard.Application
             throw new NotImplementedException();
         }
 
-        public string GetProjectIdFromWebhookRequest(JObject body)
+        public string GetProjectIdFromWebhookRequest(object body)
         {
             throw new NotImplementedException();
         }

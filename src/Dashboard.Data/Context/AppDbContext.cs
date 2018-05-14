@@ -32,12 +32,15 @@ namespace Dashboard.Data.Context
             builder.Entity<Stage>(m =>
             {
                 m.HasKey(p => p.Id);
-                m.HasMany(p => p.Jobs);
+                m.HasMany(s => s.Jobs)
+                    .WithOne(j => j.Stage)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Job>(m =>
             {
                 m.HasKey(p => p.Id);
+                m.HasOne(p => p.Stage).WithMany(p => p.Jobs);
             });
 
             builder.Entity<Project>(m =>

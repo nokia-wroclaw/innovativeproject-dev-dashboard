@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using GitLabModel = Dashboard.Application.GitLabApi.Models;
+using Dashboard.Application.GitLabApi;
 
 namespace Dashboard.WebApi.Controllers
 {
@@ -24,7 +26,7 @@ namespace Dashboard.WebApi.Controllers
 
         //api/Webhook/gitlab
         [HttpPost("{provider}")]
-        public IActionResult Post(string provider, [FromBody] JObject body)
+        public IActionResult Post(string provider, [FromBody] object body)
         {
             _projectService.FireProjectUpdate(provider, body);
 

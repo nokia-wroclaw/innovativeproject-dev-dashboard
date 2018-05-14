@@ -29,6 +29,8 @@ namespace Dashboard.Application.Services
         private readonly IPanelRepository _panelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly IConfiguration _configuration;
+        private readonly IStageRepository _stageRepository;
+        private readonly IJobRepository _jobRepository;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
@@ -39,7 +41,9 @@ namespace Dashboard.Application.Services
             IPanelRepository panelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
             IConfiguration configuration,
-            ILogger<ProjectService> logger)
+            ILogger<ProjectService> logger,
+            IStageRepository stageRepository,
+            IJobRepository jobRepository)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
             _cronJobsManager = cronJobsManager;
@@ -50,6 +54,8 @@ namespace Dashboard.Application.Services
             _staticBranchPanelRepository = staticBranchPanelRepository;
             _configuration = configuration;
             _logger = logger;
+            _stageRepository = stageRepository;
+            _jobRepository = jobRepository;
         }
 
         public Task<Project> GetProjectByIdAsync(int id)
@@ -182,26 +188,33 @@ namespace Dashboard.Application.Services
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
 
-        public void FireProjectUpdate(string providerName, JObject body)
+        public void FireProjectUpdate(string providerName, object body)
         {
             BackgroundJob.Enqueue<IProjectService>(s => s.WebhookFunction(providerName, body));
         }
 
-        public async Task WebhookFunction(string providerName, JObject body)
+        public async Task WebhookFunction(string providerName, object body)
         {
             var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
             string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
 
             var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
-
-            try
+            
+            IProviderWithJobWebhook provider = dataProvider as IProviderWithJobWebhook;
+            if(provider != null)
             {
-                IProviderWithJobWebhook provider = (IProviderWithJobWebhook) dataProvider;
-                UpdatePipelineStage(ref project, provider.ExtractJobFromWebhook(body), provider);
-                await _projectRepository.UpdateAsync(project, project.Id);
-                await _projectRepository.SaveAsync();
+                try
+                {
+                    UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider);
+                    await _projectRepository.UpdateAsync(project, project.Id);
+                    await _projectRepository.SaveAsync();
+                }
+                catch (FormatException)
+                {
+                    await UpdateCiDataForProjectAsync(project.Id);
+                }
             }
-            catch (Exception)
+            else
             {
                 await UpdateCiDataForProjectAsync(project.Id);
             }
@@ -214,23 +227,19 @@ namespace Dashboard.Application.Services
             return pipes;
         }
 
-        private void UpdatePipelineStage(ref Project project, Job job, IProviderWithJobWebhook provider)
+        private async void UpdatePipelineStage(Job job, IProviderWithJobWebhook provider)
         {
-            var queryablePipelines = project.Pipelines.AsQueryable();
-            var queryableStages = project.Pipelines.AsQueryable().SelectMany(p => p.Stages.AsQueryable().Select(s => s));
-            var stage = queryableStages.FirstOrDefault(s => s.StageName.Equals(job.Stage));
-            var pipeline = queryablePipelines.FirstOrDefault(p => p.Stages.Contains(stage));
-            foreach (var item in stage.Jobs)
-            {
-                if (item.DataProviderJobId == job.DataProviderJobId)
-                    item.Status = job.Status;
-            }
+            var repoJob = await _jobRepository.FindOneByAsync(j => j.DataProviderJobId == job.DataProviderJobId);
+            if (repoJob == null)
+                return;
+            repoJob.Status = job.Status;
+            await _jobRepository.UpdateAsync(repoJob, repoJob.Id);
+            await _jobRepository.SaveAsync();
 
-            foreach (var item in project.Pipelines.SelectMany(p => p.Stages))
-            {
-                if(item.Id == stage.Id)
-                    item.StageStatus = provider.RecalculateStageStatus(stage.Jobs);
-            }
+            var repoStage = repoJob.Stage;
+            repoStage.StageStatus = provider.RecalculateStageStatus(repoStage.Jobs);
+            await _stageRepository.UpdateAsync(repoStage, repoStage.Id);
+            await _stageRepository.SaveAsync();
         }
     }
 }

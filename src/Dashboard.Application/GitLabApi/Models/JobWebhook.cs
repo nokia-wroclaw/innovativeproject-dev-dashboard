@@ -15,8 +15,8 @@ namespace Dashboard.Application.GitLabApi.Models
         public string BuildName { get; set; }
         public string BuildStage { get; set; }
         public string BuildStatus { get; set; }
-        public DateTime? BuildStartedAt { get; set; }
-        public DateTime? BuildFinishedAt { get; set; }
+        //public DateTime? BuildStartedAt { get; set; }
+        //public DateTime? BuildFinishedAt { get; set; }
         public double? BuildDuration { get; set; }
         public bool BuildAllowFailure { get; set; }
         public int ProjectId { get; set; }

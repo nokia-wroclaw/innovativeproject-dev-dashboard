@@ -12,6 +12,8 @@ using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Dashboard.Application
 {
@@ -59,7 +61,7 @@ namespace Dashboard.Application
                     {
                         StageName = stage.Key,
                         StageStatus = CalculateStageStatus(stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status) }).ToList()),
-                        Jobs = stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status), Stage = p.Stage }).ToList()
+                        Jobs = stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status), StageName = p.Stage }).ToList()
                     });
 
             return stages;
@@ -133,15 +135,22 @@ namespace Dashboard.Application
             return branches;
         }
 
-        public string GetProjectIdFromWebhookRequest(JObject body)
+        public string GetProjectIdFromWebhookRequest(object body)
         {
-            return body["project"]["id"].Value<string>();
+            var jo = (JObject)body;
+            if (jo["object_kind"].Value<string>().Equals("build"))
+                return jo["project_id"].Value<string>();
+            else
+                return jo["project"]["id"].Value<string>();
         }
 
-        public Job ExtractJobFromWebhook(JObject body)
+        public Job ExtractJobFromWebhook(object body)
         {
-            var gitlabJob = body.ToObject<GitLabModel.Job>();
-            return new Job() { DataProviderJobId = gitlabJob.Id, Status = MapGitlabStatus(gitlabJob.Status) };
+            var gitlabJob = SimpleJson.SimpleJson.DeserializeObject<GitLabModel.JobWebhook>(body.ToString(), new SnakeJsonSerializerStrategy());
+            if (gitlabJob.ObjectKind != "build")
+                throw new FormatException("GitLab JobWebhook invalid format");
+
+            return new Job() { DataProviderJobId = gitlabJob.BuildId, Status = MapGitlabStatus(gitlabJob.BuildStatus), StageName = gitlabJob.BuildStage };
         }
 
         public Status RecalculateStageStatus(ICollection<Job> jobs)
