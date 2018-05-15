@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.WebhookProviders;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using TravisApi;
 using TravisApi.Models;
@@ -60,13 +62,15 @@ namespace Dashboard.Application
 
         public string GetProjectIdFromWebhookRequest(object body)
         {
-            var jo = (JObject)body;
-            return jo["repository"]["id"].Value<string>();
+            var collection = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(body.ToString(), new SnakeJsonSerializerStrategy());
+            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(collection["payload"], new SnakeJsonSerializerStrategy());
+            return travisWebhookResponse.Repository.Id.ToString();
         }
 
         public Pipeline ExtractPipelineFromWebhook(object body)
         {
-            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(body.ToString(), new SnakeJsonSerializerStrategy());
+            var collection = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(body.ToString(), new SnakeJsonSerializerStrategy());
+            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(collection["payload"].ToString(), new SnakeJsonSerializerStrategy());
             return new Pipeline() { DataProviderPipelineId = travisWebhookResponse.Id };
         }
 
@@ -119,7 +123,10 @@ namespace Dashboard.Application
 
         public string ExtractProjectIdFromPipelineWebhook(object body)
         {
-            return GetProjectIdFromWebhookRequest(body);
+            //return GetProjectIdFromWebhookRequest(body);
+            var collection = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(body.ToString(), new SnakeJsonSerializerStrategy());
+            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(collection["payload"], new SnakeJsonSerializerStrategy());
+            return travisWebhookResponse.Repository.Id.ToString();
         }
     }
 }

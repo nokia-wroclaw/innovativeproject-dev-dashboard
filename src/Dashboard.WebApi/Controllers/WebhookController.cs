@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using GitLabModel = Dashboard.Application.GitLabApi.Models;
 using Dashboard.Application.GitLabApi;
+using System.Collections.Specialized;
 
 namespace Dashboard.WebApi.Controllers
 {
@@ -38,6 +39,23 @@ namespace Dashboard.WebApi.Controllers
         public IActionResult PipelineWebhook(string provider, [FromBody] object body)
         {
             _projectService.FirePipelineUpdate(provider, body);
+
+            return Ok();
+        }
+
+        //api/Webhook/gitlab
+        [HttpPost("{provider}")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IActionResult FormPipelineWebhook(string provider)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            foreach (var key in Request.Form.Keys)
+            {
+                var value = Request.Form[key];
+                dict.Add(key, value);
+            }
+
+            _projectService.FirePipelineUpdate(provider, dict);
 
             return Ok();
         }
