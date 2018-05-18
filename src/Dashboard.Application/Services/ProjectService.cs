@@ -195,16 +195,18 @@ namespace Dashboard.Application.Services
         private async Task InsertPipelineToDB(Pipeline pipeline, Project project)
         {
             var staticBranchesNamesDb = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+            List<Pipeline> projectPipelines = new List<Pipeline>(project.Pipelines);
             if(staticBranchesNamesDb.Contains(pipeline.Ref))
             {
                 //Insert at beginning
-                project.Pipelines.ToList().Insert(0, pipeline);
+                projectPipelines.Insert(0, pipeline);
             }
             else
             {
                 //Insert after statics, on start of dynamics
-                project.Pipelines.ToList().Insert(staticBranchesNamesDb.Count(), pipeline);
+                projectPipelines.Insert(staticBranchesNamesDb.Count(), pipeline);
             }
+            project.Pipelines = projectPipelines.Take(project.PipelinesNumber).ToList();
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
         }
@@ -275,16 +277,18 @@ namespace Dashboard.Application.Services
         private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider, string providerName)
         {
             var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
-            if(repoPipeline == null)
+            if (repoPipeline == null)
             {
                 //Add new to db
-                repoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
-                await InsertPipelineToDB(repoPipeline, project);
+                var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
+                //newRepoPipeline.Id = repoPipeline.Id;
+                await InsertPipelineToDB(newRepoPipeline, project);
             }
             else
             {
-                repoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
-                await _pipelineRepository.UpdateAsync(repoPipeline, repoPipeline.Id);
+                var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
+                newRepoPipeline.Id = repoPipeline.Id;
+                await _pipelineRepository.UpdateAsync(newRepoPipeline, repoPipeline.Id);
                 await _pipelineRepository.SaveAsync();
             }
         }
