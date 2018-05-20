@@ -12,10 +12,11 @@ import {PanelApiService} from '../../panel-manager/service/api/panel-api.service
 import {NotificationService, NotificationType} from '../../snackbar/notification.service';
 import {isDefined} from '@angular/compiler/src/util';
 import {isUndefined} from 'util';
+import { failureMessages, FailureMessage, successMessages, SuccessMessage } from '../../snackbar/notification-messages';
 
 @Component({
   templateUrl: './panel-configuration.component.html',
-  styleUrls: ['./panel-configuration.component.css', './../panel.shared.css']
+  styleUrls: ['./../panel.shared.css']
 })
 export class PanelConfigurationComponent implements OnInit,
 OnDestroy {
@@ -114,14 +115,19 @@ OnDestroy {
       this
         .panelSpecificConfiguration
         .postPanel(this.editMode)
-        .subscribe(response => {
-          console.log(response);
-          // TODO this.panelManager.updatePanels();
+        .subscribe(success => {
+
+          const message = successMessages.get(SuccessMessage.PANEL_SAVED);
+
+          this
+            .notificationService
+            .addNotification(message, NotificationType.Success);
+
           this
             .router
             .navigate(['/']);
         }, error => {
-          var message = "Couldn't save the form";
+          var message = failureMessages.get(FailureMessage.FORM_SAVE_FAILED);
           if (error.error != undefined && error.error.errors != undefined && error.error.errors.length > 0 && error.error.errors[0].errorMessage != undefined) {
             message = error.error.errors[0].errorMessage;
           }
@@ -134,7 +140,7 @@ OnDestroy {
     } else {
       this
         .notificationService
-        .addNotification('Panel specific configuration is invalid.', NotificationType.Failure);
+        .addNotification(failureMessages.get(FailureMessage.INVALID_SPECIFIC_CONFIGURATION), NotificationType.Failure);
     }
   }
 
