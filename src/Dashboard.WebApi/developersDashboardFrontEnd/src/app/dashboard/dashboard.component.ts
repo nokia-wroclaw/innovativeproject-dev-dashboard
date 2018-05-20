@@ -4,12 +4,14 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {PanelManagerService} from './../panel-manager/service/panel-manager.service';
 import {Panel, PanelPositionUpdateItem} from "../panel-manager/panel";
 import {AdminModeService} from "./admin-mode-service/admin-mode.service";
+import {NotificationService, NotificationType} from '../snackbar/notification.service';
+import { FailureMessage, failureMessages } from '../snackbar/notification-messages';
 
 @Component({selector: 'app-dashboard', templateUrl: './dashboard.component.html', styleUrls: ['./dashboard.component.css']})
 export class DashboardComponent implements OnInit,
 OnDestroy {
 
-  constructor(private adminModeService : AdminModeService, private panelManagerService : PanelManagerService, private route : ActivatedRoute, private _router : Router) {}
+  constructor(private adminModeService : AdminModeService, private panelManagerService : PanelManagerService, private route : ActivatedRoute, private _router : Router, private notificationService : NotificationService) {}
 
   panels : Panel[];
 
@@ -34,7 +36,8 @@ OnDestroy {
     this
       .panelManagerService
       .getPanels()
-      .subscribe(panels => this.panels = panels);
+      .subscribe(panels => this.panels = panels, 
+        error => this.notificationService.addNotification(failureMessages.get(FailureMessage.FETCH_PANELS_FAILED) + ": " + error.statusText, NotificationType.Failure));
 
     this
       .adminModeService
