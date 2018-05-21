@@ -57,7 +57,7 @@ namespace Dashboard.Core.Entities
             int projID = ProjectId ?? -1;
             if (projID == -1) return new List<Pipeline>();
 
-            return Project.Pipelines.Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Select(p => p).Take(HowManyLastPipelinesToRead);
+            return Project.Pipelines.OrderByDescending(p => p.LastUpdate).Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Select(p => p).Take(HowManyLastPipelinesToRead);
         }
     }
 
