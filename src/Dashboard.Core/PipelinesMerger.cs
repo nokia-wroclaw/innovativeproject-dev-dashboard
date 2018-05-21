@@ -39,10 +39,23 @@ namespace Dashboard.Core
             {
                 newestPipelines.AddRange(pipelines);
             }
+            //Newest pipelines on beginning, they need "newer" dateTime
+            for (int i = newestPipelines.Count - 1; i >= 0; i--)
+            {
+                newestPipelines[i].LastUpdate = DateTime.Now;
+            }
+
+            DateTime nowForStatic = DateTime.Now;
+            foreach (var item in staticPipelines)
+            {
+                item.LastUpdate = nowForStatic;
+            }
 
             List<Pipeline> result = new List<Pipeline>(staticPipelines);
             result.AddRange(newestPipelines);
             result.AddRange(existingCollection);
+
+            result.OrderByDescending(p => p.LastUpdate);
 
             return result.Take(howManyToReturn);
         }

@@ -173,8 +173,14 @@ namespace Dashboard.Application.Services
             await DownloadNewestPipelinesNotInBrancNameList(dataProvider, project, targetPipelineNumber, staticBranchesNamesDb, merger);
 
             //Merge
+            var existing = project.Pipelines;
             var mergeResult = merger.MergePipelines(project.Pipelines, staticBranchesPipelines, project.PipelinesNumber);
-            _pipelineRepository.DeleteRange(project.Pipelines);
+
+            var intersect = existing.Intersect(mergeResult);
+            var sum = existing.Union(mergeResult);
+            var toDelete = sum.Except(mergeResult);
+
+            _pipelineRepository.DeleteRange(toDelete);//project.Pipelines);
 
             //Save update to DB
             project.Pipelines = mergeResult.ToList();
@@ -272,6 +278,8 @@ namespace Dashboard.Application.Services
             repoStage.StageStatus = provider.RecalculateStageStatus(repoStage.Jobs);
             await _stageRepository.UpdateAsync(repoStage, repoStage.Id);
             await _stageRepository.SaveAsync();
+
+            //TODO Update pipeline LastUpdate property
         }
 
         private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider, string providerName)
@@ -281,13 +289,14 @@ namespace Dashboard.Application.Services
             {
                 //Add new to db
                 var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
-                //newRepoPipeline.Id = repoPipeline.Id;
+                newRepoPipeline.LastUpdate = DateTime.Now;
                 await InsertPipelineToDB(newRepoPipeline, project);
             }
             else
             {
                 var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
                 newRepoPipeline.Id = repoPipeline.Id;
+                newRepoPipeline.LastUpdate = DateTime.Now;
                 await _pipelineRepository.UpdateAsync(newRepoPipeline, repoPipeline.Id);
                 await _pipelineRepository.SaveAsync();
             }
