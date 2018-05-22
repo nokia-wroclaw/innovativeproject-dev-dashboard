@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Dashboard.Application.GitLabApi.Models;
+using Dashboard.Application.GitLabApi.Models.Responses;
 using Dashboard.Core.Exceptions;
 using RestSharp;
 using RestSharp.Extensions;
@@ -130,6 +131,14 @@ namespace Dashboard.Application.GitLabApi
                 throw new InvalidCastException("Bad conversion of X-Total-Pages");
 
             return (response.Data, totalPages);
+        }
+
+
+        public Task<GetUserResponse> GetUser()
+        {
+            var request = new RestRequest("user", Method.GET);
+
+            return Client.ExecuteTaskAsync<GetUserResponse>(request).EnsureSuccess();
         }
     }
 }

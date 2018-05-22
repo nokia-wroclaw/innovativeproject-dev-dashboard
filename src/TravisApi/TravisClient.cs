@@ -71,5 +71,12 @@ namespace TravisApi
 
             return (response.Builds, response.Pagination.Count);
         }
+
+        public Task<GetUserResponse> GetUser()
+        {
+            var request = new RestRequest("user", Method.GET);
+
+            return Client.ExecuteTaskAsync<GetUserResponse>(request).EnsureSuccess();
+        }
     }
 }

@@ -189,7 +189,7 @@ namespace Dashboard.Application.Services
 
         public async Task WebhookFunction(string providerName, JObject body)
         {
-            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(providerName);
             string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
 
             int projectId = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId))).Id;
