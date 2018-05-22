@@ -49,6 +49,7 @@
     <None Remove="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\projects-manager\api\projects-api.service.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\projects-manager\project.ts" />
+    <None Remove="developersDashboardFrontEnd\src\app\snackbar\notification-messages.ts" />
     <None Remove="developersDashboardFrontEnd\src\app\snackbar\notification.service.ts" />
     <None Remove="developersDashboardFrontEnd\src\environments\environment.prod.ts" />
     <None Remove="developersDashboardFrontEnd\src\environments\environment.ts" />
@@ -123,6 +124,7 @@
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\panels\static-branch-panel\static-branch.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\projects-manager\api\projects-api.service.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\projects-manager\project.ts" />
+    <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\snackbar\notification-messages.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\app\snackbar\notification.service.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="developersDashboardFrontEnd\src\environments\environment.ts" />

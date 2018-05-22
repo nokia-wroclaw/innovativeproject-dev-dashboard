@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Dashboard.Core.Interfaces;
 
 namespace Dashboard.Application.Validators
 {
     public class UpdateProjectValidator : ProjectValidator
     {
-        public UpdateProjectValidator()
+        public UpdateProjectValidator(ICiDataProviderFactory factory)
         {
             ValidateTitle();
             ValidateApiHostUrl();
@@ -14,6 +15,7 @@ namespace Dashboard.Application.Validators
             ValidateApiAuthenticationToken();
             ValidateDataProviderName();
             ValidateCiDataUpdateCronExpression();
+            ValidateApiCredentials(factory);
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using Dashboard.Application.Validators.Common;
+﻿using System;
+using System.Threading.Tasks;
+using Dashboard.Application.Validators.Common;
 using Dashboard.Core.Entities;
+using Dashboard.Core.Interfaces;
 using FluentValidation;
 
 namespace Dashboard.Application.Validators
@@ -37,5 +40,28 @@ namespace Dashboard.Application.Validators
                 .NotEmpty()
                 .CronExpression();
         }
+
+        protected void ValidateApiCredentials(ICiDataProviderFactory factory)
+        {
+            RuleFor(p => p.ApiHostUrl)
+                .MustAsync((project, hostUrl, ct) => TestApiCredentials(project, hostUrl, factory))
+                .WithMessage("Can't access secured API endpoint with these credentials");
+        }
+
+        private async Task<bool> TestApiCredentials(Project project, string apiHostUrl, ICiDataProviderFactory factory)
+        {
+            var provider = factory.CreateForProviderName(project.DataProviderName);
+
+            try
+            {
+                var result = await provider.TestApiCredentials(project.ApiHostUrl, project.ApiAuthenticationToken);
+                return result;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
     }
 }

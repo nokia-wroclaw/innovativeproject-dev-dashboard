@@ -47,6 +47,17 @@ namespace Dashboard.Application
             return await FetchPipelineById(apiHost, apiKey, apiProjectId, branchPipe.Id);
         }
 
+        public async Task<bool> TestApiCredentials(string apiHost, string apiKey)
+        {
+            var apiClient = new GitLabClient(apiHost, apiKey);
+
+            var userResponse = await apiClient.GetUser();
+
+            // GetUser will throw exception when credidentials are not valid
+            // so its safe to asume apikey is valid
+            return true;
+        }
+
         private async Task<IEnumerable<Stage>> GetStagesWithJobs(string apiHost, string apiKey, string apiProjectId, int pipeId)
         {
             var apiClient = new GitLabClient(apiHost, apiKey);
