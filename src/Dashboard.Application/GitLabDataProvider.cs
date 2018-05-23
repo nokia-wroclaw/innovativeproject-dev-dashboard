@@ -55,10 +55,6 @@ namespace Dashboard.Application
         {
             var apiClient = new GitLabClient(apiHost, apiKey);
             var jobs = await apiClient.GetJobs(apiProjectId, pipeId);
-            foreach (var item in jobs)
-            {
-                MapGitlabStatus(item.Status);
-            }
 
             var stages = jobs.GroupBy(j => j.Stage)
                 .Select(stage =>
