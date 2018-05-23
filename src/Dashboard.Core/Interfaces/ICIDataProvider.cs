@@ -34,6 +34,15 @@ namespace Dashboard.Core.Interfaces
         Task<Pipeline> FetchPipeLineByBranch(string apiHost, string apiKey, string apiProjectId, string branchName);
 
 
+        /// <summary>
+        /// Tests if api credentials can access secured api endpoint
+        /// </summary>
+        /// <param name="apiHost"> Api host, eg. https://gitlab.com </param>
+        /// <param name="apiKey"> Private key to access the API </param>
+        /// <returns></returns>
+        Task<bool> TestApiCredentials(string apiHost, string apiKey);
+
+
         Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue);
 
         string GetProjectIdFromWebhookRequest(object body);

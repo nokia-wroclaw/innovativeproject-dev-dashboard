@@ -55,6 +55,15 @@ namespace Dashboard.Application
             return await FetchPipelineById(apiHost, apiKey, apiProjectId, branch.LastBuild.Id);
         }
 
+        public async Task<bool> TestApiCredentials(string apiHost, string apiKey)
+        {
+            var apiClient = new TravisClient(apiHost, apiKey);
+
+            var userResponse = await apiClient.GetUser();
+
+            return userResponse.Permissions.Read;
+        }
+
         public Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue)
         {
             throw new NotImplementedException();

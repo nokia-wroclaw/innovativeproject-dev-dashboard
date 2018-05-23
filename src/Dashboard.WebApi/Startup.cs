@@ -96,8 +96,8 @@ namespace Dashboard.WebApi
             }
             else
             {
-                app.UseApplicationHttpRequestExceptionMiddleware();
                 app.UseExceptionHandler("/Home/Error");
+                app.UseApplicationHttpRequestExceptionMiddleware();
             }
 
             app.UseStaticFiles();

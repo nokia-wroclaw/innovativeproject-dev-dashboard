@@ -23,12 +23,7 @@ namespace Dashboard.Application
 
         public ICiDataProvider CreateForProviderName(string name)
         {
-            return AllProviders.FirstOrDefault(p => p.Name == name);
-        }
-
-        public ICiDataProvider CreateForProviderLowercaseName(string name)
-        {
-            return AllProviders.FirstOrDefault(p => p.Name.ToLower() == name);
+            return AllProviders.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
