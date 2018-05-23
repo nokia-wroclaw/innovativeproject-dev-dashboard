@@ -2,7 +2,15 @@ language: csharp
 mono: none
 sudo: required
 notifications:
-   slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
+   webhooks:
+    urls:
+      - https://webhook.site/d3c078e7-1a7d-4bf9-9d27-ff4d19d4db8b
+      - https://agile-beach-74761.herokuapp.com/api/Webhook/FormPipelineWebhook/travis
+    on_success: always # default: always
+    on_failure: always # default: always
+    on_start: always   # default: never
+    on_cancel: always # default: always
+    on_error: always # default: always
 env:
   - DOCKER_COMPOSE_VERSION=1.20.1
 cache:

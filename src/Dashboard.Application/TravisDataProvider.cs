@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
+using Dashboard.Core.Interfaces.WebhookProviders;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using TravisApi;
 using TravisApi.Models;
+using TravisApi.Models.Responses;
 using Stage = Dashboard.Core.Entities.Stage;
 
 namespace Dashboard.Application
@@ -18,7 +22,7 @@ namespace Dashboard.Application
      *   Stages
      *      Jobs
      */
-    public class TravisDataProvider : ICiDataProvider
+    public class TravisDataProvider : ICiDataProvider, IProviderWithPipelineWebhook
     {
         public string Name => "Travis";
 
@@ -65,9 +69,18 @@ namespace Dashboard.Application
             throw new NotImplementedException();
         }
 
-        public string GetProjectIdFromWebhookRequest(JObject body)
+        public string GetProjectIdFromWebhookRequest(object body)
         {
-            throw new NotImplementedException();
+            var collection = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(body.ToString(), new SnakeJsonSerializerStrategy());
+            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(collection["payload"], new SnakeJsonSerializerStrategy());
+            return travisWebhookResponse.Repository.Id.ToString();
+        }
+
+        public Pipeline ExtractPipelineFromWebhook(object body)
+        {
+            var collection = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(body.ToString(), new SnakeJsonSerializerStrategy());
+            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(collection["payload"].ToString(), new SnakeJsonSerializerStrategy());
+            return new Pipeline() { DataProviderPipelineId = travisWebhookResponse.Id };
         }
 
         private Pipeline MapBuildToPipeline(Build b)
@@ -117,5 +130,12 @@ namespace Dashboard.Application
             throw new InvalidEnumArgumentException($"{nameof(travisStatus)} {travisStatus}");
         }
 
+        public string ExtractProjectIdFromPipelineWebhook(object body)
+        {
+            //return GetProjectIdFromWebhookRequest(body);
+            var collection = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(body.ToString(), new SnakeJsonSerializerStrategy());
+            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(collection["payload"], new SnakeJsonSerializerStrategy());
+            return travisWebhookResponse.Repository.Id.ToString();
+        }
     }
 }

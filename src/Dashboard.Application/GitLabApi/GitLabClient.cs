@@ -93,6 +93,7 @@ namespace Dashboard.Application.GitLabApi
             {
                 var req = new RestRequest("projects/{projectId}/pipelines/{pipelineId}/jobs", Method.GET);
                 req.AddUrlSegment("projectId", projectId);
+                req.AddUrlSegment("pipelineId", pipelineId);
                 req.AddQueryParameter("per_page", "100");
                 req.AddQueryParameter("page", i.ToString());
 

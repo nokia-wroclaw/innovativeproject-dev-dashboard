@@ -27,5 +27,35 @@ namespace Dashboard.Core.Entities
         public DateTime? FinishedAt { get; set; }
 
         public virtual ICollection<Stage> Stages { get; set; }
+
+        public DateTime LastUpdate { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Pipeline);
+        }
+
+        public bool Equals(Pipeline p)
+        {
+            // If parameter is null, return false.
+            if (Object.ReferenceEquals(p, null))
+            {
+                return false;
+            }
+
+            // Optimization for a common success case.
+            if (Object.ReferenceEquals(this, p))
+            {
+                return true;
+            }
+
+            // If run-time types are not exactly the same, return false.
+            if (this.GetType() != p.GetType())
+            {
+                return false;
+            }
+
+            return Sha.Equals(p.Sha);
+        }
     }
 }

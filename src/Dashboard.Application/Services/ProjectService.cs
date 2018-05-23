@@ -13,6 +13,7 @@ using System;
 using Dashboard.Application.Validators;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using Dashboard.Core.Interfaces.WebhookProviders;
 
 namespace Dashboard.Application.Services
 {
@@ -29,6 +30,8 @@ namespace Dashboard.Application.Services
         private readonly IPanelRepository _panelRepository;
         private readonly IStaticBranchPanelRepository _staticBranchPanelRepository;
         private readonly IConfiguration _configuration;
+        private readonly IStageRepository _stageRepository;
+        private readonly IJobRepository _jobRepository;
 
         public ProjectService(
             IPipelineRepository pipelineRepository,
@@ -39,7 +42,9 @@ namespace Dashboard.Application.Services
             IPanelRepository panelRepository,
             IStaticBranchPanelRepository staticBranchPanelRepository,
             IConfiguration configuration,
-            ILogger<ProjectService> logger)
+            ILogger<ProjectService> logger,
+            IStageRepository stageRepository,
+            IJobRepository jobRepository)
         {
             _ciDataProviderFactory = ciDataProviderFactory;
             _cronJobsManager = cronJobsManager;
@@ -50,6 +55,8 @@ namespace Dashboard.Application.Services
             _staticBranchPanelRepository = staticBranchPanelRepository;
             _configuration = configuration;
             _logger = logger;
+            _stageRepository = stageRepository;
+            _jobRepository = jobRepository;
         }
 
         public Task<Project> GetProjectByIdAsync(int id)
@@ -129,24 +136,21 @@ namespace Dashboard.Application.Services
             return r;
         }
 
-        private async Task<IEnumerable<Pipeline>> DownloadNewestPipelinesNotInBrancNameList(ICiDataProvider dataProvider, Project project, int howMany, IEnumerable<string> branchNames)
+        private async Task DownloadNewestPipelinesNotInBrancNameList(ICiDataProvider dataProvider, Project project, int howMany, IEnumerable<string> branchNames, PipelinesMerger merger)
         {
             var branchNamesSet = new HashSet<string>(branchNames);
-            var newestPipes = new List<Pipeline>();
             var pageCounter = 0;
             var maxPagesToLookFor = int.Parse(_configuration["DataProviders:NewestPipelinesMaxPages"]);
-            while (newestPipes.Count < howMany && pageCounter++ <= maxPagesToLookFor)
+            while (merger.NewestPipelinesCount < howMany && pageCounter++ <= maxPagesToLookFor)
             {
                 var pagedNewest = await dataProvider.FetchNewestPipelines(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pageCounter, perPage: howMany);
                 var pagePipelinesNotInLocalStatic = pagedNewest.pipelines.Where(p => !branchNamesSet.Contains(p.Ref));
 
-                newestPipes.InsertRange(0, pagePipelinesNotInLocalStatic);
+                merger.AddPipelinesPageAtEnd(pagePipelinesNotInLocalStatic);
 
                 if (pageCounter >= pagedNewest.totalPages) //If last page
                     break;
             }
-
-            return newestPipes;
         }
 
         /// <summary>
@@ -159,41 +163,32 @@ namespace Dashboard.Application.Services
             var project = await GetProjectByIdAsync(projectId);
             if (project == null) return;
 
+            PipelinesMerger merger = new PipelinesMerger();
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
 
             var staticBranchesNamesDb = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(projectId);
             var staticBranchesPipelines = await Task.WhenAll(staticBranchesNamesDb.Select(b => dataProvider.FetchPipeLineByBranch(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, b)));
 
             var targetPipelineNumber = project.PipelinesNumber - project.Pipelines.Count;
-            var newestPipes = await DownloadNewestPipelinesNotInBrancNameList(dataProvider, project, targetPipelineNumber, staticBranchesNamesDb);
+            await DownloadNewestPipelinesNotInBrancNameList(dataProvider, project, targetPipelineNumber, staticBranchesNamesDb, merger);
 
             //Merge
-            _pipelineRepository.DeleteRange(project.Pipelines);
-            var pipesList = new List<Pipeline>();
-            pipesList.AddRange(staticBranchesPipelines);
-            pipesList.AddRange(newestPipes);
+            var existing = project.Pipelines;
+            var mergeResult = merger.MergePipelines(project.Pipelines, staticBranchesPipelines, project.PipelinesNumber);
+
+            var intersect = existing.Intersect(mergeResult);
+            var sum = existing.Union(mergeResult);
+            var toDelete = sum.Except(mergeResult);
+
+            _pipelineRepository.DeleteRange(toDelete);//project.Pipelines);
 
             //Save update to DB
-            project.Pipelines = pipesList.Take(project.PipelinesNumber).ToList();
+            project.Pipelines = mergeResult.ToList();
 
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
 
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
-        }
-
-        public void FireProjectUpdate(string providerName, JObject body)
-        {
-            BackgroundJob.Enqueue<IProjectService>(s => s.WebhookFunction(providerName, body));
-        }
-
-        public async Task WebhookFunction(string providerName, JObject body)
-        {
-            var dataProvider = _ciDataProviderFactory.CreateForProviderName(providerName);
-            string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
-
-            int projectId = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId))).Id;
-            await UpdateCiDataForProjectAsync(projectId);
         }
 
         public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
@@ -202,5 +197,111 @@ namespace Dashboard.Application.Services
             var pipes = await panel.GetPipelinesDTOForPanel(_projectRepository);
             return pipes;
         }
+
+        private async Task InsertPipelineToDB(Pipeline pipeline, Project project)
+        {
+            var staticBranchesNamesDb = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+            List<Pipeline> projectPipelines = new List<Pipeline>(project.Pipelines);
+            if(staticBranchesNamesDb.Contains(pipeline.Ref))
+            {
+                //Insert at beginning
+                projectPipelines.Insert(0, pipeline);
+            }
+            else
+            {
+                //Insert after statics, on start of dynamics
+                projectPipelines.Insert(staticBranchesNamesDb.Count(), pipeline);
+            }
+            project.Pipelines = projectPipelines.Take(project.PipelinesNumber).ToList();
+            await _projectRepository.UpdateAsync(project, project.Id);
+            await _projectRepository.SaveAsync();
+        }
+
+        #region Webhooks
+        public void FireJobUpdate(string providerName, object body)
+        {
+            BackgroundJob.Enqueue<IProjectService>(s => s.WebhookJobUpdate(providerName, body));
+        }
+
+        public void FirePipelineUpdate(string providerName, object body)
+        {
+            BackgroundJob.Enqueue<IProjectService>(s => s.WebhookPipelineUpdate(providerName, body));
+        }
+
+        //public void FireProjectUpdate(string providerName, object body)
+        //{
+        //    BackgroundJob.Enqueue<IProjectService>(s => s.WebhookProjectUpdate(providerName, body));
+        //}
+
+        public async Task WebhookJobUpdate(string providerName, object body)
+        {
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(providerName.ToLower());
+            IProviderWithJobWebhook provider = dataProvider as IProviderWithJobWebhook;
+            if (provider == null)
+                return;
+
+            await UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider, providerName);
+        }
+
+        public async Task WebhookPipelineUpdate(string providerName, object body)
+        {
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(providerName.ToLower());
+            IProviderWithPipelineWebhook provider = dataProvider as IProviderWithPipelineWebhook;
+            if (provider == null)
+                return;
+            string apiProjectId = provider.ExtractProjectIdFromPipelineWebhook(body);
+
+            var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
+            await UpdatePipeline(provider.ExtractPipelineFromWebhook(body), project, dataProvider, providerName);
+        }
+
+        //public async Task WebhookProjectUpdate(string providerName, object body)
+        //{
+        //    var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
+        //    string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
+
+        //    var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
+
+        //    await UpdateCiDataForProjectAsync(project.Id);
+        //}
+
+        private async Task UpdatePipelineStage(Job job, IProviderWithJobWebhook provider, string providerName)
+        {
+            var repoJob = await _jobRepository.FindOneByAsync(j => j.DataProviderJobId == job.DataProviderJobId);
+            if (repoJob == null)
+                return;
+            repoJob.Status = job.Status;
+            await _jobRepository.UpdateAsync(repoJob, repoJob.Id);
+            await _jobRepository.SaveAsync();
+
+            var repoStage = repoJob.Stage;
+            repoStage.StageStatus = provider.RecalculateStageStatus(repoStage.Jobs);
+            await _stageRepository.UpdateAsync(repoStage, repoStage.Id);
+            await _stageRepository.SaveAsync();
+
+            //TODO Update pipeline LastUpdate property
+        }
+
+        private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider, string providerName)
+        {
+            var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
+            if (repoPipeline == null)
+            {
+                //Add new to db
+                var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
+                newRepoPipeline.LastUpdate = DateTime.Now;
+                await InsertPipelineToDB(newRepoPipeline, project);
+            }
+            else
+            {
+                var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
+                newRepoPipeline.Id = repoPipeline.Id;
+                newRepoPipeline.LastUpdate = DateTime.Now;
+                await _pipelineRepository.UpdateAsync(newRepoPipeline, repoPipeline.Id);
+                await _pipelineRepository.SaveAsync();
+            }
+        }
+
+        #endregion
     }
 }

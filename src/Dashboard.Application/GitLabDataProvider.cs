@@ -7,14 +7,18 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dashboard.Application.GitLabApi;
+using GitLabModel = Dashboard.Application.GitLabApi.Models.Webhooks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Interfaces.Repositories;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Dashboard.Core.Interfaces.WebhookProviders;
 
 namespace Dashboard.Application
 {
-    public class GitLabDataProvider : ICiDataProvider
+    public class GitLabDataProvider : ICiDataProvider, IProviderWithJobWebhook, IProviderWithPipelineWebhook
     {
         public string Name => "GitLab";
 
@@ -46,7 +50,7 @@ namespace Dashboard.Application
 
             return await FetchPipelineById(apiHost, apiKey, apiProjectId, branchPipe.Id);
         }
-
+        
         public async Task<bool> TestApiCredentials(string apiHost, string apiKey)
         {
             var apiClient = new GitLabClient(apiHost, apiKey);
@@ -68,16 +72,22 @@ namespace Dashboard.Application
                     new Stage()
                     {
                         StageName = stage.Key,
-                        StageStatus = stage.Any(p => p.Status == "running") ? MapGitlabStatus("running") :
-                            (stage.Any(p => p.Status == "manual") ? MapGitlabStatus("manual") :
-                                (stage.Any(p => p.Status == "failed") ? MapGitlabStatus("failed") :
-                                    (stage.All(p => p.Status == "skipped")) ? MapGitlabStatus("skipped") :
-                                    (stage.All(p => p.Status == "success") ? MapGitlabStatus("success") :
-                                        MapGitlabStatus("created")
-                                    ))),
+                        StageStatus = CalculateStageStatus(stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status) }).ToList()),
+                        Jobs = stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status), StageName = p.Stage }).ToList()
                     });
 
             return stages;
+        }
+        private Status CalculateStageStatus(ICollection<Job> jobs)
+        {
+            //Need to check for "canceled"?
+            return jobs.Any(p => p.Status == MapGitlabStatus("running")) ? MapGitlabStatus("running") :
+                            (jobs.Any(p => p.Status == MapGitlabStatus("manual")) ? MapGitlabStatus("manual") :
+                                (jobs.Any(p => p.Status == MapGitlabStatus("failed")) ? MapGitlabStatus("failed") :
+                                    (jobs.All(p => p.Status == MapGitlabStatus("skipped"))) ? MapGitlabStatus("skipped") :
+                                    (jobs.All(p => p.Status == MapGitlabStatus("success")) ? MapGitlabStatus("success") :
+                                        MapGitlabStatus("created")
+                                    )));
         }
         private Pipeline MapPipelineToEntity(GitLabApi.Models.Pipeline pipeline, GitLabApi.Models.Commit pipelineCommit, IEnumerable<Stage> stages, string apiHost, string apiProjectId)
         {
@@ -104,6 +114,7 @@ namespace Dashboard.Application
         {
             switch (gitlabStatus)
             {
+                case "pending":
                 case "running":
                 case "manual":
                     return Status.Running;
@@ -136,9 +147,43 @@ namespace Dashboard.Application
             return branches;
         }
 
-        public string GetProjectIdFromWebhookRequest(JObject body)
+        public string GetProjectIdFromWebhookRequest(object body)
         {
-            return body["project"]["id"].Value<string>();
+            var jo = (JObject)body;
+            if (jo["object_kind"].Value<string>().Equals("build"))
+                return jo["project_id"].Value<string>();
+            else
+                return jo["project"]["id"].Value<string>();
+        }
+
+        public Job ExtractJobFromWebhook(object body)
+        {
+            var gitlabJob = SimpleJson.SimpleJson.DeserializeObject<GitLabModel.JobWebhook>(body.ToString(), new SnakeJsonSerializerStrategy());
+
+            return new Job() { DataProviderJobId = gitlabJob.BuildId, Status = MapGitlabStatus(gitlabJob.BuildStatus), StageName = gitlabJob.BuildStage };
+        }
+
+        public Status RecalculateStageStatus(ICollection<Job> jobs)
+        {
+            return CalculateStageStatus(jobs);
+        }
+
+        public string ExtractProjectIdFromPipelineWebhook(object body)
+        {
+            return ((JObject)body)["project"]["id"].Value<string>();
+        }
+
+        public Pipeline ExtractPipelineFromWebhook(object body)
+        {
+            var attributes = SimpleJson.SimpleJson.DeserializeObject<GitLabModel.PipelineWebhook>(body.ToString(), new SnakeJsonSerializerStrategy()).ObjectAttributes;
+
+            return new Pipeline()
+            {
+                DataProviderPipelineId = attributes.Id,
+                Ref = attributes.Ref,
+                Sha = attributes.Sha,
+                Status = MapGitlabStatus(attributes.Status)
+            };
         }
     }
 }
