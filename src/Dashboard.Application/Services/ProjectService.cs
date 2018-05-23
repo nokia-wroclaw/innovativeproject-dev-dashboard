@@ -235,7 +235,7 @@ namespace Dashboard.Application.Services
 
         public async Task WebhookJobUpdate(string providerName, object body)
         {
-            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(providerName.ToLower());
             IProviderWithJobWebhook provider = dataProvider as IProviderWithJobWebhook;
             if (provider == null)
                 return;
@@ -245,7 +245,7 @@ namespace Dashboard.Application.Services
 
         public async Task WebhookPipelineUpdate(string providerName, object body)
         {
-            var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(providerName.ToLower());
             IProviderWithPipelineWebhook provider = dataProvider as IProviderWithPipelineWebhook;
             if (provider == null)
                 return;
