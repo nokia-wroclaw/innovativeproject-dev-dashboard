@@ -4,15 +4,19 @@ import {Pipeline, Stage} from '../../../projects-manager/project';
 @Component({selector: 'app-pipeline-view', templateUrl: './pipeline-view.component.html', styleUrls: ['./pipeline-view.component.css']})
 export class PipelineViewComponent implements OnInit {
 
+  constructor(){}
+
   @Input()
   pipeline : Pipeline;
 
   @ViewChild('pipelineContainer')
-  pipelineContainer : ElementRef;
+  pipelineContainer : ElementRef;  
 
 
-
-  ngOnInit() { }
+  ngOnInit() { 
+  
+ 
+     }
 
   statusColors : any[] = [
     {

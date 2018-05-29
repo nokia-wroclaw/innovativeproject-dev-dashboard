@@ -34,4 +34,5 @@ export class Project {
   setCiDataUpdateCronExpression(intervalMinutes: number) {
     this.ciDataUpdateCronExpression = `*/${intervalMinutes} * * * *`;
   }
+    
 }

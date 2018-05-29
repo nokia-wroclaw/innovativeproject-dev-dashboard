@@ -82,3 +82,10 @@
 .container:first-child:last-child .content {
     left: 50%;
 }
+mat-spinner {
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    margin-right: -55%;
+    transform: translate(-50%, -50%);
+}

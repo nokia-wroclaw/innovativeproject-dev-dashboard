@@ -1,14 +1,15 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title style="font-size:1.5em;">
-      Creating Project
+      <span *ngIf="!editMode">Create project</span>
+      <span *ngIf="editMode">Project configuration</span>
     </mat-card-title>
   </mat-card-header>
 
-  <form #projectForm="ngForm" (ngSubmit)="addProject()">
+  <form #projectForm="ngForm">
     <mat-card-content>
         <mat-form-field class=" example-full-width ">
-            <input type="text" matInput placeholder="Project title " required [(ngModel)]="project.projectTitle" name="projectTitle">
+            <input matInput placeholder="Project title" required [(ngModel)]="project.projectTitle" name="projectTitle">
           </mat-form-field>
       <mat-form-field class=" example-full-width ">
         <input type="text" matInput placeholder="Api host url " required [(ngModel)]="project.apiHostUrl" name="apiHostUrl">
@@ -26,7 +27,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-checkbox #abcde>Enable interval pooling</mat-checkbox>
+      <mat-checkbox (change)="CiDataUpdateCronExpression = !CiDataUpdateCronExpression" [checked]="CiDataUpdateCronExpression" #abcde>Enable interval pooling</mat-checkbox>
       <div *ngIf='abcde.checked'>
         <h2 class="mat-h2">Data fetch period (in minutes)</h2>  
         <div class="dataFetchPeriod">                
@@ -38,8 +39,8 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <button type="submit" [disabled]="!projectForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
-      <button [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
+      <button type="submit" (click)="addProject()" [disabled]="!projectForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
+      <button type="button" [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
     </mat-card-actions>
     
   </form>

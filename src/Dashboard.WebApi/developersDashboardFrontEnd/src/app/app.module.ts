@@ -66,11 +66,16 @@ import { LastPipelinesPanelConfigComponent } from './panels/last-pipelines-panel
 import { PipelineViewComponent } from './panels/shared/pipeline-view/pipeline-view.component';
 import { NotificationService } from './snackbar/notification.service';
 import { PipelineService } from './panels/shared/pipeline-view/pipeline-service/pipeline.service';
+import { DashboardConfigurationComponent } from './configuration/dashboard-configuration/dashboard-configuration.component';
+import { DashboardConfigurationService } from './configuration/dashboard-configuration/dashboard-service/dashboard-configuration.service';
 
 const appRoutes : Routes = [
   {
     path: '',
     component: DashboardComponent
+  },{
+    path: 'admin/dashboardConfiguration',
+    component: DashboardConfigurationComponent
   }, {
     path: 'admin/create',
     component: PanelConfigurationComponent
@@ -83,6 +88,9 @@ const appRoutes : Routes = [
   }, {
     path: 'admin/:id',
     component: PanelConfigurationComponent
+  },{
+    path: 'admin/project/:id',
+    component: PanelProjectsComponent
   }, {
     path: '**',
     redirectTo: ''
@@ -105,7 +113,8 @@ const appRoutes : Routes = [
     StaticBranchPanelConfigComponent,
     LastPipelinesPanelComponent,
     LastPipelinesPanelConfigComponent,
-    PipelineViewComponent
+    PipelineViewComponent,
+    DashboardConfigurationComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: true}),
@@ -157,7 +166,8 @@ const appRoutes : Routes = [
     RandomMemeService,
     AdminModeService,
     NotificationService,
-    PipelineService
+    PipelineService,
+    DashboardConfigurationService
   ],
   bootstrap: [AppComponent],
   entryComponents: [RandomMemePanelComponent, RandomMemePanelConfigComponent, StaticBranchPanelComponent, StaticBranchPanelConfigComponent, LastPipelinesPanelComponent, LastPipelinesPanelConfigComponent]

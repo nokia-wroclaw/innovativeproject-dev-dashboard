@@ -40,12 +40,22 @@ export class ProjectsApiService implements OnDestroy {
     getProject(id: number): Observable<Project> {
         return this.projects.map(projects => projects.find(project => project.id == id));
     }
-
-    addProject(project: Project): Observable<Project> {
-        return this.http.post<Project>(this.baseUrl, project).flatMap(project => {
+    saveOrUpdate (update : boolean, projectData: Project) : Observable < Project > {
+        if(update) {
+            return this.updateProject(projectData);
+        } else {
+            return this.addProject(projectData);
+        }
+    }
+    addProject(projectData: Project): Observable<Project> {
+        return this.http.post<Project>(this.baseUrl, projectData).flatMap(project => {
             this.asyncPull.next(true);
             return Observable.of(project);
         });
+    }
+
+    updateProject(projectData: Project): Observable<Project> {
+        return this.http.put<Project>(this.baseUrl + '/' + projectData.id, projectData);
     }
 
     private url: string = "api/DashboardData/SupportedProviders";

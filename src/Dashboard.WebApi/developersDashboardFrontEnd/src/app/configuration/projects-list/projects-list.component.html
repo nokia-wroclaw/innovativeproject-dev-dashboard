@@ -4,6 +4,9 @@
       <mat-card-title>
         <h4 style="font-size:1.6rem;">{{project.projectTitle}}</h4>
         <h4 style="font-size:1.6rem;" *ngIf="!project.projectTitle">Default title</h4>
+        <a [routerLink]=" [ '/admin/project', project.id] " class="pull-right">
+          <i  class="material-icons panel-icon">settings</i>
+      </a>
       </mat-card-title>
       <mat-card-content style="font-size:1.2rem;">
 

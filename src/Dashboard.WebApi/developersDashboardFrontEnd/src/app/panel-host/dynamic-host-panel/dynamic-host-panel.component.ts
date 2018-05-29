@@ -2,6 +2,7 @@ import {Component, OnInit, Input, ViewChild} from '@angular/core';
 import {HostDirective} from './../host.directive';
 import {PanelManagerService} from "../../panel-manager/service/panel-manager.service";
 import {Panel} from "../../panel-manager/panel";
+import { DashboardConfigurationService } from '../../configuration/dashboard-configuration/dashboard-service/dashboard-configuration.service';
 
 @Component({
   selector: 'app-dynamic-host-panel',
@@ -20,6 +21,9 @@ export class DynamicHostPanelComponent implements OnInit {
   tileTitle : string;
 
   @Input()
+  hidePanelTitle : boolean = false;
+
+  @Input()
   lastUpdated : string = "Last updated...";
 
   @Input()
@@ -28,12 +32,14 @@ export class DynamicHostPanelComponent implements OnInit {
   @ViewChild(HostDirective)
   panelHost : HostDirective;
 
-  constructor(private panelManagerService : PanelManagerService) {}
+  constructor(private panelManagerService : PanelManagerService, private dashboardConfigurationService: DashboardConfigurationService) {}
 
   ngOnInit() {
     this
       .panelManagerService
       .injectPanelComponent(this.panelHost, this.panel);
+
+      this.hidePanelTitle = this.dashboardConfigurationService.getPanelTitleStatus();
   }
 
 }

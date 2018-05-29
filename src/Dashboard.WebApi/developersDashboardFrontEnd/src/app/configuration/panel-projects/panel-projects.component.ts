@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild, ElementRef, NgZone} from '@angular/core';
 import {Project, SupportedProviders} from '../../projects-manager/project';
 import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import { NotificationService, SnackBar, NotificationType } from '../../snackbar/notification.service';
 
 @Component({
@@ -11,15 +11,40 @@ import { NotificationService, SnackBar, NotificationType } from '../../snackbar/
 })
 export class PanelProjectsComponent implements OnInit {
 
-  project = new Project('', '', '', '', '', '');
-  projectCiDataUpdateIntervalMinutes: number;
+  project = new Project(null, null, null, null, null, null);
+  projectCiDataUpdateIntervalMinutes: number; 
   dataProviderNames = new SupportedProviders(undefined);
+  private routeParamsSubscription;
+  editMode : boolean = false;
+  CiDataUpdateCronExpression : boolean = false;
 
-  constructor(private projectApiService: ProjectsApiService, private notificationService: NotificationService, private router : Router, private zone : NgZone,) {
+  constructor(private projectApiService: ProjectsApiService,private route : ActivatedRoute, private notificationService: NotificationService, private router : Router, private zone : NgZone) {
   }
-
+  ngOnDestroy() {
+    this
+      .routeParamsSubscription
+      .unsubscribe();
+  }
   ngOnInit() {
-   this.getProviderForProject();
+  this.routeParamsSubscription = this
+      .route
+      .params
+      .subscribe(params => {
+        if (params['id'] != null) {
+          this.editMode = true;
+
+          this
+            .projectApiService
+            .getProject(params['id'])
+            .subscribe(project => {
+              this.project = project;        
+            });
+        } else {
+          this.editMode = false;
+        }
+      });
+
+      this.getProviderForProject();
   }
   
   addProject() {
@@ -34,14 +59,23 @@ export class PanelProjectsComponent implements OnInit {
 
     this.project.setCiDataUpdateCronExpression(this.projectCiDataUpdateIntervalMinutes);
 
+    
     this
       .projectApiService
-      .addProject(this.project)
+      .saveOrUpdate(this.editMode, this.project)//tu zmienic
       .subscribe(project => {
         this.project = project;
-       this.notificationService.addNotification('Udalo sie dodac projekt', NotificationType.Success);
+        if(this.editMode == true){
+          this.notificationService.addNotification('Udalo sie edytowac projekt', NotificationType.Success);
+        }else{
+          this.notificationService.addNotification('Udalo sie dodac projekt', NotificationType.Success);
+        }
       }, err => {
-        this.notificationService.addNotification('Nie udalo sie dodac projektu', NotificationType.Failure);
+        if(this.editMode == true){
+          this.notificationService.addNotification('Nie udalo sie edytowac projektu', NotificationType.Failure);
+        }else{
+          this.notificationService.addNotification('Nie udalo sie dodac projektu', NotificationType.Failure);
+        }
         console.error('Error msg: ', err);
       }, () => {
         this

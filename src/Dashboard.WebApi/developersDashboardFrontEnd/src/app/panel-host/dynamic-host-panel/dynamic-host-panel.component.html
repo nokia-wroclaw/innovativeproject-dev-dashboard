@@ -2,7 +2,7 @@
 
   <div class="panel-header-container">
 
-    <div class="title pull-left" style="font-size: 1.5em">
+    <div *ngIf="!hidePanelTitle" class="title pull-left" style="font-size: 1.5em">
       <p>{{tileTitle}}</p>
     </div>
     <div class="pull-right">
