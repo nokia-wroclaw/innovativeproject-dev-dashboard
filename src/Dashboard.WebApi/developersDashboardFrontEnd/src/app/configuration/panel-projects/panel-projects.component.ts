@@ -11,7 +11,8 @@ import { NotificationService, SnackBar, NotificationType } from '../../snackbar/
 })
 export class PanelProjectsComponent implements OnInit {
 
-  project = new Project(null, null, null, null, null, null);
+  project : Project = new Project();
+  
   projectCiDataUpdateIntervalMinutes: number; 
   dataProviderNames = new SupportedProviders(undefined);
   private routeParamsSubscription;
@@ -37,7 +38,7 @@ export class PanelProjectsComponent implements OnInit {
             .projectApiService
             .getProject(params['id'])
             .subscribe(project => {
-              this.project = project;        
+              this.project = new Project(project.id, project.projectTitle, project.apiHostUrl, project.apiProjectId, project.apiAuthenticationToken, project.dataProviderName, project.ciDataUpdateCronExpression);        
             });
         } else {
           this.editMode = false;
