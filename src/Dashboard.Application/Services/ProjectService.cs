@@ -78,6 +78,7 @@ namespace Dashboard.Application.Services
             var project = await GetProjectByIdAsync(updatedProject.Id);
 
             //TODO: change when automapper
+            project.ProjectTitle = updatedProject.ProjectTitle;
             project.ApiAuthenticationToken = updatedProject.ApiAuthenticationToken;
             project.ApiHostUrl = updatedProject.ApiHostUrl;
             project.ApiProjectId = updatedProject.ApiProjectId;

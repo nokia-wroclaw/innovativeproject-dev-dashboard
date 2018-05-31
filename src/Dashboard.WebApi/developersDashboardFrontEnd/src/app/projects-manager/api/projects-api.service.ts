@@ -11,35 +11,22 @@ import { Subscription } from 'rxjs/Rx';
 import { Subject } from 'rxjs/Subject';
 
 @Injectable()
-export class ProjectsApiService implements OnDestroy {
+export class ProjectsApiService {
 
     private baseUrl: string = "/api/project";
 
-    private poolingInterval: number = 10000;
-    private projects: BehaviorSubject<Project[]> = new BehaviorSubject<Project[]>([]);
-    private projectsPulling: Subscription;
-
-    // Writting to this subject causes an immidiate fetch of projects from backend API.
-    private asyncPull: Subject<boolean> = new Subject();
-
     constructor(private http: HttpClient) {
-        this.projectsPulling = Observable.merge(
-            Observable.interval(this.poolingInterval).startWith(0),
-            this.asyncPull.asObservable()).switchMap(() => this.http.get<Project[]>(this.baseUrl))
-            .subscribe(projects => this.projects.next(projects));
-    }
-
-    ngOnDestroy(): void {
-        this.projectsPulling.unsubscribe();
+        
     }
 
     getProjects(): Observable<Project[]> {
-        return this.projects;
+        return this.http.get<Project[]>(this.baseUrl);
     }
 
     getProject(id: number): Observable<Project> {
-        return this.projects.map(projects => projects.find(project => project.id == id));
+        return this.http.get<Project>(this.baseUrl + '/' + id);
     }
+
     saveOrUpdate (update : boolean, projectData: Project) : Observable < Project > {
         if(update) {
             return this.updateProject(projectData);
@@ -49,7 +36,6 @@ export class ProjectsApiService implements OnDestroy {
     }
     addProject(projectData: Project): Observable<Project> {
         return this.http.post<Project>(this.baseUrl, projectData).flatMap(project => {
-            this.asyncPull.next(true);
             return Observable.of(project);
         });
     }
