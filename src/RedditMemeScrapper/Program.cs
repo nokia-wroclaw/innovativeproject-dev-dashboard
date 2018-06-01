@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using RedditMemeScraper;
 
 namespace RedditMemeScrapper
 {
@@ -27,13 +28,13 @@ namespace RedditMemeScrapper
                 File.ReadAllText(
                     @"C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\src\RedditMemeScrapper\ExamplePage.json");
 
-            RedditPage redditPage = SimpleJson.SimpleJson.DeserializeObject<RedditPage>(jsonString);
-
+            SimpleJson.SimpleJson.CurrentJsonSerializerStrategy = new CamelCaseSerializerStrategy();
+            var redditPage = SimpleJson.SimpleJson.DeserializeObject<RedditPage>(jsonString);
 
             Console.WriteLine(redditPage.Posts.Count);
 
             var urls = redditPage.Posts.Values
-                .Where(post => !post.IsSponsored && post.Media != null && post.Media.Obfuscated == null  && post.Media.Type == "image")
+                .Where(post => !post.IsSponsored && post.Media != null && post.Media.Obfuscated == null && post.Media.Type == "image")
                 .Select(post => post.Media.Content);
 
 

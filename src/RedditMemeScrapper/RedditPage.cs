@@ -6,9 +6,10 @@ namespace RedditMemeScrapper
     public class RedditPage
     {
         public List<string> PostIds { get; set; }
-        public int Dist { get; set; }
+        public Dictionary<string, Post> Posts { get; set; }
 
-        public Dictionary<string, Post> Posts { get; set; } = new Dictionary<string, Post>();
+        public int Dist { get; set; }
+        public Source Source { get; set; }
     }
 
     public class Resolution
