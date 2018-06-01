@@ -28,6 +28,11 @@ namespace Dashboard.Data.Repositories
             return await Context.Set<T>().FindAsync(id);
         }
 
+        public void AddRange(IEnumerable<T> entities)
+        {
+            Context.Set<T>().AddRange(entities);
+        }
+
         public virtual async Task<T> AddAsync(T t)
         {
             Context.Set<T>().Add(t);

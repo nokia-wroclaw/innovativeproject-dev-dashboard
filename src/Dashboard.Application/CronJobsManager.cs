@@ -27,6 +27,7 @@ namespace Dashboard.Application
             activeProjects.ForEach(p => BackgroundJob.Enqueue(() => UpdateCiDataForProject(p)));
 
             RecurringJob.AddOrUpdate<CronRefreshMemePanelsImage>(nameof(CronRefreshMemePanelsImage), j => j.PerformRefresh(), "*/5 * * * *"); //Every 5 minutes
+            RecurringJob.AddOrUpdate<CronScrapAndRotateMemeImages>(nameof(CronScrapAndRotateMemeImages), j => j.PerformWork("memes", 50), "0 0 * * *"); //Every day at midnight
         }
 
         public void UpdateCiDataForProject(Project project)
