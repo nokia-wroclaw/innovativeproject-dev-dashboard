@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.UnitTests", "Dash
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravisApi", "TravisApi\TravisApi.csproj", "{016CB329-06FD-42FC-A7DA-117435B3E3D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedditMemeScrapper", "RedditMemeScrapper\RedditMemeScrapper.csproj", "{00E95BEF-9617-4F42-B312-19BC681066F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedditMemeScraper", "RedditMemeScrapper\RedditMemeScraper.csproj", "{00E95BEF-9617-4F42-B312-19BC681066F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
