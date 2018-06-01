@@ -7,9 +7,15 @@
   
     <form #projectForm="ngForm" (ngSubmit)="onSubmit()" >
       <mat-card-content>
-
-        <mat-checkbox (change)="hidePanelTitle = !hidePanelTitle" [checked]="hidePanelTitle">Hide panel titles</mat-checkbox>
         
+          <section class="example-section">
+              <mat-checkbox class="example-margin" (change)="hideTopBar = !hideTopBar" [checked]="hideTopBar">Hide top bar</mat-checkbox>
+            </section>
+        
+            <section class="example-section">
+              <mat-checkbox class="example-margin" (change)="hidePanelTitle = !hidePanelTitle" [checked]="hidePanelTitle">Hide panel titles</mat-checkbox>
+            </section>
+
       </mat-card-content>
   
       <mat-card-actions>
