@@ -3,7 +3,7 @@
 ---------
 
 ## Goal
-The goal of this project is to build an app, which will show current states of CI systems for repositories on source control systems.
+The goal of this project is to build an app, which will show current states of CI systems for repositories on source control systems. 
 
 
 ## Description
