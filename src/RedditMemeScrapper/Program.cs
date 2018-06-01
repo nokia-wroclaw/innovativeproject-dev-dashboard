@@ -10,41 +10,48 @@ namespace RedditMemeScrapper
 {
     class Program
     {
-        static void Main(string[] args)
+        static void ShouldWork()
         {
-            //var scraper = new RedditScraper();
+            var scraper = new RedditScraper();
 
-            //var r = scraper.Scrap("memes", 3, options =>
-            //{
-            //    options.AllowOver18 = true;
-            //    options.SortMode = RedditSort.New;
-            //    options.PerPage = 5;
-            //}).Result;
+            var r = scraper.Scrap("memes", 50, options =>
+            {
+                options.AllowOver18 = true;
+                options.SortMode = RedditSort.Hot;
+                options.PerPage = 25;
+            }).Result;
 
             //foreach (var s in r)
             //    Console.WriteLine(s.ImageUrl);
 
-            var jsonString =
-                File.ReadAllText(
-                    @"C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\src\RedditMemeScrapper\ExamplePage.json");
+            var allJson = JsonConvert.SerializeObject(r);
+            File.WriteAllText("result.json", allJson);
 
-            SimpleJson.SimpleJson.CurrentJsonSerializerStrategy = new CamelCaseSerializerStrategy();
-            var redditPage = SimpleJson.SimpleJson.DeserializeObject<RedditPage>(jsonString);
+            Console.WriteLine("Done " + r.Count());
+        }
 
-            Console.WriteLine(redditPage.Posts.Count);
+        static void Main(string[] args)
+        {
+            ShouldWork();
+            //var jsonString =
+            //    File.ReadAllText(
+            //        @"C:\Users\User\Source\Repos\innovativeproject-dev-dashboard\src\RedditMemeScrapper\ExamplePage.json");
 
-            var urls = redditPage.Posts.Values
-                .Where(post => !post.IsSponsored && post.Media != null && post.Media.Obfuscated == null && post.Media.Type == "image")
-                .Select(post => post.Media.Content);
+            //SimpleJson.SimpleJson.CurrentJsonSerializerStrategy = new CamelCaseSerializerStrategy();
+            //var redditPage = SimpleJson.SimpleJson.DeserializeObject<RedditPage>(jsonString);
+
+            //Console.WriteLine(redditPage.Posts.Count);
+
+            //var urls = redditPage.Posts.Values
+            //    .Where(post => !post.IsSponsored && post.Media != null && post.Media.Obfuscated == null && post.Media.Type == "image")
+            //    .Select(post => post.Media.Content);
 
 
-            foreach (var s in urls)
-                Console.WriteLine(s);
+            //foreach (var s in urls)
+            //    Console.WriteLine(s);
 
 
             Console.ReadLine();
-
-
         }
     }
 }

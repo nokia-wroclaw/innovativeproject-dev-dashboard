@@ -12,11 +12,15 @@ namespace Dashboard.Data.Context
     {
         public static void Seed(AppDbContext ctx)
         {
+            ctx.AddRange(SeedMemeImages);
             ctx.AddRange(SeedProjects);
             ctx.AddRange(SeedPanels);
 
             ctx.SaveChanges();
         }
+
+        private static List<MemeImage> _seedMemeImages;
+        private static List<MemeImage> SeedMemeImages => _seedMemeImages ?? (_seedMemeImages = JsonConvert.DeserializeObject<List<MemeImage>>(File.ReadAllText("MemeSeed.json")));
 
         private static List<Panel> _seedPanels;
         private static List<Panel> SeedPanels => _seedPanels ?? (_seedPanels = new List<Panel>()
@@ -25,7 +29,7 @@ namespace Dashboard.Data.Context
             {
                 Title = "Fancy Title 1",
                 Position = new PanelPosition() {Column = 6, Row = 0, Width = 4, Height = 2},
-                StaticMemeUrl = "https://cdn-images-1.medium.com/max/1600/1*l_T-OzVE9gp0fOAf8vOwbw.png"
+                StaticMemeUrl = SeedMemeImages[6].ImageUrl
             },
             new StaticBranchPanel()
             {

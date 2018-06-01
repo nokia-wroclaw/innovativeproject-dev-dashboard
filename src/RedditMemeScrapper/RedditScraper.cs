@@ -85,6 +85,7 @@ namespace RedditMemeScrapper
         Hot,
         New,
         Controversial,
-        Rising
+        Rising,
+        Top
     }
 }

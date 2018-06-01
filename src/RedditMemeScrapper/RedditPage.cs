@@ -9,7 +9,6 @@ namespace RedditMemeScrapper
         public Dictionary<string, Post> Posts { get; set; }
 
         public int Dist { get; set; }
-        public Source Source { get; set; }
     }
 
     public class Resolution
@@ -38,6 +37,7 @@ namespace RedditMemeScrapper
         public bool IsPinned { get; set; }
         public string Author { get; set; }
         public Media Media { get; set; }
+        public Source Source { get; set; }
         public int NumCrossposts { get; set; }
         public bool IsSponsored { get; set; }
 
