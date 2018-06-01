@@ -44,6 +44,10 @@ export class ProjectsApiService {
         return this.http.put<Project>(this.baseUrl + '/' + projectData.id, projectData);
     }
 
+    deleteProject(project : Project) : Observable<any> {
+        return this.http.delete < any > (this.baseUrl + '/' + project.id);
+    }
+
     private url: string = "api/DashboardData/SupportedProviders";
 
     getSupportedProvidersForProjects(): Observable<string[]> {

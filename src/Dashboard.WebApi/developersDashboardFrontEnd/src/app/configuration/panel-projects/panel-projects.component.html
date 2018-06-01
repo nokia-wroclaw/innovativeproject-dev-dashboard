@@ -41,6 +41,7 @@
     <mat-card-actions>
       <button type="submit" (click)="addProject()" [disabled]="!projectForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
       <button type="button" [routerLink]=" [ '/admin/listOfProjects'] " mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
+      <button  *ngIf="editMode" (click)="onDelete()" mat-button class="pull-right " style=" font-size: 1em; color: #d22e2b;">DELETE</button>
     </mat-card-actions>
     
   </form>

@@ -2,3 +2,8 @@
 gridster-item {
     padding-top: 5px;
 }
+.addPanel {
+    position: absolute;
+    bottom: 4%;
+    right: 2%;
+}

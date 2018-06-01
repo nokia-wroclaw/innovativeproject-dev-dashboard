@@ -84,7 +84,7 @@
 }
 mat-spinner {
     position: absolute;
-    top: 50%;
+    top: 35%;
     left: 45%;
     margin-right: -55%;
     transform: translate(-50%, -50%);

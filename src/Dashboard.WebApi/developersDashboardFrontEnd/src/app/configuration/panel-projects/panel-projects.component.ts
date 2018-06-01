@@ -93,4 +93,12 @@ export class PanelProjectsComponent implements OnInit {
     }  );
     
   }
+  onDelete() {
+    if(this.editMode) {
+      this.projectApiService.deleteProject(this.project).subscribe(response => {
+        console.log(response);
+        this.router.navigate(['admin/listOfProjects']);
+      });
+    }
+  }
 }

@@ -16,5 +16,13 @@ gridster-item {
     padding-top: 5px;
 }
 
+.panel-icon {
+    color: #585858;
+    font-size: 1.1em;
+    position: absolute;
+    top: 2%;
+    right: 5%;
+}
+
 
 
