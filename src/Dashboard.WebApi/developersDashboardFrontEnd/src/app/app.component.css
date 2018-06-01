@@ -8,6 +8,11 @@
   right: 0;
 }
 
+.setting{
+    position: absolute;
+    top:0;
+    right: 20px;
+}
 .toolbar {
     height: 40px;
 }

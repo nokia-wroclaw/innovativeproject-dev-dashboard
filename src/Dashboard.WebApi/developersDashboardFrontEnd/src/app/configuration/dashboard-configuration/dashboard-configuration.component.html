@@ -1,0 +1,30 @@
+<mat-card>
+    <mat-card-header>
+      <mat-card-title style="font-size:1.5em;">
+        Dashboard configuration
+      </mat-card-title>
+    </mat-card-header>
+  
+    <form #projectForm="ngForm" (ngSubmit)="onSubmit()" >
+      <mat-card-content>
+
+        <mat-checkbox (change)="hidePanelTitle = !hidePanelTitle" [checked]="hidePanelTitle">Hide panel titles</mat-checkbox>
+        
+      </mat-card-content>
+  
+      <mat-card-actions>
+        <button type="submit"  [disabled]="!projectForm.form.valid" mat-button class="pull-right " style=" font-size: 1em; ">SAVE</button>
+        <button [routerLink]=" [ '/admin'] " mat-button class="pull-right " style=" font-size: 1em; ">CANCEL</button>
+      </mat-card-actions>
+      
+    </form>
+  
+  
+  
+  
+  
+  
+  
+  
+  </mat-card>
+  

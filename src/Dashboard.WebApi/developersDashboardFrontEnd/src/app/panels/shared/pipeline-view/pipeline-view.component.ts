@@ -17,6 +17,8 @@ interface StatusWithColor {
 @Component({selector: 'app-pipeline-view', templateUrl: './pipeline-view.component.html', styleUrls: ['./pipeline-view.component.css']})
 export class PipelineViewComponent {
 
+  constructor(){}
+
   @Input()
   pipeline : Pipeline;
 
