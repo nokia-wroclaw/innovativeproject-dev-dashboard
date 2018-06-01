@@ -1,8 +1,21 @@
-import {Component, OnInit, Input, ElementRef, ViewChild, DoCheck} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ElementRef,
+  ViewChild,
+  DoCheck
+} from '@angular/core';
 import {Pipeline, Stage} from '../../../projects-manager/project';
 
+interface StatusWithColor {
+  statusCode : number,
+  status : string,
+  color : string
+}
+
 @Component({selector: 'app-pipeline-view', templateUrl: './pipeline-view.component.html', styleUrls: ['./pipeline-view.component.css']})
-export class PipelineViewComponent implements OnInit {
+export class PipelineViewComponent {
 
   constructor(){}
 
@@ -10,48 +23,39 @@ export class PipelineViewComponent implements OnInit {
   pipeline : Pipeline;
 
   @ViewChild('pipelineContainer')
-  pipelineContainer : ElementRef;  
+  pipelineContainer : ElementRef;
 
-
-  ngOnInit() { 
-  
- 
-     }
-
-  statusColors : any[] = [
+  statusColors : StatusWithColor[] = [
     {
-      status: "failed",
+      status: 'running',
+      statusCode: 0,
+      color: '#8eccff'
+    }, {
+      status: 'failed',
+      statusCode: 1,
       color: '#d9534f'
     }, {
-      status: "running",
-      color: 'blue'
-    }, {
-      status: "manual",
-      color: 'pink'
-    }, {
-      status: "success",
+      status: 'success',
+      statusCode: 2,
       color: 'green'
     }, {
-      status: "created",
-      color: "white"
+      status: 'created',
+      statusCode: 3,
+      color: 'white'
     }, {
-      status: "skipped",
-      color: "gray"
+      status: 'canceled',
+      statusCode: 4,
+      color: 'gray'
     }
   ];
 
   getColorOfStage(stage : Stage) {
     return this
       .statusColors
-      .find(statusColor => statusColor.status == stage.stageStatus)
+      .find(statusColor => statusColor.statusCode === stage.stageStatus)
       .color;
   }
-  
-
 
   getFullWidth() : number {return this.pipelineContainer.nativeElement.clientWidth;}
 
-
-
-  
 }

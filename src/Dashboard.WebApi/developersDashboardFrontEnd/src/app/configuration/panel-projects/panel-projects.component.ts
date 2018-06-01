@@ -3,6 +3,7 @@ import {Project, SupportedProviders} from '../../projects-manager/project';
 import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
 import {Router, ActivatedRoute} from '@angular/router';
 import { NotificationService, SnackBar, NotificationType } from '../../snackbar/notification.service';
+import { failureMessages, FailureMessage, successMessages, SuccessMessage } from '../../snackbar/notification-messages';
 
 @Component({
   selector: 'app-panel-projects',
@@ -66,18 +67,9 @@ export class PanelProjectsComponent implements OnInit {
       .saveOrUpdate(this.editMode, this.project)//tu zmienic
       .subscribe(project => {
         this.project = project;
-        if(this.editMode == true){
-          this.notificationService.addNotification('Udalo sie edytowac projekt', NotificationType.Success);
-        }else{
-          this.notificationService.addNotification('Udalo sie dodac projekt', NotificationType.Success);
-        }
+        this.notificationService.addNotification(successMessages.get(SuccessMessage.PROJECT_SAVED), NotificationType.Success);
       }, err => {
-        if(this.editMode == true){
-          this.notificationService.addNotification('Nie udalo sie edytowac projektu', NotificationType.Failure);
-        }else{
-          this.notificationService.addNotification('Nie udalo sie dodac projektu', NotificationType.Failure);
-        }
-        console.error('Error msg: ', err);
+        this.notificationService.addNotification(failureMessages.get(FailureMessage.PROJECT_SAVED_FAILED) + ": " + err.statusText, NotificationType.Failure);
       }, () => {
         this
           .zone

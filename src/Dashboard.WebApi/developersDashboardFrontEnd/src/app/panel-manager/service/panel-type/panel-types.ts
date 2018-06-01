@@ -9,14 +9,14 @@ import { LastPipelinesPanelConfigComponent } from "../../../panels/last-pipeline
 export const panelTypes : PanelType[] = [
     {
         discriminator: "MemePanel",
-        name: "Random meme",
+        name: "Meme",
         dynamic: false,
         bounds: {
-            minWidth: 1,
+            minWidth: 2,
             minHeight: 1,
-            maxWidth: 3,
+            maxWidth: 16,
             maxHeight: 3,
-            defaultWidth: 1,
+            defaultWidth: 2,
             defaultHeight: 1
         },
         component: RandomMemePanelComponent,
@@ -25,14 +25,14 @@ export const panelTypes : PanelType[] = [
         apiTypeNameUpdate: 'UpdateMemePanel'
     }, {
         discriminator: "StaticBranchPanel",
-        name: "Static branch pipelines",
+        name: "Latest pipeline for static branch",
         dynamic: false,
         bounds: {
-            minWidth: 2,
+            minWidth: 3,
             minHeight: 1,
-            maxWidth: 4,
-            maxHeight: 2,
-            defaultWidth: 2,
+            maxWidth: 16,
+            maxHeight: 1,
+            defaultWidth: 3,
             defaultHeight: 1
         },
         component: StaticBranchPanelComponent,
@@ -41,14 +41,14 @@ export const panelTypes : PanelType[] = [
         apiTypeNameUpdate: 'UpdateStaticBranchPanel'
     }, {
         discriminator: "DynamicPipelinesPanel",
-        name: "Last pipelines",
+        name: "Pipelines for dynamic branches",
         dynamic: true,
         bounds: {
-            minWidth: 2,
+            minWidth: 3,
             minHeight: 1,
             maxWidth: 10,
             maxHeight: 10,
-            defaultWidth: 2,
+            defaultWidth: 3,
             defaultHeight: 2
         },
         component: LastPipelinesPanelComponent,

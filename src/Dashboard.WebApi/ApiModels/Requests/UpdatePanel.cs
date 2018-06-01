@@ -67,7 +67,8 @@ namespace Dashboard.WebApi.ApiModels.Requests
                     Height = realModel.Position.Height
                 },
                 ProjectId = realModel.ProjectId,
-                HowManyLastPipelinesToRead = realModel.HowManyLastPipelinesToRead
+                HowManyLastPipelinesToRead = realModel.HowManyLastPipelinesToRead,
+                PanelRegex = realModel.PanelRegex
             };
 
             return entity;

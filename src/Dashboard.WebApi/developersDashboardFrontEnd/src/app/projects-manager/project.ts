@@ -11,7 +11,7 @@ export interface Pipeline {
 
 export interface Stage {
     stageName : string;
-    stageStatus : string;
+    stageStatus : number;
 }
 
 export class SupportedProviders {

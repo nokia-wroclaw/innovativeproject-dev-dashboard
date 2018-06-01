@@ -9,10 +9,13 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using GitLabModel = Dashboard.Application.GitLabApi.Models;
+using Dashboard.Application.GitLabApi;
+using System.Collections.Specialized;
 
 namespace Dashboard.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class WebhookController : Controller
     {
         private readonly IProjectService _projectService;
@@ -24,11 +27,46 @@ namespace Dashboard.WebApi.Controllers
 
         //api/Webhook/gitlab
         [HttpPost("{provider}")]
-        public IActionResult Post(string provider, [FromBody] JObject body)
+        public IActionResult JobWebhook(string provider, [FromBody] object body)
         {
-            _projectService.FireProjectUpdate(provider, body);
+            _projectService.FireJobUpdate(provider, body);
 
             return Ok();
         }
+
+        //api/Webhook/gitlab
+        [HttpPost("{provider}")]
+        public IActionResult PipelineWebhook(string provider, [FromBody] object body)
+        {
+            _projectService.FirePipelineUpdate(provider, body);
+
+            return Ok();
+        }
+
+        //api/Webhook/gitlab
+        [HttpPost("{provider}")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IActionResult FormPipelineWebhook(string provider)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            foreach (var key in Request.Form.Keys)
+            {
+                var value = Request.Form[key];
+                dict.Add(key, value);
+            }
+
+            _projectService.FirePipelineUpdate(provider, dict);
+
+            return Ok();
+        }
+
+        ////api/Webhook/gitlab
+        //[HttpPost("{provider}")]
+        //public IActionResult ProjectWebhook(string provider, [FromBody] object body)
+        //{
+        //    _projectService.FireProjectUpdate(provider, body);
+
+        //    return Ok();
+        //}
     }
 }

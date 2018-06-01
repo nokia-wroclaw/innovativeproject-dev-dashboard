@@ -1,0 +1,12 @@
+<form #lastPipelinesPanelForm="ngForm">
+    <label style="position: relative; margin-bottom: 35px;" class="mat-form-field-can-float mat-form-field-should-float mat-form-field-label mat-form-field-empty mat-form-field-label">
+        Number of last pipelines to display *
+    </label>
+    <mat-slider min="1.0" max="6.0" step="1.0" value="2.0" thumbLabel required [(ngModel)]="panel.howManyLastPipelinesToRead"
+        name="howMany"></mat-slider>
+
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Regex expression for branches" required appRegexValid [(ngModel)]="panel.panelRegex" name="panelRegex">
+    </mat-form-field>
+
+</form>

@@ -24,5 +24,10 @@ gridster-item {
     right: 5%;
 }
 
+.addProject {
+    position: absolute;
+    bottom: 4%;
+    right: 3%;
+}
 
 

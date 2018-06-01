@@ -11,7 +11,7 @@ export class RandomMemeService {
     constructor(private http : HttpClient) {}
 
     sayHelloWorld() {
-        console.log("Hello world form the Random Meme Service!");
+        
     }
 
     getRandomMeme() : Observable < Response > {

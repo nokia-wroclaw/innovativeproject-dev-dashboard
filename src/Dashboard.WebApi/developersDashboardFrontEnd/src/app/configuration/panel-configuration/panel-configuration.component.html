@@ -15,7 +15,7 @@
 
       
      <mat-form-field>
-      <mat-select [disabled]="editMode" (selectionChange)="descriminatorSelectionChanged()" placeholder="Types" required [(ngModel)]="panel.discriminator" name="discriminator">
+      <mat-select [disabled]="editMode" (selectionChange)="descriminatorSelectionChanged()" placeholder="Panel type" required [(ngModel)]="panel.discriminator" name="discriminator">
         <mat-option *ngFor="let type of panelTypes" [value]="type.discriminator">
           {{type.name}}
         </mat-option>
@@ -24,7 +24,7 @@
 
       
      <mat-form-field>
-      <mat-select placeholder="Projects" required [(ngModel)]="panel.projectId" name="project">
+      <mat-select placeholder="Related project" required [(ngModel)]="panel.projectId" name="project">
         <mat-option *ngFor="let project of projects" [value]="project.id">
           {{project.projectTitle}}
         </mat-option>

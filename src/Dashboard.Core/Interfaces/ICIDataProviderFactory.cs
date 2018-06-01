@@ -9,6 +9,5 @@ namespace Dashboard.Core.Interfaces
         IEnumerable<ICiDataProvider> GetSupportedProviders { get; }
 
         ICiDataProvider CreateForProviderName(string name);
-        ICiDataProvider CreateForProviderLowercaseName(string name);
     }
 }

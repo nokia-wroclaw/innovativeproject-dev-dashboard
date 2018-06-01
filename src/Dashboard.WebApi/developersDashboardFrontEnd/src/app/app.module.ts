@@ -68,6 +68,7 @@ import { NotificationService } from './snackbar/notification.service';
 import { PipelineService } from './panels/shared/pipeline-view/pipeline-service/pipeline.service';
 import { DashboardConfigurationComponent } from './configuration/dashboard-configuration/dashboard-configuration.component';
 import { DashboardConfigurationService } from './configuration/dashboard-configuration/dashboard-service/dashboard-configuration.service';
+import { RegexValidatorDirective } from './panels/shared/validators/valid-regex.directive';
 
 const appRoutes : Routes = [
   {
@@ -114,10 +115,11 @@ const appRoutes : Routes = [
     LastPipelinesPanelComponent,
     LastPipelinesPanelConfigComponent,
     PipelineViewComponent,
-    DashboardConfigurationComponent
+    DashboardConfigurationComponent,
+    RegexValidatorDirective
   ],
   imports: [
-    RouterModule.forRoot(appRoutes, {enableTracing: true}),
+    RouterModule.forRoot(appRoutes),
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,

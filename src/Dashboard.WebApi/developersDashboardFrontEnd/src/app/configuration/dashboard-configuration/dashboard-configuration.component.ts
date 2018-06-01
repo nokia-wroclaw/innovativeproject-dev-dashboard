@@ -20,7 +20,6 @@ export class DashboardConfigurationComponent implements OnInit {
     this.dashboardConfigurationService.setPanelTitleStatus(this.hidePanelTitle);
     this.router.navigate(['/']);
     
-
     }
   }
  

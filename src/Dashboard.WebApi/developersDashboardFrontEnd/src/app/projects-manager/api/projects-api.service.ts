@@ -1,19 +1,20 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import {Injectable, OnDestroy} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Response} from '@angular/http';
+import {Observable} from 'rxjs/Observable';
 
-import { Project, Pipeline } from "./../project";
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import {Project, Pipeline} from "./../project";
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import 'rxjs/Rx';
-import { Subscription } from 'rxjs/Rx';
-import { Subject } from 'rxjs/Subject';
+import {Subscription} from 'rxjs/Rx';
+import {Subject} from 'rxjs/Subject';
+import {NotificationService, NotificationType} from '../../snackbar/notification.service';
 
 @Injectable()
 export class ProjectsApiService {
 
-    private baseUrl: string = "/api/project";
+    private baseUrl : string = "/api/project";
 
     constructor(private http: HttpClient) {
         
@@ -50,14 +51,20 @@ export class ProjectsApiService {
 
     private url: string = "api/DashboardData/SupportedProviders";
 
-    getSupportedProvidersForProjects(): Observable<string[]> {
-        return this.http.get <string[]> (this.url);
+    getSupportedProvidersForProjects() : Observable < string[] > {
+        return this.http.get < string[] > (this.url);
     }
 
-    getMatchingBranches(projectId: number, searchValue: string): Observable<string[]> {
+    getMatchingBranches(projectId : number, searchValue : string) : Observable < string[] > {
 
-        const options = projectId && searchValue ? { params: new HttpParams().set('projectId', projectId.toString()).set('searchValue', searchValue) } : {};
+        const options = projectId && searchValue
+            ? {
+                params: new HttpParams()
+                    .set('projectId', projectId.toString())
+                    .set('searchValue', searchValue)
+            }
+            : {};
 
-        return this.http.get<string[]>('/api/DashboardData/SearchForBranch', options);
+        return this.http.get < string[] > ('/api/DashboardData/SearchForBranch', options);
     }
 }
