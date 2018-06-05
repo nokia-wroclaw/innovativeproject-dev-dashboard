@@ -9,7 +9,9 @@ The goal of this project is to build an app, which will show current states of C
 ## Description
 This app is designed to be viewed on TVs or other displays which are not used at the moment. It allows to configure static panels, which always shows given branch or dynamic panels for discovering newest pipelines/branches. It should be able to track many projects in many CI systems. Also, writing own plugins to make this app able to deal with new CI systems is supported. 
 
-At this moment, only [GitLab](https://gitlab.com) is supported. 
+At this moment supported services are:
+* [GitLab](https://gitlab.com)
+* [Travis](https://travis-ci.org)
 
 ### Technologies
 Project is divided into frontend and backend. Technologies in use
