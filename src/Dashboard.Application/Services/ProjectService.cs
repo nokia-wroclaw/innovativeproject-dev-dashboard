@@ -174,20 +174,8 @@ namespace Dashboard.Application.Services
             await DownloadNewestPipelinesNotInBrancNameList(dataProvider, project, targetPipelineNumber, staticBranchesNamesDb, merger);
 
             ////Merge
-            //var existing = project.Pipelines;
             var mergeResult = merger.MergePipelines(project.Pipelines, staticBranchesPipelines, project.PipelinesNumber);
 
-            //var intersect = existing.Intersect(mergeResult);
-            //var sum = existing.Union(mergeResult);
-            //var toDelete = sum.Except(mergeResult);
-
-            //_pipelineRepository.DeleteRange(toDelete);//project.Pipelines);
-
-            ////Save update to DB
-            //project.Pipelines = mergeResult.ToList();
-
-            //await _projectRepository.UpdateAsync(project, project.Id);
-            //await _projectRepository.SaveAsync();
             await SaveMergedInDB(mergeResult, project);
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
@@ -209,19 +197,6 @@ namespace Dashboard.Application.Services
             var mergeResult = merger.MergePipelines(project.Pipelines, staticPipelines, project.PipelinesNumber);
 
             await SaveMergedInDB(mergeResult, project);
-            //if(staticBranchesNamesDb.Contains(pipeline.Ref))
-            //{
-            //    //Insert at beginning
-            //    projectPipelines.Insert(0, pipeline);
-            //}
-            //else
-            //{
-            //    //Insert after statics, on start of dynamics
-            //    projectPipelines.Add(pipeline);
-            //}
-            //project.Pipelines = projectPipelines.Take(project.PipelinesNumber).ToList();
-            //await _projectRepository.UpdateAsync(project, project.Id);
-            //await _projectRepository.SaveAsync();
         }
 
         private async Task SaveMergedInDB(IEnumerable<Pipeline> mergeResult, Project project)
