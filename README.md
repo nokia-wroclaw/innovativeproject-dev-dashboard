@@ -1,7 +1,7 @@
 # innovativeproject-dev-dashboard
 [![Build Status](https://travis-ci.org/nokia-wroclaw/innovativeproject-dev-dashboard.svg?branch=develop)](https://travis-ci.org/nokia-wroclaw/innovativeproject-dev-dashboard)
 ---------
-
+ 
 ## Goal
 The goal of this project is to build an app, which will show current states of CI systems for repositories on source control systems. 
 
