@@ -11,4 +11,10 @@ namespace Dashboard.Core.Entities
         public Status StageStatus { get; set; }
         public virtual ICollection<Job> Jobs { get; set; }
     }
+
+    public class ResponseStage : Stage
+    {
+        public int Succeeded { get; set; }
+        public int Total { get; set; }
+    }
 }

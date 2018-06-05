@@ -45,6 +45,23 @@ namespace Dashboard.WebApi.Controllers
         public async Task<IEnumerable<Pipeline>> PipelinesForPanel(int panelID)
         {
             var pipelinesForPanel = await _projectService.GetPipelinesForPanel(panelID);
+            foreach (var pipe in pipelinesForPanel)
+            {
+                var stages = pipe.Stages.ToList();
+                for (int i = 0; i < stages.Count; i++)
+                {
+                    var stage = stages[i];
+                    ResponseStage responseStage = new ResponseStage()
+                    {
+                        StageName = stage.StageName,
+                        StageStatus = stage.StageStatus,
+                        Succeeded = stage.Jobs.Count(p => p.Status == Status.Success),
+                        Total = stage.Jobs.Count
+                    };
+                    stages[i] = responseStage;
+                }
+                pipe.Stages = stages;
+            }
             return pipelinesForPanel;
         }
     }
