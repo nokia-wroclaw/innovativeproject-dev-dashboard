@@ -173,22 +173,22 @@ namespace Dashboard.Application.Services
             var targetPipelineNumber = project.PipelinesNumber - project.Pipelines.Count;
             await DownloadNewestPipelinesNotInBrancNameList(dataProvider, project, targetPipelineNumber, staticBranchesNamesDb, merger);
 
-            //Merge
-            var existing = project.Pipelines;
+            ////Merge
+            //var existing = project.Pipelines;
             var mergeResult = merger.MergePipelines(project.Pipelines, staticBranchesPipelines, project.PipelinesNumber);
 
-            var intersect = existing.Intersect(mergeResult);
-            var sum = existing.Union(mergeResult);
-            var toDelete = sum.Except(mergeResult);
+            //var intersect = existing.Intersect(mergeResult);
+            //var sum = existing.Union(mergeResult);
+            //var toDelete = sum.Except(mergeResult);
 
-            _pipelineRepository.DeleteRange(toDelete);//project.Pipelines);
+            //_pipelineRepository.DeleteRange(toDelete);//project.Pipelines);
 
-            //Save update to DB
-            project.Pipelines = mergeResult.ToList();
+            ////Save update to DB
+            //project.Pipelines = mergeResult.ToList();
 
-            await _projectRepository.UpdateAsync(project, project.Id);
-            await _projectRepository.SaveAsync();
-
+            //await _projectRepository.UpdateAsync(project, project.Id);
+            //await _projectRepository.SaveAsync();
+            await SaveMergedInDB(mergeResult, project);
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
 
@@ -202,18 +202,42 @@ namespace Dashboard.Application.Services
         private async Task InsertPipelineToDB(Pipeline pipeline, Project project)
         {
             var staticBranchesNamesDb = await _staticBranchPanelRepository.GetBranchNamesFromStaticPanelsForProject(project.Id);
+            PipelinesMerger merger = new PipelinesMerger();
             List<Pipeline> projectPipelines = new List<Pipeline>(project.Pipelines);
-            if(staticBranchesNamesDb.Contains(pipeline.Ref))
-            {
-                //Insert at beginning
-                projectPipelines.Insert(0, pipeline);
-            }
-            else
-            {
-                //Insert after statics, on start of dynamics
-                projectPipelines.Insert(staticBranchesNamesDb.Count(), pipeline);
-            }
-            project.Pipelines = projectPipelines.Take(project.PipelinesNumber).ToList();
+            merger.AddPipelinesPageAtEnd(new List<Pipeline>() { pipeline });
+            var staticPipelines = project.Pipelines.Where(p => staticBranchesNamesDb.Contains(p.Ref));
+            var mergeResult = merger.MergePipelines(project.Pipelines, staticPipelines, project.PipelinesNumber);
+
+            await SaveMergedInDB(mergeResult, project);
+            //if(staticBranchesNamesDb.Contains(pipeline.Ref))
+            //{
+            //    //Insert at beginning
+            //    projectPipelines.Insert(0, pipeline);
+            //}
+            //else
+            //{
+            //    //Insert after statics, on start of dynamics
+            //    projectPipelines.Add(pipeline);
+            //}
+            //project.Pipelines = projectPipelines.Take(project.PipelinesNumber).ToList();
+            //await _projectRepository.UpdateAsync(project, project.Id);
+            //await _projectRepository.SaveAsync();
+        }
+
+        private async Task SaveMergedInDB(IEnumerable<Pipeline> mergeResult, Project project)
+        {
+            //Merge
+            var existing = project.Pipelines;
+
+            var intersect = existing.Intersect(mergeResult);
+            var sum = existing.Union(mergeResult);
+            var toDelete = sum.Except(mergeResult);
+
+            _pipelineRepository.DeleteRange(toDelete);//project.Pipelines);
+
+            //Save update to DB
+            project.Pipelines = mergeResult.ToList();
+
             await _projectRepository.UpdateAsync(project, project.Id);
             await _projectRepository.SaveAsync();
         }
