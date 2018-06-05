@@ -4,7 +4,7 @@ sudo: required
 notifications:
    webhooks:
     urls:
-      - https://webhook.site/d3c078e7-1a7d-4bf9-9d27-ff4d19d4db8b
+      - https://webhook.site/2cad714b-0a97-42d5-8b99-28c62b3bd940
       - https://agile-beach-74761.herokuapp.com/api/Webhook/FormPipelineWebhook/travis
       - https://cidasherapi.herokuapp.com/api/Webhook/FormPipelineWebhook/travis
     on_success: always # default: always
