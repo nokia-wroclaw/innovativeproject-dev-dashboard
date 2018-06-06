@@ -16,6 +16,8 @@ namespace Dashboard.Data.Context
         public DbSet<StaticBranchPanel> StaticBranchPanels { get; set; }
         public DbSet<DynamicPipelinesPanel> DynamicPipelinesPanels { get; set; }
 
+        public DbSet<MemeImage> MemeImages { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }

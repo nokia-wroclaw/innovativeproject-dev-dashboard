@@ -2,21 +2,17 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
+import { RandomMemePanel } from './random-meme-panel';
 
 @Injectable()
 export class RandomMemeService {
 
-    private baseUrl : string = "url/to/imgur/";
+    private baseUrl : string = "/api/panel";
 
     constructor(private http : HttpClient) {}
 
-    sayHelloWorld() {
-        
-    }
-
-    getRandomMeme() : Observable < Response > {
-        // return this.http.get < Response > (this.baseUrl);
-        return null;
+    refreshPanel(id : number) : Observable < RandomMemePanel > {
+        return this.http.get < RandomMemePanel > (this.baseUrl + "/" + id);
     }
 
 }

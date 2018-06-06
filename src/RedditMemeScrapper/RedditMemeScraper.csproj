@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <StartupObject>RedditMemeScrapper.Program</StartupObject>
+    <ApplicationIcon />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;NETCOREAPP;NETCOREAPP2_1;NETCOREAPP;NETCOREAPP2_1;NETCOREAPP;NETCOREAPP2_1;NETCOREAPP;NETCOREAPP2_1;NETCOREAPP;NETCOREAPP2_1;DEBUG;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="RestSharp" Version="106.3.0" />
+  </ItemGroup>
+
+</Project>

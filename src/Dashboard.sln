@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.Application", "Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.UnitTests", "Dashboard.UnitTests\Dashboard.UnitTests.csproj", "{72EBAA41-1BAB-4181-AA0D-BD7804216DE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravisApi", "TravisApi\TravisApi.csproj", "{016CB329-06FD-42FC-A7DA-117435B3E3D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravisApi", "TravisApi\TravisApi.csproj", "{016CB329-06FD-42FC-A7DA-117435B3E3D6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedditMemeScraper", "RedditMemeScrapper\RedditMemeScraper.csproj", "{00E95BEF-9617-4F42-B312-19BC681066F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,12 @@ Global
 		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{016CB329-06FD-42FC-A7DA-117435B3E3D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00E95BEF-9617-4F42-B312-19BC681066F9}.ci-docker|Any CPU.ActiveCfg = Debug|Any CPU
+		{00E95BEF-9617-4F42-B312-19BC681066F9}.ci-docker|Any CPU.Build.0 = Debug|Any CPU
+		{00E95BEF-9617-4F42-B312-19BC681066F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00E95BEF-9617-4F42-B312-19BC681066F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00E95BEF-9617-4F42-B312-19BC681066F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00E95BEF-9617-4F42-B312-19BC681066F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

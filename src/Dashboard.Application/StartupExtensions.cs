@@ -13,6 +13,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using RedditMemeScrapper;
 
 namespace Dashboard.Application
 {
@@ -23,6 +24,7 @@ namespace Dashboard.Application
             builder.RegisterAssemblyModules(typeof(ServiceModule).Assembly);
 
             builder.RegisterType<CronJobsManager>().As<ICronJobsManager>();
+            builder.RegisterType<RedditScraper>().AsSelf().AsImplementedInterfaces();
 
             builder.RegisterType<GitLabDataProvider>().As<ICiDataProvider>();
             builder.RegisterType<TravisDataProvider>().As<ICiDataProvider>();

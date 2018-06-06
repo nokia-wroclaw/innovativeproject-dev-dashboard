@@ -12,6 +12,7 @@ namespace Dashboard.Core.Interfaces.Repositories
     public interface IEfRepository<T> : IDisposable
         where T : class
     {
+        void AddRange(IEnumerable<T> entities);
         Task<T> AddAsync(T t);
         Task<int> CountAsync();
         void Delete(T entity);
