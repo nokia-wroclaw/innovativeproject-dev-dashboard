@@ -13,7 +13,7 @@ OnDestroy {
 
   constructor(private adminModeService : AdminModeService, private panelManagerService : PanelManagerService, private route : ActivatedRoute, private _router : Router, private notificationService : NotificationService) {}
 
-  panels : Panel[];
+  panels : Panel[] = null;
 
   adminMode : boolean = false;
 

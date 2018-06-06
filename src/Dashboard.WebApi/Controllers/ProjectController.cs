@@ -51,7 +51,7 @@ namespace Dashboard.WebApi.Controllers
                 ApiProjectId = model.ApiProjectId,
                 DataProviderName = model.DataProviderName,
                 CiDataUpdateCronExpression = model.CiDataUpdateCronExpression,
-                PipelinesNumber = model.PipelineNumber
+                PipelinesNumber = model.PipelinesNumber == 0 ? 10 : model.PipelinesNumber
             };
 
             var r = await _projectService.CreateProjectAsync(project);

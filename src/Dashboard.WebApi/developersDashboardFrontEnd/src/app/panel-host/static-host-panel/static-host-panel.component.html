@@ -1,7 +1,7 @@
 <mat-card>
   <div class="panel-header-container">
 
-    <div class="title pull-left">
+    <div *ngIf="!hidePanelTitle" class="title pull-left">
       <p>{{tileTitle}}</p>
     </div>
 

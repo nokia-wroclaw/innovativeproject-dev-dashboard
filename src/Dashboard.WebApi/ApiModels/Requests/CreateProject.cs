@@ -16,6 +16,6 @@ namespace Dashboard.WebApi.ApiModels.Requests
         public string DataProviderName { get; set; }
         [Required]
         public string CiDataUpdateCronExpression { get; set; }
-        public int PipelineNumber { get; set; }
+        public int PipelinesNumber { get; set; }
     }
 }

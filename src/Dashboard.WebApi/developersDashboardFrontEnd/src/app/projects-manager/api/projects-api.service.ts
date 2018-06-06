@@ -12,48 +12,44 @@ import {Subject} from 'rxjs/Subject';
 import {NotificationService, NotificationType} from '../../snackbar/notification.service';
 
 @Injectable()
-export class ProjectsApiService implements OnDestroy {
+export class ProjectsApiService {
 
     private baseUrl : string = "/api/project";
 
-    private poolingInterval : number = 10000;
-    private projects : BehaviorSubject < Project[] > = new BehaviorSubject < Project[] > ([]);
-    private projectsPulling : Subscription;
-
-    // Writting to this subject causes an immidiate fetch of projects from backend
-    // API.
-    private asyncPull : Subject < boolean > = new Subject();
-
-    constructor(private http : HttpClient, private notificationService : NotificationService) {
-        this.projectsPulling = Observable.merge(Observable.interval(this.poolingInterval).startWith(0), this.asyncPull.asObservable()).switchMap(() => this.http.get < Project[] > (this.baseUrl)).subscribe(projects => this.projects.next(projects), error => this.notificationService.addNotification("Couldn't update projects: " + error.statusText, NotificationType.Failure));
+    constructor(private http: HttpClient) {
+        
     }
 
-    ngOnDestroy() : void {
-        this
-            .projectsPulling
-            .unsubscribe();
+    getProjects(): Observable<Project[]> {
+        return this.http.get<Project[]>(this.baseUrl);
     }
 
-    getProjects() : Observable < Project[] > {
-        return this.projects;
+    getProject(id: number): Observable<Project> {
+        return this.http.get<Project>(this.baseUrl + '/' + id);
     }
 
-    getProject(id : number) : Observable < Project > {
-        return this
-            .projects
-            .map(projects => projects.find(project => project.id == id));
+    saveOrUpdate (update : boolean, projectData: Project) : Observable < Project > {
+        if(update) {
+            return this.updateProject(projectData);
+        } else {
+            return this.addProject(projectData);
+        }
     }
-
-    addProject(project : Project) : Observable < Project > {
-        return this.http.post < Project > (this.baseUrl, project).flatMap(project => {
-            this
-                .asyncPull
-                .next(true);
+    addProject(projectData: Project): Observable<Project> {
+        return this.http.post<Project>(this.baseUrl, projectData).flatMap(project => {
             return Observable.of(project);
         });
     }
 
-    private url : string = "api/DashboardData/SupportedProviders";
+    updateProject(projectData: Project): Observable<Project> {
+        return this.http.put<Project>(this.baseUrl + '/' + projectData.id, projectData);
+    }
+
+    deleteProject(project : Project) : Observable<any> {
+        return this.http.delete < any > (this.baseUrl + '/' + project.id);
+    }
+
+    private url: string = "api/DashboardData/SupportedProviders";
 
     getSupportedProvidersForProjects() : Observable < string[] > {
         return this.http.get < string[] > (this.url);
