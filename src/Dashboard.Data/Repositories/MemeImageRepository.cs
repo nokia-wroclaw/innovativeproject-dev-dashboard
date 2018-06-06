@@ -17,11 +17,12 @@ namespace Dashboard.Data.Repositories
 
         public async Task<IEnumerable<MemeImage>> GetRandomMemes(int howMany)
         {
-            return (await Context.Set<MemeImage>()
+            return await Context.Set<MemeImage>()
+                .GroupBy(x => x.ImageUrl)
+                .Select(x => x.FirstOrDefault())
                 .OrderBy(r => Guid.NewGuid())
                 .Take(howMany)
-                .ToDictionaryAsync(x => x.ImageUrl, x => x))
-                .Values;
+                .ToListAsync();
         }
     }
 }
