@@ -49,7 +49,7 @@ namespace RedditMemeScrapper
             request.AddQueryParameter("sort", options.SortMode.ToString().ToLower());
             request.AddQueryParameter("dist", options.PerPage.ToString());
 
-            if (string.IsNullOrEmpty(options.After))
+            if (!string.IsNullOrEmpty(options.After))
                 request.AddQueryParameter("after", options.After);
 
             if (options.AllowOver18)

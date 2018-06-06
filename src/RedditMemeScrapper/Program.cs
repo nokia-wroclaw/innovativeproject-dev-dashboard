@@ -14,7 +14,7 @@ namespace RedditMemeScrapper
         {
             var scraper = new RedditScraper();
 
-            var r = scraper.Scrap("memes", 50, options =>
+            var r = scraper.Scrap("memes", 3, options =>
             {
                 options.AllowOver18 = true;
                 options.SortMode = RedditSort.Hot;
@@ -27,7 +27,7 @@ namespace RedditMemeScrapper
             var allJson = JsonConvert.SerializeObject(r);
             File.WriteAllText("result.json", allJson);
 
-            Console.WriteLine("Done " + r.Count());
+            Console.WriteLine("Done " + r.Select(i => i.ImageUrl).Distinct().Count());
         }
 
         static void Main(string[] args)
