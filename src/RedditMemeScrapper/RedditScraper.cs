@@ -29,6 +29,9 @@ namespace RedditMemeScrapper
                 if (!pageResponse.IsSuccessful)
                     throw new HttpRequestException(pageResponse.ErrorMessage);
 
+                //Check if subreddit page has any posts
+                if(!pageResponse.Data.PostIds.Any()) break;
+
                 opts.After = pageResponse.Data.PostIds.Last();
 
                 var pageImages = ExtractImages(pageResponse.Data);

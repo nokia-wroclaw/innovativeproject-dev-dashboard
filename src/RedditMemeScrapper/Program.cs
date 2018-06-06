@@ -14,7 +14,7 @@ namespace RedditMemeScrapper
         {
             var scraper = new RedditScraper();
 
-            var r = scraper.Scrap("memes", 3, options =>
+            var r = scraper.Scrap("memes", 50, options =>
             {
                 options.AllowOver18 = true;
                 options.SortMode = RedditSort.Hot;
