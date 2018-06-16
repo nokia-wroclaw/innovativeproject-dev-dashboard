@@ -37,7 +37,7 @@ IPanelConfigComponent < StaticBranchPanel > {
     postPanel(edit : boolean) : Observable < StaticBranchPanel > {
         return this.panelApi.saveOrUpdate(edit, this.panel).map(response => {
             console.log(response);
-            return response
+          return response;
         });
     }
 

@@ -4,11 +4,7 @@ import {RandomMemePanel} from "./random-meme-panel";
 import {Observable} from "rxjs/Observable";
 import { PanelApiService } from '../../panel-manager/service/api/panel-api.service';
 
-@Component({template: `
-    <mat-form-field class="example-full-width">
-        <input matInput placeholder="Meme url" required [(ngModel)]="panel.staticMemeUrl" name="url">
-    </mat-form-field>
-`, styleUrls: ['./../../configuration/panel.shared.css']})
+@Component({template: ``})
 export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigComponent<RandomMemePanel> {
 
     panel : RandomMemePanel;
@@ -16,7 +12,7 @@ export class RandomMemePanelConfigComponent implements OnInit, IPanelConfigCompo
     constructor(private panelsApi : PanelApiService) {}
 
     isValid() : boolean {
-        return this.panel.staticMemeUrl != null && this.panel.staticMemeUrl != '';
+        return true;
     }
 
     setPanel(panel : any) {
