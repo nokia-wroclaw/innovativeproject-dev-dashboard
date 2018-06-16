@@ -17,7 +17,6 @@ namespace Dashboard.WebApi.ApiModels.Responses
         public string CiDataUpdateCronExpression { get; set; }
 
         public int PipelinesNumber { get; set; }
-        public virtual ICollection<ResponsePipeline> Pipelines { get; set; }
 
         public ResponseProject()
         {
@@ -35,7 +34,6 @@ namespace Dashboard.WebApi.ApiModels.Responses
             this.CiDataUpdateCronExpression = project.CiDataUpdateCronExpression;
 
             this.PipelinesNumber = project.PipelinesNumber;
-            this.Pipelines = project.Pipelines.Select(p => new ResponsePipeline(p)).ToList();
         }
     }
 }
