@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Application.Validators;
@@ -13,12 +14,14 @@ namespace Dashboard.Application.Services
     public class PanelService : IPanelService
     {
         private readonly IPanelRepository _panelRepository;
+        private readonly IMemeImageRepository _memeImageRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly IValidationService _validationService;
 
-        public PanelService(IPanelRepository panelRepository, IProjectRepository projectRepository, IValidationService validationService)
+        public PanelService(IPanelRepository panelRepository, IMemeImageRepository memeImageRepository, IProjectRepository projectRepository, IValidationService validationService)
         {
             _panelRepository = panelRepository;
+            _memeImageRepository = memeImageRepository;
             _projectRepository = projectRepository;
             _validationService = validationService;
         }
@@ -76,6 +79,12 @@ namespace Dashboard.Application.Services
             {
                 var existingProject = await _projectRepository.GetByIdAsync(model.ProjectId.Value);
                 model.Project = existingProject;
+            }
+
+            if (model is MemePanel panel)
+            {
+                var memeImage = await _memeImageRepository.GetRandomMemes(1);
+                panel.StaticMemeUrl = memeImage.Select(i => i.ImageUrl).FirstOrDefault();
             }
 
             var r = await _panelRepository.AddAsync(model);
