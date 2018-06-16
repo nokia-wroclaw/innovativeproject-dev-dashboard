@@ -47,7 +47,7 @@ namespace Dashboard.WebApi.Controllers
         {
             var pipelinesForPanel = await _projectService.GetPipelinesForPanel(panelID);
 
-            var returnPipelines = pipelinesForPanel.Select(p => new ResponsePipeline(p));
+            var returnPipelines = pipelinesForPanel.Select(p => p == null ? null : new ResponsePipeline(p));
             return returnPipelines;
         }
     }
