@@ -57,9 +57,6 @@ namespace Dashboard.Data.Context
                 m.Property(p => p.PipelinesNumber).HasDefaultValue(100);
 
                 m.HasMany(p => p.Pipelines);
-
-                //m.HasMany(p => p.StaticPipelines);
-                //m.HasMany(p => p.DynamicPipelines);
             });
 
             builder.Entity<BranchName>(m =>

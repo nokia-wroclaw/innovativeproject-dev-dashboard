@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Interfaces;
 using Dashboard.Core.Entities;
+using Dashboard.WebApi.ApiModels.Responses;
 
 namespace Dashboard.WebApi.Controllers
 {
@@ -42,27 +43,12 @@ namespace Dashboard.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Pipeline>> PipelinesForPanel(int panelID)
+        public async Task<IEnumerable<ResponsePipeline>> PipelinesForPanel(int panelID)
         {
             var pipelinesForPanel = await _projectService.GetPipelinesForPanel(panelID);
-            foreach (var pipe in pipelinesForPanel)
-            {
-                var stages = pipe.Stages.ToList();
-                for (int i = 0; i < stages.Count; i++)
-                {
-                    var stage = stages[i];
-                    ResponseStage responseStage = new ResponseStage()
-                    {
-                        StageName = stage.StageName,
-                        StageStatus = stage.StageStatus,
-                        Succeeded = stage.Jobs.Count(p => p.Status == Status.Success),
-                        Total = stage.Jobs.Count
-                    };
-                    stages[i] = responseStage;
-                }
-                pipe.Stages = stages;
-            }
-            return pipelinesForPanel;
+
+            var returnPipelines = pipelinesForPanel.Select(p => new ResponsePipeline(p));
+            return returnPipelines;
         }
     }
 }
