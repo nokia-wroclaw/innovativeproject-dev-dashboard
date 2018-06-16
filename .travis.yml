@@ -2,6 +2,7 @@ language: csharp
 mono: none
 sudo: required
 notifications:
+   slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
    webhooks:
     urls:
       - https://webhook.site/2cad714b-0a97-42d5-8b99-28c62b3bd940
