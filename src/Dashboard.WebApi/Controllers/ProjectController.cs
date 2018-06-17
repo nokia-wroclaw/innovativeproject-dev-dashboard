@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
 using Dashboard.WebApi.ApiModels;
 using Dashboard.WebApi.ApiModels.Requests;
+using Dashboard.WebApi.ApiModels.Responses;
 using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,9 +23,11 @@ namespace Dashboard.WebApi.Controllers
 
         // GET api/Project
         [HttpGet]
-        public async Task<IEnumerable<Project>> Get()
+        public async Task<IEnumerable<ResponseProject>> Get()
         {
-            return await _projectService.GetAllProjectsAsync();
+            var projects = await _projectService.GetAllProjectsAsync();
+            var responseProjects = projects.Select(p => new ResponseProject(p));
+            return responseProjects;
         }
 
         // GET api/Project/5
@@ -34,7 +38,7 @@ namespace Dashboard.WebApi.Controllers
             if (project == null)
                 return NotFound();
 
-            return Json(project);
+            return Json(new ResponseProject(project));
         }
 
         // POST api/Project

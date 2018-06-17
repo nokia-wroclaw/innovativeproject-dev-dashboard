@@ -180,6 +180,19 @@ namespace Dashboard.Application.Services
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
 
+        public async Task UpdateMissingBranch(int projectId, string branchName)
+        {
+            var project = await GetProjectByIdAsync(projectId);
+            if (project == null) return;
+
+            var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
+            var branchPipeline = await dataProvider.FetchPipeLineByBranch(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, branchName);
+
+            PipelinesMerger merger = new PipelinesMerger();
+            var mergeResult = merger.MergePipelines(project.Pipelines, new List<Pipeline>() { branchPipeline }, project.PipelinesNumber);
+            await SaveMergedInDB(mergeResult, project);
+        }
+
         public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
         {
             var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));

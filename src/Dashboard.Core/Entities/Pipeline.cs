@@ -57,5 +57,10 @@ namespace Dashboard.Core.Entities
 
             return Sha.Equals(p.Sha);
         }
+
+        public override int GetHashCode()
+        {
+            return 13 * this.Id * this.Sha[0] * this.Sha[1] * this.Sha[2] * this.Sha[3];
+        }
     }
 }

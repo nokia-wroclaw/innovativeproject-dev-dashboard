@@ -60,7 +60,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ApiModels\Responses\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

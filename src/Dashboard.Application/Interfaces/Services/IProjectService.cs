@@ -16,6 +16,7 @@ namespace Dashboard.Application.Interfaces.Services
 
         Task<IEnumerable<string>> SearchForBranchInProject(int projectId, string searchValue);
         Task UpdateCiDataForProjectAsync(int projectId);
+        Task UpdateMissingBranch(int projectId, string branchName);
 
         Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID);
 
