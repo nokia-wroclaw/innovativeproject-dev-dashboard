@@ -297,7 +297,10 @@ namespace Dashboard.Application.Services
 
         private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider, string providerName)
         {
-            var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
+            //var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
+            var pipelineId = project.Pipelines.FirstOrDefault(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId).Id;
+            Pipeline repoPipeline = null;
+            repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.Id == pipelineId);
             if (repoPipeline == null)
             {
                 //Add new to db
