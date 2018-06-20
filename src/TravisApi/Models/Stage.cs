@@ -12,5 +12,6 @@ namespace TravisApi.Models
         public string State { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime FinishedAt { get; set; }
+        public List<Job> Jobs { get; set; }
     }
 }

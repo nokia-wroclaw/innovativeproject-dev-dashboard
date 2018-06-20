@@ -30,7 +30,7 @@ namespace Dashboard.Application
         {
             var apiClient = new TravisClient(apiHost, apiKey);
 
-            var (builds, totalpages) = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage, true, true);
+            var (builds, totalpages) = await apiClient.GetNewestBuilds(apiProjectId, page - 1, perPage, true, true, true);
 
             var fullInfoPipelines = builds.Select(MapBuildToPipeline);
 
@@ -90,6 +90,27 @@ namespace Dashboard.Application
                 ? b.Jobs.Select(j => new Stage { StageName = j.Number, StageStatus = MapTravisStatus(j.State) }).ToList()
                 : b.Stages.Select(s => new Stage { StageName = s.Name, StageStatus = MapTravisStatus(s.State) }).ToList();
 
+            List<Stage> stagesList = new List<Stage>();
+            if(!b.Stages.Any())
+            {
+                stagesList = b.Jobs.Select(j => new Stage { StageName = j.Number, StageStatus = MapTravisStatus(j.State) }).ToList();
+            }
+            else
+            {
+                foreach (var stage in b.Stages)
+                {
+                    var s = new Stage { StageName = stage.Name, StageStatus = MapTravisStatus(stage.State) };
+                    var jobs = stage.Jobs.Select(p => new Core.Entities.Job
+                    {
+                        DataProviderJobId = p.Id,
+                        StageName = stage.Name,
+                        Status = MapTravisStatus(b.Jobs.FirstOrDefault(j => j.Id == p.Id).State)
+                    });
+                    s.Jobs = jobs.ToList();
+                    stagesList.Add(s);
+                }
+            }
+
             return new Pipeline()
             {
                 DataProviderPipelineId = b.Id,
@@ -104,10 +125,14 @@ namespace Dashboard.Application
                 UpdatedAt = b.UpdatedAt,
                 ProjectId = b.Repository.Slug,
                 Status = MapTravisStatus(b.State),
-                Stages = stages
+                Stages = stagesList/*stages*/
             };
         }
 
+        private IEnumerable<Core.Entities.Job> GetJobsForStage(string stageName)
+        {
+            return null;
+        }
 
         private Status MapTravisStatus(string travisStatus)
         {

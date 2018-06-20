@@ -37,8 +37,8 @@ namespace Dashboard.Data.Context
             {
                 m.HasKey(p => p.Id);
                 m.HasMany(s => s.Jobs)
-                    .WithOne(j => j.Stage)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .WithOne(j => j.Stage);
+                    //.OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Job>(m =>

@@ -72,6 +72,26 @@ namespace TravisApi
             return (response.Builds, response.Pagination.Count);
         }
 
+        public async Task<(IEnumerable<Build> builds, int totalPages)> GetNewestBuilds(string projectId, int page, int perPage, bool includeJobs, bool includeStages, bool includeJobState)
+        {
+            var request = new RestRequest("repo/{projectId}/builds", Method.GET);
+            request.AddUrlSegment("projectId", projectId);
+
+            request.AddQueryParameter("limit", perPage.ToString());
+            request.AddQueryParameter("offset", (page * perPage).ToString());
+
+            var includeQueryParams = new List<string>();
+            if (includeJobs) includeQueryParams.Add("build.jobs");
+            if (includeJobState) includeQueryParams.Add("job.state");
+            if (includeStages) includeQueryParams.Add("build.stages");
+            if (includeQueryParams.Any())
+                request.AddQueryParameter("include", string.Join(",", includeQueryParams));
+
+            var response = await Client.ExecuteTaskAsync<GetRepoBuildsResponse>(request).EnsureSuccess();
+
+            return (response.Builds, response.Pagination.Count);
+        }
+
         public Task<GetUserResponse> GetUser()
         {
             var request = new RestRequest("user", Method.GET);
