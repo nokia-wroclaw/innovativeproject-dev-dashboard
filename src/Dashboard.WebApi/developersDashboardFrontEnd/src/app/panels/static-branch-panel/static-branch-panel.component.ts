@@ -27,7 +27,7 @@ IPanelComponent < StaticBranchPanel > {
     this.panel = panel;
 
     this.intervalSub = Observable
-      .interval(5000)
+      .interval(10000)
       .startWith(0)
       .subscribe(() => {
         this

@@ -29,7 +29,7 @@ IPanelComponent < LastPipelinesPanel > {
     this.panel = panel;
 
     this.intervalSub = Observable
-      .interval(5000)
+      .interval(1000)
       .startWith(0)
       .subscribe(() => {
         this
