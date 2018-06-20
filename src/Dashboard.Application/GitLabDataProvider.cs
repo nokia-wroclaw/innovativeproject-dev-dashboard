@@ -150,9 +150,9 @@ namespace Dashboard.Application
         {
             return new DataProviderJobInfo()
             {
-                ProjectId = requestBody["ProjectId"].Value<string>(),
-                JobId = requestBody["BuildId"].Value<int>(),
-                Status = MapGitlabStatus(requestBody["BuildStatus"].Value<string>()),
+                ProjectId = requestBody["project_id"].Value<string>(),
+                JobId = requestBody["build_id"].Value<int>(),
+                Status = MapGitlabStatus(requestBody["build_status"].Value<string>()),
                 ProviderName = Name,
             };
         }
