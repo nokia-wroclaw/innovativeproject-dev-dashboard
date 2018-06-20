@@ -50,10 +50,18 @@ export class PipelineViewComponent {
   ];
 
   getColorOfStage(stage : Stage) {
-    return this
-      .statusColors
-      .find(statusColor => statusColor.statusCode === stage.stageStatus)
-      .color;
+
+    let color = this
+        .statusColors
+        .find(statusColor => statusColor.statusCode === stage.stageStatus)
+        .color
+
+    // The color of running stage should be dependent on its progress
+    if(color === '#8eccff') {
+      color = 'rgba(142, 204, 255,' + (0.2 + stage.successed / stage.total) + ')';
+    };
+
+    return color;
   }
 
   getFullWidth() : number {return this.pipelineContainer.nativeElement.clientWidth;}
