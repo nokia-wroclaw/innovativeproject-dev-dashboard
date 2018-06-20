@@ -1,6 +1,6 @@
 <div #pipelineContainer class="pipeline-cointainer">
   <div *ngIf="pipeline">
- 
+
     <div class="pipeline-metadata">
       <div class="pipeline-metadata-item no-shrink">
         <i class="material-icons">device_hub</i>
@@ -16,22 +16,24 @@
       </div>
     </div>
 
-    
 
+    <div class="fleksik" [style.width]="getFullWidth()">
+      <div class="container" *ngFor="let stage of pipeline.stages">
+        <div class="chevron" [style.background-color]="getColorOfStage(stage)">
+          <div class="content">
+            <p>
+              {{stage.stageName}}
+            </p>
 
-        <div class="fleksik"  [style.width]="getFullWidth()" >
-          <div class="container"   *ngFor="let stage of pipeline.stages" >
-          <div class="chevron"  [style.background-color]="getColorOfStage(stage)" >
-              <div class="content"  >
-               <p>
-                {{stage.stageName}}
-              </p>            
-                </div>            
-          </div>
+            <p *ngIf="stage.stageStatus === 0">
+              {{stage.successed}} / {{stage.total}}
+            </p>
           </div>
         </div>
+      </div>
+    </div>
   </div>
   <div *ngIf="!pipeline">
-      <mat-spinner [diameter]="55"  strokeWidth="7"></mat-spinner>
+    <mat-spinner [diameter]="55" strokeWidth="7"></mat-spinner>
   </div>
 </div>
