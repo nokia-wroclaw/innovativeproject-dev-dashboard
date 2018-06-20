@@ -119,7 +119,6 @@ namespace Dashboard.Application
                     return Status.Running;
                 case "failed":
                     return Status.Failed;
-                case "manual":
                 case "skipped":
                 case "canceled":
                 case "manual":
