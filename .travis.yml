@@ -7,7 +7,7 @@ notifications:
     urls:
       - https://webhook.site/ff35ab44-09f6-4894-91b2-1e6fdf2930aa
       - https://agile-beach-74761.herokuapp.com/api/Webhook/FormPipelineWebhook/travis
-      - https://cidasherapi.herokuapp.com/api/Webhook/FormPipelineWebhook/travis
+      - https://cidasherapi.herokuapp.com/api/Webhook/PipelineWebhook/travis
     on_success: always # default: always
     on_failure: always # default: always
     on_start: always   # default: never
