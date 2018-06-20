@@ -10,5 +10,6 @@ namespace Dashboard.Core.Interfaces.Repositories
     public interface IProjectRepository : IEfRepository<Project>
     {
         Task<Job> FindJobByDataProviderInfoAsync(DataProviderJobInfo jobInfo);
+        Task<(Project, Pipeline)> FindProjectByDataProviderInfoAsync(DataProviderPipelineInfo pipelineInfo);
     }
 }

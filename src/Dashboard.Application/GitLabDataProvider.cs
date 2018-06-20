@@ -73,7 +73,7 @@ namespace Dashboard.Application
                     new Stage()
                     {
                         StageName = stage.Key,
-                        StageStatus = CalculateStageStatus(stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status) }).ToList()),
+                        //StageStatus = CalculateStageStatus(stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status) }).ToList()),
                         Jobs = stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status), StageName = p.Stage }).ToList()
                     });
 
@@ -117,10 +117,10 @@ namespace Dashboard.Application
             {
                 case "pending":
                 case "running":
-                case "manual":
                     return Status.Running;
                 case "failed":
                     return Status.Failed;
+                case "manual":
                 case "skipped":
                 case "canceled":
                     return Status.Canceled;
@@ -159,7 +159,7 @@ namespace Dashboard.Application
 
         public DataProviderPipelineInfo ExtractPipelineInfo(JObject requestBody)
         {
-            var objectAttributes = requestBody["ObjectAttributes"];
+            var objectAttributes = requestBody["object_attributes"];
 
             return new DataProviderPipelineInfo()
             {

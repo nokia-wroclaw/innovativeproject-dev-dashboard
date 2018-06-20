@@ -41,7 +41,7 @@ namespace Dashboard.Core.Entities
 
         public async Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository)
         {
-            return new List<Pipeline> { Project.Pipelines.FirstOrDefault(p => p.Ref.Equals(StaticBranchName)) };
+            return new List<Pipeline> { Project.Pipelines.OrderByDescending(d => d.LastUpdate).FirstOrDefault(p => p.Ref.Equals(StaticBranchName)) };
         }
     }
 
