@@ -11,9 +11,11 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using System;
 using Dashboard.Application.Validators;
+using Dashboard.Core.Interfaces.CiProviders;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using Dashboard.Core.Interfaces.WebhookProviders;
+
+
 
 namespace Dashboard.Application.Services
 {
@@ -180,24 +182,13 @@ namespace Dashboard.Application.Services
             _logger.LogInformation($"Updated cidata for project: {project.Id}");
         }
 
-        public async Task UpdateMissingBranch(int projectId, string branchName)
+        public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelId)
         {
-            var project = await GetProjectByIdAsync(projectId);
-            if (project == null) return;
+            var panel = await _panelRepository.GetByIdAsync(panelId);
 
-            var dataProvider = _ciDataProviderFactory.CreateForProviderName(project.DataProviderName);
-            var branchPipeline = await dataProvider.FetchPipeLineByBranch(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, branchName);
-
-            PipelinesMerger merger = new PipelinesMerger();
-            var mergeResult = merger.MergePipelines(project.Pipelines, new List<Pipeline>() { branchPipeline }, project.PipelinesNumber);
-            await SaveMergedInDB(mergeResult, project);
-        }
-
-        public async Task<IEnumerable<Pipeline>> GetPipelinesForPanel(int panelID)
-        {
-            var panel = (IPanelPipelines)(await _panelRepository.GetByIdAsync(panelID));
-            var pipes = await panel.GetPipelinesDTOForPanel(_projectRepository);
-            return pipes;
+            return panel is IPanelPipelines pipelinePanel
+                ? await pipelinePanel.GetPipelinesDTOForPanel(_projectRepository)
+                : null;
         }
 
         private async Task InsertPipelineToDB(Pipeline pipeline, Project project)
@@ -248,79 +239,128 @@ namespace Dashboard.Application.Services
 
         public async Task WebhookJobUpdate(string providerName, object body)
         {
-            var dataProvider = _ciDataProviderFactory.CreateForProviderName(providerName.ToLower());
-            IProviderWithJobWebhook provider = dataProvider as IProviderWithJobWebhook;
-            if (provider == null)
-                return;
+            //If provider supports webhooks, extract job info and update our db
+            var provider = _ciDataProviderFactory.CreateForProviderName(providerName);
 
-            await UpdatePipelineStage(provider.ExtractJobFromWebhook(body), provider, providerName);
+            if (provider is ICiWebhookProvider webhookProvider)
+            {
+                var jobInfo = webhookProvider.ExtractJobInfo(JObject.Parse(body.ToString()));
+                await UpdatePipelineStage(jobInfo);
+            }
+
+            //providerName doesnt support webhooks
         }
 
         public async Task WebhookPipelineUpdate(string providerName, object body)
         {
             var dataProvider = _ciDataProviderFactory.CreateForProviderName(providerName.ToLower());
-            IProviderWithPipelineWebhook provider = dataProvider as IProviderWithPipelineWebhook;
-            if (provider == null)
-                return;
-            string apiProjectId = provider.ExtractProjectIdFromPipelineWebhook(body);
 
-            var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
-            await UpdatePipeline(provider.ExtractPipelineFromWebhook(body), project, dataProvider, providerName);
+            if(dataProvider is ICiWebhookProvider webhookProvider)
+            {
+                var pipeInfo = webhookProvider.ExtractPipelineInfo(JObject.Parse(body.ToString()));
+                await UpdatePipeline(pipeInfo, dataProvider);
+            }
+
+            //IProviderWithPipelineWebhook provider = dataProvider as IProviderWithPipelineWebhook;
+            //if (provider == null)
+            //    return;
+            //string apiProjectId = provider.ExtractProjectIdFromPipelineWebhook(body);
+
+            //var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
+            //await UpdatePipeline(provider.ExtractPipelineFromWebhook(body), project, dataProvider, providerName);
         }
 
-        //public async Task WebhookProjectUpdate(string providerName, object body)
-        //{
-        //    var dataProvider = _ciDataProviderFactory.CreateForProviderLowercaseName(providerName.ToLower());
-        //    string apiProjectId = dataProvider.GetProjectIdFromWebhookRequest(body);
-
-        //    var project = (await _projectRepository.FindOneByAsync(p => p.DataProviderName.Equals(providerName, StringComparison.OrdinalIgnoreCase) && p.ApiProjectId.Equals(apiProjectId)));
-
-        //    await UpdateCiDataForProjectAsync(project.Id);
-        //}
-
-        private async Task UpdatePipelineStage(Job job, IProviderWithJobWebhook provider, string providerName)
+        private async Task UpdatePipelineStage(DataProviderJobInfo jobInfo)
         {
-            var repoJob = await _jobRepository.FindOneByAsync(j => j.DataProviderJobId == job.DataProviderJobId);
+            var repoJob = await _projectRepository.FindJobByDataProviderInfoAsync(jobInfo);
             if (repoJob == null)
                 return;
-            repoJob.Status = job.Status;
-            await _jobRepository.UpdateAsync(repoJob, repoJob.Id);
-            await _jobRepository.SaveAsync();
 
-            var repoStage = repoJob.Stage;
-            repoStage.StageStatus = provider.RecalculateStageStatus(repoStage.Jobs);
-            await _stageRepository.UpdateAsync(repoStage, repoStage.Id);
-            await _stageRepository.SaveAsync();
+            repoJob.Status = jobInfo.Status;
+            await _jobRepository.SaveAsync();
 
             //TODO Update pipeline LastUpdate property
         }
 
-        private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider, string providerName)
+        private async Task UpdatePipeline(DataProviderPipelineInfo info, ICiDataProvider dataProvider)
         {
-            //var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
-            Pipeline repoPipeline = null;
-            var pipe = project.Pipelines.FirstOrDefault(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
-            if(pipe != null)
+            var found = await _projectRepository.FindProjectByDataProviderInfoAsync(info);
+            if (found.Item1 == null)
+                return;
+            var project = found.Item1;
+            var pipeline = found.Item2;
+
+            if(pipeline != null)
             {
-                int pipelineId = pipe.Id;
-                repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.Id == pipelineId);
-            }
-            if (repoPipeline == null)
-            {
-                //Add new to db
-                var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
-                newRepoPipeline.LastUpdate = DateTime.Now;
-                await InsertPipelineToDB(newRepoPipeline, project);
+                var updatetedPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
+                pipeline.Status = updatetedPipeline.Status;
+                pipeline.Stages = updatetedPipeline.Stages;
+                pipeline.LastUpdate = DateTime.Now;
+                await _pipelineRepository.UpdateAsync(pipeline, pipeline.Id);
+                await _pipelineRepository.SaveAsync();
+                //pipeline.Status = info.Status;
+                //await _pipelineRepository.SaveAsync();
             }
             else
             {
-                var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
-                newRepoPipeline.Id = repoPipeline.Id;
-                newRepoPipeline.LastUpdate = DateTime.Now;
-                await _pipelineRepository.UpdateAsync(newRepoPipeline, repoPipeline.Id);
-                await _pipelineRepository.SaveAsync();
+                int pipeIdINT = 0;
+                if (!int.TryParse(info.PipelineId, out pipeIdINT))
+                    return;
+                var updatetedPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeIdINT);
+                updatetedPipeline.LastUpdate = DateTime.Now;
+                await InsertPipelineToDB(updatetedPipeline, project);
             }
+
+            //Pipeline repoPipeline = null;
+            //var pipe = found.Item2;
+            //if (pipe != null)
+            //{
+            //    int pipelineId = pipe.Id;
+            //    repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.Id == pipelineId);
+            //}
+            //if (repoPipeline == null)
+            //{
+            //    //Add new to db
+            //    var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
+            //    newRepoPipeline.LastUpdate = DateTime.Now;
+            //    await InsertPipelineToDB(newRepoPipeline, project);
+            //}
+            //else
+            //{
+            //    var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
+            //    newRepoPipeline.Id = repoPipeline.Id;
+            //    newRepoPipeline.LastUpdate = DateTime.Now;
+            //    await _pipelineRepository.UpdateAsync(newRepoPipeline, repoPipeline.Id);
+            //    await _pipelineRepository.SaveAsync();
+            //}
         }
+
+        //private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider, string providerName)
+        //{
+        //    //var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
+        //    Pipeline repoPipeline = null;
+        //    var pipe = project.Pipelines.FirstOrDefault(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
+        //    if(pipe != null)
+        //    {
+        //        int pipelineId = pipe.Id;
+        //        repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.Id == pipelineId);
+        //    }
+        //    if (repoPipeline == null)
+        //    {
+        //        //Add new to db
+        //        var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
+        //        newRepoPipeline.LastUpdate = DateTime.Now;
+        //        await InsertPipelineToDB(newRepoPipeline, project);
+        //    }
+        //    else
+        //    {
+        //        var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
+        //        newRepoPipeline.Id = repoPipeline.Id;
+        //        newRepoPipeline.LastUpdate = DateTime.Now;
+        //        await _pipelineRepository.UpdateAsync(newRepoPipeline, repoPipeline.Id);
+        //        await _pipelineRepository.SaveAsync();
+        //    }
+        //}
 
         #endregion
     }

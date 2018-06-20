@@ -10,15 +10,16 @@ using Dashboard.Application.GitLabApi;
 using GitLabModel = Dashboard.Application.GitLabApi.Models.Webhooks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
+using Dashboard.Core.Interfaces.CiProviders;
 using Dashboard.Core.Interfaces.Repositories;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Dashboard.Core.Interfaces.WebhookProviders;
+
 
 namespace Dashboard.Application
 {
-    public class GitLabDataProvider : ICiDataProvider, IProviderWithJobWebhook, IProviderWithPipelineWebhook
+    public class GitLabDataProvider : ICiDataProvider, ICiWebhookProvider
     {
         public string Name => "GitLab";
 
@@ -72,7 +73,7 @@ namespace Dashboard.Application
                     new Stage()
                     {
                         StageName = stage.Key,
-                        StageStatus = CalculateStageStatus(stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status) }).ToList()),
+                        //StageStatus = CalculateStageStatus(stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status) }).ToList()),
                         Jobs = stage.Select(p => new Job() { DataProviderJobId = p.Id, Status = MapGitlabStatus(p.Status), StageName = p.Stage }).ToList()
                     });
 
@@ -118,6 +119,7 @@ namespace Dashboard.Application
                     return Status.Running;
                 case "failed":
                     return Status.Failed;
+                case "manual":
                 case "skipped":
                 case "canceled":
                 case "manual":
@@ -133,9 +135,6 @@ namespace Dashboard.Application
             throw new InvalidEnumArgumentException($"{nameof(gitlabStatus)} {gitlabStatus}");
         }
 
-
-
-
         public async Task<IEnumerable<string>> SearchBranchInProject(string apiHost, string apiKey, string apiProjectId, string searchValue)
         {
             var apiClient = new GitLabClient(apiHost, apiKey);
@@ -147,42 +146,28 @@ namespace Dashboard.Application
             return branches;
         }
 
-        public string GetProjectIdFromWebhookRequest(object body)
+
+        public DataProviderJobInfo ExtractJobInfo(JObject requestBody)
         {
-            var jo = (JObject)body;
-            if (jo["object_kind"].Value<string>().Equals("build"))
-                return jo["project_id"].Value<string>();
-            else
-                return jo["project"]["id"].Value<string>();
-        }
-
-        public Job ExtractJobFromWebhook(object body)
-        {
-            var gitlabJob = SimpleJson.SimpleJson.DeserializeObject<GitLabModel.JobWebhook>(body.ToString(), new SnakeJsonSerializerStrategy());
-
-            return new Job() { DataProviderJobId = gitlabJob.BuildId, Status = MapGitlabStatus(gitlabJob.BuildStatus), StageName = gitlabJob.BuildStage };
-        }
-
-        public Status RecalculateStageStatus(ICollection<Job> jobs)
-        {
-            return CalculateStageStatus(jobs);
-        }
-
-        public string ExtractProjectIdFromPipelineWebhook(object body)
-        {
-            return ((JObject)body)["project"]["id"].Value<string>();
-        }
-
-        public Pipeline ExtractPipelineFromWebhook(object body)
-        {
-            var attributes = SimpleJson.SimpleJson.DeserializeObject<GitLabModel.PipelineWebhook>(body.ToString(), new SnakeJsonSerializerStrategy()).ObjectAttributes;
-
-            return new Pipeline()
+            return new DataProviderJobInfo()
             {
-                DataProviderPipelineId = attributes.Id,
-                Ref = attributes.Ref,
-                Sha = attributes.Sha,
-                Status = MapGitlabStatus(attributes.Status)
+                ProjectId = requestBody["ProjectId"].Value<string>(),
+                JobId = requestBody["BuildId"].Value<int>(),
+                Status = MapGitlabStatus(requestBody["BuildStatus"].Value<string>()),
+                ProviderName = Name,
+            };
+        }
+
+        public DataProviderPipelineInfo ExtractPipelineInfo(JObject requestBody)
+        {
+            var objectAttributes = requestBody["object_attributes"];
+
+            return new DataProviderPipelineInfo()
+            {
+                ProjectId = requestBody["project"]["id"].Value<string>(),
+                PipelineId = objectAttributes["id"].Value<string>(),
+                Status = MapGitlabStatus(objectAttributes["status"].Value<string>()),
+                ProviderName = Name
             };
         }
     }

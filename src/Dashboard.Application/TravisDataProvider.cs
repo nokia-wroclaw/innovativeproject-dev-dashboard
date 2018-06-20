@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
-using Dashboard.Core.Interfaces.WebhookProviders;
+//using Dashboard.Core.Interfaces.WebhookProviders;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using TravisApi;
@@ -22,7 +22,7 @@ namespace Dashboard.Application
      *   Stages
      *      Jobs
      */
-    public class TravisDataProvider : ICiDataProvider, IProviderWithPipelineWebhook
+    public class TravisDataProvider : ICiDataProvider/*, IProviderWithPipelineWebhook*/
     {
         public string Name => "Travis";
 
@@ -87,19 +87,21 @@ namespace Dashboard.Application
         {
             //If build has no stages, map jobs as stages -> otherwise map stages
             var stages = !b.Stages.Any()
-                ? b.Jobs.Select(j => new Stage { StageName = j.Number, StageStatus = MapTravisStatus(j.State) }).ToList()
-                : b.Stages.Select(s => new Stage { StageName = s.Name, StageStatus = MapTravisStatus(s.State) }).ToList();
+                ? b.Jobs.Select(j => new Stage { StageName = j.Number/*, StageStatus = MapTravisStatus(j.State)*/ }).ToList()
+                : b.Stages.Select(s => new Stage { StageName = s.Name/*, StageStatus = MapTravisStatus(s.State)*/ }).ToList();
 
             List<Stage> stagesList = new List<Stage>();
             if(!b.Stages.Any())
             {
-                stagesList = b.Jobs.Select(j => new Stage { StageName = j.Number, StageStatus = MapTravisStatus(j.State) }).ToList();
+                stagesList = b.Jobs.Select(j => new Stage { StageName = j.Number/*, StageStatus = MapTravisStatus(j.State)*/ }).ToList();
             }
             else
             {
-                foreach (var stage in b.Stages)
+                //foreach (var stage in b.Stages)
+                for(int i = b.Stages.Count - 1; i >= 0; i--)    //Travis gives stages in reversed order
                 {
-                    var s = new Stage { StageName = stage.Name, StageStatus = MapTravisStatus(stage.State) };
+                    var stage = b.Stages[i];
+                    var s = new Stage { StageName = stage.Name/*, StageStatus = MapTravisStatus(stage.State)*/ };
                     var jobs = stage.Jobs.Select(p => new Core.Entities.Job
                     {
                         DataProviderJobId = p.Id,

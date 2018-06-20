@@ -75,114 +75,114 @@ namespace Dashboard.Data.Context
                 PipelinesNumber = 10,
                 Pipelines = new List<Pipeline>()
                 {
-                    new Pipeline()
-                    {
-                        DataProviderPipelineId = 21584362, // fakeid
-                        Ref = "master",
-                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                        CommitTitle = "Forth Commit Title",
-                        CommiterName = "F Name",
-                        CreatedAt = DateTime.UtcNow,
-                        StartedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        FinishedAt = null,
-                        Status = Status.Running,
-                        Stages = new List<Stage>()
-                        {
-                            new Stage()
-                            {
-                                StageName = "Build",
-                                StageStatus = Status.Created
-                            },
-                            new Stage()
-                            {
-                                StageName = "Prepare",
-                                StageStatus = Status.Created
-                            },
-                            new Stage()
-                            {
-                                StageName = "Test",
-                                StageStatus = Status.Failed
-                            },
-                            new Stage()
-                            {
-                                StageName = "Post-test",
-                                StageStatus = Status.Created
-                            }
-                        }
-                    },
-                    new Pipeline()
-                    {
-                        DataProviderPipelineId = 21584362, // fakeid
-                        Ref = "someBrnach",
-                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                        CommitTitle = "Fifth Commit Title",
-                        CommiterName = "Fe Name",
-                        CreatedAt = DateTime.UtcNow,
-                        StartedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        FinishedAt = null,
-                        Status = Status.Running,
-                        Stages = new List<Stage>()
-                        {
-                            new Stage()
-                            {
-                                StageName = "Build",
-                                StageStatus = Status.Created
-                            },
-                            new Stage()
-                            {
-                                StageName = "Prepare",
-                                StageStatus = Status.Created
-                            },
-                            new Stage()
-                            {
-                                StageName = "Test",
-                                StageStatus = Status.Failed
-                            },
-                            new Stage()
-                            {
-                                StageName = "Post-test",
-                                StageStatus = Status.Created
-                            }
-                        }
-                    },
-                    new Pipeline()
-                    {
-                        DataProviderPipelineId = 21584362, // fakeid
-                        Ref = "someanotherbranch",
-                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                        CommitTitle = "Wyje Commit Title",
-                        CommiterName = "Bame",
-                        CreatedAt = DateTime.UtcNow,
-                        StartedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        FinishedAt = null,
-                        Status = Status.Running,
-                        Stages = new List<Stage>()
-                        {
-                            new Stage()
-                            {
-                                StageName = "Build",
-                                StageStatus = Status.Success
-                            },
-                            new Stage()
-                            {
-                                StageName = "Prepare",
-                                StageStatus = Status.Running
-                            },
-                            new Stage()
-                            {
-                                StageName = "Test",
-                                StageStatus = Status.Created
-                            },
-                            new Stage()
-                            {
-                                StageName = "Post-test",
-                                StageStatus = Status.Created
-                            }
-                        }
-                    },
+                    //new Pipeline()
+                    //{
+                    //    DataProviderPipelineId = 21584362, // fakeid
+                    //    Ref = "master",
+                    //    Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                    //    CommitTitle = "Forth Commit Title",
+                    //    CommiterName = "F Name",
+                    //    CreatedAt = DateTime.UtcNow,
+                    //    StartedAt = DateTime.UtcNow,
+                    //    UpdatedAt = DateTime.UtcNow,
+                    //    FinishedAt = null,
+                    //    Status = Status.Running,
+                    //    Stages = new List<Stage>()
+                    //    {
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Build",
+                    //            //StageStatus = Status.Created
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Prepare",
+                    //            //StageStatus = Status.Created
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Test",
+                    //            //StageStatus = Status.Failed
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Post-test",
+                    //            //StageStatus = Status.Created
+                    //        }
+                    //    }
+                    //},
+                    //new Pipeline()
+                    //{
+                    //    DataProviderPipelineId = 21584362, // fakeid
+                    //    Ref = "someBrnach",
+                    //    Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                    //    CommitTitle = "Fifth Commit Title",
+                    //    CommiterName = "Fe Name",
+                    //    CreatedAt = DateTime.UtcNow,
+                    //    StartedAt = DateTime.UtcNow,
+                    //    UpdatedAt = DateTime.UtcNow,
+                    //    FinishedAt = null,
+                    //    Status = Status.Running,
+                    //    Stages = new List<Stage>()
+                    //    {
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Build",
+                    //            //StageStatus = Status.Created
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Prepare",
+                    //            //StageStatus = Status.Created
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Test",
+                    //            //StageStatus = Status.Failed
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Post-test",
+                    //            //StageStatus = Status.Created
+                    //        }
+                    //    }
+                    //},
+                    //new Pipeline()
+                    //{
+                    //    DataProviderPipelineId = 21584362, // fakeid
+                    //    Ref = "someanotherbranch",
+                    //    Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                    //    CommitTitle = "Wyje Commit Title",
+                    //    CommiterName = "Bame",
+                    //    CreatedAt = DateTime.UtcNow,
+                    //    StartedAt = DateTime.UtcNow,
+                    //    UpdatedAt = DateTime.UtcNow,
+                    //    FinishedAt = null,
+                    //    Status = Status.Running,
+                    //    Stages = new List<Stage>()
+                    //    {
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Build",
+                    //            //StageStatus = Status.Success
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Prepare",
+                    //            //StageStatus = Status.Running
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Test",
+                    //            //StageStatus = Status.Created
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Post-test",
+                    //            //StageStatus = Status.Created
+                    //        }
+                    //    }
+                    //},
 
                 }
             },
@@ -197,111 +197,112 @@ namespace Dashboard.Data.Context
                 PipelinesNumber = 10,
                 Pipelines = new List<Pipeline>()
                 {
-                    new Pipeline()
-                    {
-                        DataProviderPipelineId = 378215175, // fakeid
-                        Ref = "master",
-                        Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
-                        CommitTitle = "First Commit Title",
-                        CommiterName = "First Name",
-                        CreatedAt = DateTime.UtcNow,
-                        StartedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        FinishedAt = null,
-                        Status = Status.Running,
-                        Stages = new List<Stage>()
-                        {
-                            new Stage()
-                            {
-                                StageName = "Basic test",
-                                StageStatus = Status.Created
-                            },
-                            new Stage()
-                            {
-                                StageName = "Additional tests",
-                                StageStatus = Status.Success
-                            },
-                            new Stage()
-                            {
-                                StageName = "Deploy",
-                                StageStatus = Status.Success
-                            }
-                        }
-                    },
-                    new Pipeline()
-                    {
-                        DataProviderPipelineId = 378215175, // fakeid
-                        Ref = "beta",
-                        Sha = "f5126d3fad92215d15d9a1d5151ded2cd81a594e",
-                        CommitTitle = "Second Commit Title",
-                        CommiterName = "Second Name",
-                        CreatedAt = DateTime.UtcNow,
-                        StartedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        FinishedAt = null,
-                        Status = Status.Running,
-                        Stages = new List<Stage>()
-                        {
-                            new Stage()
-                            {
-                                StageName = "26719.1",
-                                StageStatus = Status.Created
-                            },
-                            new Stage()
-                            {
-                                StageName = "26719.2",
-                                StageStatus = Status.Success
-                            },
-                            new Stage()
-                            {
-                                StageName = "26719.3",
-                                StageStatus = Status.Success
-                            },
-                            new Stage()
-                            {
-                                StageName = "26719.4",
-                                StageStatus = Status.Failed
-                            },
-                        }
-                    },
-                    new Pipeline()
-                    {
-                        DataProviderPipelineId = 378215175, // fakeid
-                        Ref = "fancybranchname",
-                        Sha = "f5126d3fad92215d15d9a1d5151ded2cd81a594e",
-                        CommitTitle = "Third Commit Title",
-                        CommiterName = "Third Name",
-                        CreatedAt = DateTime.UtcNow,
-                        StartedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        FinishedAt = null,
-                        Status = Status.Running,
-                        Stages = new List<Stage>()
-                        {
-                            new Stage()
-                            {
-                                StageName = "26719.1",
-                                StageStatus = Status.Created
-                            },
-                            new Stage()
-                            {
-                                StageName = "26719.2",
-                                StageStatus = Status.Success
-                            },
-                            new Stage()
-                            {
-                                StageName = "26719.3",
-                                StageStatus = Status.Success
-                            },
-                            new Stage()
-                            {
-                                StageName = "26719.4",
-                                StageStatus = Status.Failed
-                            },
-                        }
-                    }
+                    //new Pipeline()
+                    //{
+                    //    DataProviderPipelineId = 378215175, // fakeid
+                    //    Ref = "master",
+                    //    Sha = "927a9b13f083b7610d7ab31fa4204c1991668ddb",
+                    //    CommitTitle = "First Commit Title",
+                    //    CommiterName = "First Name",
+                    //    CreatedAt = DateTime.UtcNow,
+                    //    StartedAt = DateTime.UtcNow,
+                    //    UpdatedAt = DateTime.UtcNow,
+                    //    FinishedAt = null,
+                    //    Status = Status.Running,
+                    //    Stages = new List<Stage>()
+                    //    {
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Basic test",
+                    //            //StageStatus = Status.Created
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Additional tests",
+                    //            //StageStatus = Status.Success
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "Deploy",
+                    //            //StageStatus = Status.Success
+                    //        }
+                    //    }
+                    //},
+                    //new Pipeline()
+                    //{
+                    //    DataProviderPipelineId = 378215175, // fakeid
+                    //    Ref = "beta",
+                    //    Sha = "f5126d3fad92215d15d9a1d5151ded2cd81a594e",
+                    //    CommitTitle = "Second Commit Title",
+                    //    CommiterName = "Second Name",
+                    //    CreatedAt = DateTime.UtcNow,
+                    //    StartedAt = DateTime.UtcNow,
+                    //    UpdatedAt = DateTime.UtcNow,
+                    //    FinishedAt = null,
+                    //    Status = Status.Running,
+                    //    Stages = new List<Stage>()
+                    //    {
+                    //        new Stage()
+                    //        {
+                    //            StageName = "26719.1",
+                    //            //StageStatus = Status.Created
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "26719.2",
+                    //            //StageStatus = Status.Success
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "26719.3",
+                    //            //StageStatus = Status.Success
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "26719.4",
+                    //            //StageStatus = Status.Failed
+                    //        },
+                    //    }
+                    //},
+                    //new Pipeline()
+                    //{
+                    //    DataProviderPipelineId = 378215175, // fakeid
+                    //    Ref = "fancybranchname",
+                    //    Sha = "f5126d3fad92215d15d9a1d5151ded2cd81a594e",
+                    //    CommitTitle = "Third Commit Title",
+                    //    CommiterName = "Third Name",
+                    //    CreatedAt = DateTime.UtcNow,
+                    //    StartedAt = DateTime.UtcNow,
+                    //    UpdatedAt = DateTime.UtcNow,
+                    //    FinishedAt = null,
+                    //    Status = Status.Running,
+                    //    Stages = new List<Stage>()
+                    //    {
+                    //        new Stage()
+                    //        {
+                    //            StageName = "26719.1",
+                    //            //StageStatus = Status.Created
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "26719.2",
+                    //            //StageStatus = Status.Success
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "26719.3",
+                    //            //StageStatus = Status.Success
+                    //        },
+                    //        new Stage()
+                    //        {
+                    //            StageName = "26719.4",
+                    //            //StageStatus = Status.Failed
+                    //        },
+                    //    }
+                    //}
                 }
             }
+
         });
     }
 }
