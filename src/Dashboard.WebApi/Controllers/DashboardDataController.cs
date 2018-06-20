@@ -18,8 +18,6 @@ namespace Dashboard.WebApi.Controllers
         private readonly IProjectService _projectService;
         private readonly IPanelRepository _panelRepository;
 
-        public static bool IsUpdating { get; set; } = false;
-
         public DashboardDataController(IProjectService projectService, ICiDataProviderFactory ciDataProviderFactory, IPanelRepository panelRepository)
         {
             _projectService = projectService;
@@ -48,19 +46,13 @@ namespace Dashboard.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ResponsePipeline>> PipelinesForPanel(int panelID)
+        public async Task<IActionResult> PipelinesForPanel(int panelId)
         {
-            var pipelinesForPanel = await _projectService.GetPipelinesForPanel(panelID);
-            var panel = await _panelRepository.FindOneByAsync(p => p.Id == panelID);
+            var pipelinesForPanel = await _projectService.GetPipelinesForPanel(panelId);
+            if (pipelinesForPanel == null)
+                return NotFound();
 
-            if(pipelinesForPanel.Contains(null) && panel.Discriminator.Equals(nameof(StaticBranchPanel)) && !DashboardDataController.IsUpdating)
-            {
-                DashboardDataController.IsUpdating = true;
-                await _projectService.UpdateMissingBranch(panel.ProjectId.Value, ((StaticBranchPanel)panel).StaticBranchName);
-                DashboardDataController.IsUpdating = false;
-            }
-            var returnPipelines = pipelinesForPanel.Select(p => p == null ? null : new ResponsePipeline(p));
-            return returnPipelines;
+            return Ok(pipelinesForPanel);
         }
     }
 }
