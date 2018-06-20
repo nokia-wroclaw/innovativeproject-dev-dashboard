@@ -52,7 +52,9 @@ namespace Dashboard.WebApi.Controllers
             if (pipelinesForPanel == null)
                 return NotFound();
 
-            return Ok(pipelinesForPanel);
+            return Ok(pipelinesForPanel.Select(p => new ResponsePipeline(p)));
+
+            //return Ok(pipelinesForPanel);
         }
     }
 }

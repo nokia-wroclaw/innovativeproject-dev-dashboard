@@ -297,7 +297,7 @@ namespace Dashboard.Application.Services
                 //pipeline.Stages = updatetedPipeline.Stages;
                 await UpdatePipelineStages(pipeline, updatetedPipeline.Stages);
                 pipeline.LastUpdate = DateTime.Now;
-                await _pipelineRepository.UpdateAsync(pipeline, pipeline.Id);
+                //await _pipelineRepository.UpdateAsync(pipeline, pipeline.Id);
                 await _pipelineRepository.SaveAsync();
                 //pipeline.Status = info.Status;
                 //await _pipelineRepository.SaveAsync();
