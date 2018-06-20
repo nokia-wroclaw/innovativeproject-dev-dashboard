@@ -290,11 +290,12 @@ namespace Dashboard.Application.Services
             var project = found.Item1;
             var pipeline = found.Item2;
 
-            if(pipeline != null)
+            if (pipeline != null)
             {
                 var updatetedPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
                 pipeline.Status = updatetedPipeline.Status;
-                pipeline.Stages = updatetedPipeline.Stages;
+                //pipeline.Stages = updatetedPipeline.Stages;
+                await UpdatePipelineStages(pipeline, updatetedPipeline.Stages);
                 pipeline.LastUpdate = DateTime.Now;
                 await _pipelineRepository.UpdateAsync(pipeline, pipeline.Id);
                 await _pipelineRepository.SaveAsync();
@@ -310,57 +311,22 @@ namespace Dashboard.Application.Services
                 updatetedPipeline.LastUpdate = DateTime.Now;
                 await InsertPipelineToDB(updatetedPipeline, project);
             }
-
-            //Pipeline repoPipeline = null;
-            //var pipe = found.Item2;
-            //if (pipe != null)
-            //{
-            //    int pipelineId = pipe.Id;
-            //    repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.Id == pipelineId);
-            //}
-            //if (repoPipeline == null)
-            //{
-            //    //Add new to db
-            //    var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
-            //    newRepoPipeline.LastUpdate = DateTime.Now;
-            //    await InsertPipelineToDB(newRepoPipeline, project);
-            //}
-            //else
-            //{
-            //    var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
-            //    newRepoPipeline.Id = repoPipeline.Id;
-            //    newRepoPipeline.LastUpdate = DateTime.Now;
-            //    await _pipelineRepository.UpdateAsync(newRepoPipeline, repoPipeline.Id);
-            //    await _pipelineRepository.SaveAsync();
-            //}
         }
 
-        //private async Task UpdatePipeline(Pipeline pipeline, Project project, ICiDataProvider dataProvider, string providerName)
-        //{
-        //    //var repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
-        //    Pipeline repoPipeline = null;
-        //    var pipe = project.Pipelines.FirstOrDefault(p => p.DataProviderPipelineId == pipeline.DataProviderPipelineId);
-        //    if(pipe != null)
-        //    {
-        //        int pipelineId = pipe.Id;
-        //        repoPipeline = await _pipelineRepository.FindOneByAsync(p => p.Id == pipelineId);
-        //    }
-        //    if (repoPipeline == null)
-        //    {
-        //        //Add new to db
-        //        var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, pipeline.DataProviderPipelineId);
-        //        newRepoPipeline.LastUpdate = DateTime.Now;
-        //        await InsertPipelineToDB(newRepoPipeline, project);
-        //    }
-        //    else
-        //    {
-        //        var newRepoPipeline = await dataProvider.FetchPipelineById(project.ApiHostUrl, project.ApiAuthenticationToken, project.ApiProjectId, repoPipeline.DataProviderPipelineId);
-        //        newRepoPipeline.Id = repoPipeline.Id;
-        //        newRepoPipeline.LastUpdate = DateTime.Now;
-        //        await _pipelineRepository.UpdateAsync(newRepoPipeline, repoPipeline.Id);
-        //        await _pipelineRepository.SaveAsync();
-        //    }
-        //}
+        private async Task UpdatePipelineStages(Pipeline pipeline, IEnumerable<Stage> updatedStages)
+        {
+            for (int i = 0; i < pipeline.Stages.Count; i++)
+            {
+                var oldStage = pipeline.Stages.ElementAt(i);
+                var newStage = updatedStages.ElementAt(i);
+                var repoStage = await _stageRepository.FindOneByAsync(s => s.Id == oldStage.Id);
+
+                for (int j = 0; j < repoStage.Jobs.Count; j++)
+                {
+                    repoStage.Jobs.ElementAt(j).Status = newStage.Jobs.ElementAt(j).Status;
+                }
+            }
+        }
 
         #endregion
     }
