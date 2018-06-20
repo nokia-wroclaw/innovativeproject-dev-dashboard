@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dashboard.Core.Entities;
 using Dashboard.Core.Interfaces;
-//using Dashboard.Core.Interfaces.WebhookProviders;
+using Dashboard.Core.Interfaces.CiProviders;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using TravisApi;
@@ -22,7 +22,7 @@ namespace Dashboard.Application
      *   Stages
      *      Jobs
      */
-    public class TravisDataProvider : ICiDataProvider/*, IProviderWithPipelineWebhook*/
+    public class TravisDataProvider : ICiDataProvider, ICiWebhookProvider
     {
         public string Name => "Travis";
 
@@ -163,6 +163,25 @@ namespace Dashboard.Application
             var collection = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(body.ToString(), new SnakeJsonSerializerStrategy());
             var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(collection["payload"], new SnakeJsonSerializerStrategy());
             return travisWebhookResponse.Repository.Id.ToString();
+        }
+
+        public DataProviderJobInfo ExtractJobInfo(JObject requestBody)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataProviderPipelineInfo ExtractPipelineInfo(JObject requestBody)
+        {
+            var collection = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(requestBody.ToString(), new SnakeJsonSerializerStrategy());
+            var travisWebhookResponse = SimpleJson.SimpleJson.DeserializeObject<WebhookResponse>(collection["payload"].ToString(), new SnakeJsonSerializerStrategy());
+
+            return new DataProviderPipelineInfo()
+            {
+                Status = MapTravisStatus(travisWebhookResponse.State),
+                ProviderName = Name,
+                ProjectId = travisWebhookResponse.Repository.Id.ToString(),
+                PipelineId = travisWebhookResponse.Id.ToString()
+            };
         }
     }
 }

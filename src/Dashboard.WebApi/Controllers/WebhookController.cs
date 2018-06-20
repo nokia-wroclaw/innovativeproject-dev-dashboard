@@ -42,5 +42,22 @@ namespace Dashboard.WebApi.Controllers
 
             return Ok();
         }
+
+        //api/Webhook/gitlab
+        [HttpPost("{provider}")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IActionResult PipelineWebhook(string provider)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            foreach (var key in Request.Form.Keys)
+            {
+                var value = Request.Form[key];
+                dict.Add(key, value);
+            }
+
+            _projectService.FirePipelineUpdate(provider, dict);
+
+            return Ok();
+        }
     }
 }

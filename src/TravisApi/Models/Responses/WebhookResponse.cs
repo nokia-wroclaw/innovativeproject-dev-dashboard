@@ -9,7 +9,7 @@ namespace TravisApi.Models.Responses
     public class WebhookResponse
     {
         public int Id { get; set; }
-        public int Number { get; set; }
+        public string State { get; set; }
         public Repository Repository { get; set; }
     }
 
