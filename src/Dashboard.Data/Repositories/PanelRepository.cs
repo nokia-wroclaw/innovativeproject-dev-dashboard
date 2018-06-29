@@ -11,38 +11,28 @@ namespace Dashboard.Data.Repositories
 {
     public class PanelRepository : EfRepository<Panel>, IPanelRepository
     {
-        private IIncludableQueryable<Panel, object> EagerPanels => Context.Set<Panel>()
-                                                                        .Include(p => p.Project)
-                                                                            .ThenInclude(p => p.StaticPipelines)
-                                                                                .ThenInclude(p => p.Stages)
-                                                                        .Include(p => p.Project)
-                                                                            .ThenInclude(p => p.DynamicPipelines)
-                                                                                .ThenInclude(p => p.Stages)
-                                                                        .Include(p => p.Position);
-
-
         public PanelRepository(AppDbContext context) : base(context)
         {
         }
 
         public override async Task<IEnumerable<Panel>> GetAllAsync()
         {
-            return await EagerPanels
+            return await Context.Set<Panel>()
                 .ToListAsync();
         }
 
         public override async Task<Panel> GetByIdAsync(int id)
         {
-            return await EagerPanels
+            return await Context.Set<Panel>()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<int>> GetActiveProjectIds()
+        public async Task<IEnumerable<Project>> GetActiveProjects()
         {
             return await Context.Set<Panel>()
-                .Include(p => p.Project)
-                .Select(p => p.Project.Id)
-                .Distinct()
+                .Where(p => p.Project != null)
+                .GroupBy(p => p.Project.Id)
+                .Select(x => x.OrderByDescending(p => p.Id).First().Project)
                 .ToListAsync();
         }
     }

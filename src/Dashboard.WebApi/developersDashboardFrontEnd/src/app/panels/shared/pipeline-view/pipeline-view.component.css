@@ -1,0 +1,91 @@
+.pipeline-metadata {
+    display: flex;
+    justify-content: space-between;
+}
+.pipeline-metadata-item {
+    margin-left: 5px;
+    margin-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+}
+.pipeline-metadata-item .material-icons {
+    font-size: 20px;
+    margin-right: 2px;
+}
+.pipeline-metadata-item.no-shrink {
+    flex-shrink: 0;
+    max-width: 50%;
+}
+.pipeline-metadata-item.shrink {
+    flex-shrink: 1;
+}
+
+.fleksik{
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    height: 85px;
+    -webkit-filter: drop-shadow( 0 3px 1px rgba(0,0,0,.2) );
+    filter: drop-shadow( 0 3px 1px rgba(0,0,0,.2) );
+}
+
+.container{
+    flex: 2 1 100px;
+    display: flex;
+    padding: 0;
+}
+
+.chevron {
+    width: 100%;
+    float: left;
+    flex: 2 1 100px;
+    background-size: cover;
+    clip-path: polygon(85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%, 0% 0%);
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+.container:first-child .chevron {
+    clip-path: polygon(85% 0%, 100% 50%, 85% 100%, 0% 100%, 0% 0%);
+}
+
+.container:last-child .chevron {
+    clip-path: polygon(100% 0%, 100% 100%, 0% 100%, 15% 50%, 0% 0%);
+}
+
+.container:first-child:last-child .chevron {
+    clip-path: polygon(100% 0%, 100% 100%, 0% 100%, 0% 0%);
+}
+
+.content{
+    font-size: 1em;
+    position: relative;
+    float: left;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+}
+
+.container:first-child .content {
+    left: 45%;
+}
+
+.container:last-child .content {
+    left: 55%;
+}
+
+.container:first-child:last-child .content {
+    left: 50%;
+}
+mat-spinner {
+    position: absolute;
+    top: 35%;
+    left: 45%;
+    margin-right: -55%;
+    transform: translate(-50%, -50%);
+}

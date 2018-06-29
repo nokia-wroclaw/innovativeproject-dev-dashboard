@@ -1,11 +1,25 @@
 language: csharp
 mono: none
-dotnet: 2.0.0
 sudo: required
 notifications:
    slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
+   webhooks:
+    urls:
+      - https://webhook.site/ff35ab44-09f6-4894-91b2-1e6fdf2930aa
+      - https://agile-beach-74761.herokuapp.com/api/Webhook/FormPipelineWebhook/travis
+      - https://cidasherapi.herokuapp.com/api/Webhook/FormPipelineWebhook/travis
+    on_success: always # default: always
+    on_failure: always # default: always
+    on_start: always   # default: never
+    on_cancel: always # default: always
+    on_error: always # default: always
 env:
   - DOCKER_COMPOSE_VERSION=1.20.1
+cache:
+  directories:
+    - $HOME/.npm
+    - $HOME/.nuget/packages
+
 before_install:
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -13,11 +27,12 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
   - docker ps
+  - curl https://cli-assets.heroku.com/install-standalone.sh | sh
+
 stages:
-  - build_all
-  - test
-  - name: deploy_images_to_registry
-    if: (branch = develop) AND (type IN (push))
+  - name: build_all
+    if: (branch != develop) AND (type IN (push))
+  #- test
   - name: deploy_to_heroku
     if: (branch = develop) AND (type IN (push))
 jobs:
@@ -26,31 +41,23 @@ jobs:
           script: docker-compose -f ./src/docker-compose.yml build dashboard.webapi
         - script: docker-compose -f ./src/docker-compose.yml build dashboard.web
 
-        - stage: test
-          script:
-            - docker-compose -f ./src/docker-compose.tests.yml run --rm webapi.unittests
-        - script: docker-compose -f ./src/docker-compose.tests.yml run --rm frontend.test npm run test
+        #- stage: test
+        #  script:
+        #    - docker-compose -f ./src/docker-compose.tests.yml run --rm webapi.unittests
+        #- script: docker-compose -f ./src/docker-compose.tests.yml run --rm frontend.test npm run test
         #- script: docker-compose -f ./src/docker-compose.tests.yml run --rm frontend.test npm run e2e
         #- script: docker-compose -f ./src/docker-compose.tests.yml run --rm frontend.test npm run lint
-
-        - stage: deploy_images_to_registry
-          script:
-            - docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD
-            - docker-compose -f ./src/docker-compose.yml build dashboard.webapi
-            - docker-compose -f ./src/docker-compose.yml push dashboard.webapi
-        - script:
-            - docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD
-            - docker-compose -f ./src/docker-compose.yml build dashboard.web
-            - docker-compose -f ./src/docker-compose.yml push dashboard.web
 
         - stage: deploy_to_heroku
           script:
             - docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
-            - docker pull registry.hub.docker.com/randomdocker729/cidashboard-webapi:latest
-            - docker tag registry.hub.docker.com/randomdocker729/cidashboard-webapi:latest registry.heroku.com/cidasherapi/web
+            - docker-compose -f ./src/docker-compose.yml build dashboard.webapi
+            - docker tag randomdocker729/cidashboard-webapi:latest registry.heroku.com/cidasherapi/web
             - docker push registry.heroku.com/cidasherapi/web
+            - /usr/local/bin/heroku container:release -a cidasherapi web # requires HEROKU_API_KEY env
         - script:
-          - docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
-          - docker pull registry.hub.docker.com/randomdocker729/cidashboard-frontend:latest
-          - docker tag registry.hub.docker.com/randomdocker729/cidashboard-frontend:latest registry.heroku.com/cidasher/web
-          - docker push registry.heroku.com/cidasher/web
+            - docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
+            - docker-compose -f ./src/docker-compose.yml build dashboard.web
+            - docker tag randomdocker729/cidashboard-frontend:latest registry.heroku.com/cidasher/web
+            - docker push registry.heroku.com/cidasher/web
+            - /usr/local/bin/heroku container:release -a cidasher web # requires HEROKU_API_KEY env

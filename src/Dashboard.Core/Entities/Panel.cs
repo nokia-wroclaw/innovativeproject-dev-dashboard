@@ -1,6 +1,11 @@
-﻿using System;
+﻿using Dashboard.Core.Interfaces;
+using Dashboard.Core.Interfaces.Repositories;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Dashboard.Core.Entities
 {
@@ -8,26 +13,12 @@ namespace Dashboard.Core.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public PanelPosition Position { get; set; } = new PanelPosition();
-
-        /// <summary>
-        /// If panel may contain more than one card in itself
-        /// </summary>
-        public abstract bool IsDynamic { get; }
+        public virtual PanelPosition Position { get; set; }
 
         public abstract string Discriminator { get; }
 
-        public int ProjectId { get; private set; }
-
-        private Project _project { get; set; }
-        public Project Project {
-            get => _project;
-            set
-            {
-                _project = value;
-                ProjectId = _project.Id;
-            }
-        }
+        public int? ProjectId { get; set; }
+        public virtual Project Project { get; set; }
 
         public bool ShouldSerializeProject()
         {
@@ -37,26 +28,37 @@ namespace Dashboard.Core.Entities
 
     public class MemePanel : Panel
     {
-        public override bool IsDynamic => false;
         public override string Discriminator => nameof(MemePanel);
 
-        public string MemeApiToken { get; set; }
+        public string StaticMemeUrl { get; set; }
     }
 
-    public class StaticBranchPanel : Panel
+    public class StaticBranchPanel : Panel, IPanelPipelines
     {
-        public override bool IsDynamic => false;
         public override string Discriminator => nameof(StaticBranchPanel);
 
         public string StaticBranchName { get; set; }
+
+        public async Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository)
+        {
+            return new List<Pipeline> { Project.Pipelines.OrderByDescending(d => d.LastUpdate).FirstOrDefault(p => p.Ref.Equals(StaticBranchName)) };
+        }
     }
 
-    public class DynamicPipelinesPanel : Panel
+    public class DynamicPipelinesPanel : Panel, IPanelPipelines
     {
-        public override bool IsDynamic => true;
         public override string Discriminator => nameof(DynamicPipelinesPanel);
 
         public int HowManyLastPipelinesToRead { get; set; }
+        public string PanelRegex { get; set; }
+
+        public async Task<IEnumerable<Pipeline>> GetPipelinesDTOForPanel(IProjectRepository projectRepository)
+        {
+            int projID = ProjectId ?? -1;
+            if (projID == -1) return new List<Pipeline>();
+
+            return Project.Pipelines.OrderByDescending(p => p.LastUpdate).Where(p => Regex.IsMatch(p.Ref, PanelRegex)).Take(HowManyLastPipelinesToRead);
+        }
     }
 
     public class PanelPosition

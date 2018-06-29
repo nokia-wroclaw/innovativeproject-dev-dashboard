@@ -9,45 +9,51 @@ import { LastPipelinesPanelConfigComponent } from "../../../panels/last-pipeline
 export const panelTypes : PanelType[] = [
     {
         discriminator: "MemePanel",
-        name: "Random meme",
+        name: "Meme",
         dynamic: false,
         bounds: {
-            minWidth: 1,
+            minWidth: 2,
             minHeight: 1,
-            maxWidth: 3,
-            maxHeight: 3,
-            defaultWidth: 1,
+            maxWidth: 16,
+            maxHeight: 4,
+            defaultWidth: 2,
             defaultHeight: 1
         },
         component: RandomMemePanelComponent,
-        configComponent: RandomMemePanelConfigComponent
+        configComponent: RandomMemePanelConfigComponent,
+        apiTypeNameSave: 'CreateMemePanel',
+        apiTypeNameUpdate: 'UpdateMemePanel'
     }, {
         discriminator: "StaticBranchPanel",
-        name: "Static branch pipelines",
+        name: "Latest pipeline for static branch",
         dynamic: false,
         bounds: {
-            minWidth: 2,
+            minWidth: 3,
             minHeight: 1,
-            maxWidth: 4,
+            maxWidth: 16,
             maxHeight: 1,
-            defaultWidth: 2,
+            defaultWidth: 3,
             defaultHeight: 1
         },
         component: StaticBranchPanelComponent,
-        configComponent: StaticBranchPanelConfigComponent
+        configComponent: StaticBranchPanelConfigComponent,
+        apiTypeNameSave: 'CreateStaticBranchPanel',
+        apiTypeNameUpdate: 'UpdateStaticBranchPanel'
     }, {
         discriminator: "DynamicPipelinesPanel",
-        name: "Last pipelines",
+        name: "Pipelines for dynamic branches",
         dynamic: true,
         bounds: {
-            minWidth: 2,
+            minWidth: 3,
             minHeight: 1,
-            maxWidth: 10,
+            maxWidth: 16,
             maxHeight: 10,
-            defaultWidth: 2,
+            defaultWidth: 3,
             defaultHeight: 2
         },
         component: LastPipelinesPanelComponent,
-        configComponent: LastPipelinesPanelConfigComponent
+        configComponent: LastPipelinesPanelConfigComponent,
+        apiTypeNameSave: 'CreateDynamicPipelinePanel',
+        apiTypeNameUpdate: 'UpdateDynamicPipelinePanel'
     }
 ]

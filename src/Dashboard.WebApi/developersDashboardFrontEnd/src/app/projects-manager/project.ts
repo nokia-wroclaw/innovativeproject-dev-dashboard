@@ -11,25 +11,39 @@ export interface Pipeline {
 
 export interface Stage {
     stageName : string;
-    stageStatus : string;
+    stageStatus : number;
+
+    successed : number;
+    total: number;
 }
 
-export class SupportedProviders{
+export class SupportedProviders {
     data : string[];
     constructor(data : string[]) {}
 }
 
 export class Project {
-    
+
     id : number;
     projectTitle : string;
     apiHostUrl : string;
     apiProjectId : string;
     apiAuthenticationToken : string;
     dataProviderName : string;
-    staticPipelines : Pipeline[];
-    dynamicPipelines : Pipeline[];
+    ciDataUpdateCronExpression : string;
 
-    constructor(projectTitle : string,apiHostUrl : string, apiProjectId : string, apiAuthenticationToken : string, dataProviderName : string, pipelines : Pipeline[]) {}
+    constructor(id : number = 0, projectTitle : string = null, apiHostUrl : string = null, apiProjectId : string = null, apiAuthenticationToken : string = null, dataProviderName : string = null, ciDataUpdateCronExpression : string = null) {
+        this.id = id;
+        this.projectTitle = projectTitle;
+        this.apiHostUrl = apiHostUrl;
+        this.apiProjectId = apiProjectId;
+        this.apiAuthenticationToken = apiAuthenticationToken;
+        this.dataProviderName = dataProviderName;
+        this.ciDataUpdateCronExpression = ciDataUpdateCronExpression;
+    }
+
+    setCiDataUpdateCronExpression(intervalMinutes : number) {
+        this.ciDataUpdateCronExpression = `*/${intervalMinutes} * * * *`;
+    }
 
 }

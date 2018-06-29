@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Dashboard.Application.GitLabApi.Models;
+using Dashboard.Application.GitLabApi.Models.Responses;
+using Dashboard.Core.Exceptions;
 using RestSharp;
 using RestSharp.Extensions;
 
@@ -26,47 +29,33 @@ namespace Dashboard.Application.GitLabApi
             };
         }
 
-        public async Task<Pipeline> GetPipelineById(string projectId, string pipelineId)
+        public Task<IEnumerable<Pipeline>> GetBriefPipelines(string projectId, int numberOfPipelines = 100, string branchName = "")
         {
-            var r = await GetPipelines(projectId, pipelineId : pipelineId);
-            return r.FirstOrDefault();
-        }
-
-        public async Task<Pipeline> GetPipelineByBranch(string projectId, string pipelineBranch)
-        {
-            var r = await GetPipelines(projectId, branchName : pipelineBranch);
-            return r.FirstOrDefault();
-        }
-
-        public async Task<IEnumerable<Pipeline>> GetPipelines(string projectId, string pipelineId = "", int numberOfPipelines = 20, string branchName = "")
-        {
-            var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
-            request.AddUrlSegment("pipelineId", pipelineId);
+            var request = new RestRequest("projects/{projectId}/pipelines/", Method.GET);
+            request.AddUrlSegment("projectId", projectId);
 
             request.AddQueryParameter("per_page", numberOfPipelines.ToString());
 
             if (!string.IsNullOrEmpty(branchName))
                 request.AddQueryParameter("ref", branchName);
 
-            var r = await Client.ExecuteTaskAsync<List<Pipeline>>(request);
-            return r.Data;
+            return Client.ExecuteTaskAsync<IEnumerable<Pipeline>>(request).EnsureSuccess();
         }
 
-        public async Task<Branch> GetBranch(string projectId, string branchName)
+        public Task<Pipeline> GetPipelineById(string projectId, int pipelineId)
         {
-            var r = await GetBranches(projectId, branchName : branchName);
+            var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}", Method.GET);
+            request.AddUrlSegment("projectId", projectId);
+            request.AddUrlSegment("pipelineId", pipelineId);
+
+            return Client.ExecuteTaskAsync<Pipeline>(request).EnsureSuccess();
+        }
+
+
+        public async Task<Pipeline> GetPipelineByBranch(string projectId, string pipelineBranch)
+        {
+            var r = await GetBriefPipelines(projectId, branchName: pipelineBranch);
             return r.FirstOrDefault();
-        }
-
-        public async Task<IEnumerable<Branch>> GetBranches(string projectId, string branchName = "")
-        {
-            var request = new RestRequest("projects/{projectId}/repository/branches/{branchName}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
-            request.AddUrlSegment("branchName", branchName);
-
-            var r = await Client.ExecuteTaskAsync<List<Branch>>(request);
-            return r.Data;
         }
 
         public async Task<Commit> GetCommitBySHA(string projectId, string commitSHA)
@@ -75,38 +64,82 @@ namespace Dashboard.Application.GitLabApi
             return r.FirstOrDefault();
         }
 
-        public async Task<IEnumerable<Commit>> GetCommits(string projectId, string commitSHA = "")
+        public Task<IEnumerable<Commit>> GetCommits(string projectId, string commitSHA = "")
         {
             var request = new RestRequest("projects/{projectId}/repository/commits/{commitSHA}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
             request.AddUrlSegment("commitSHA", commitSHA);
 
-            var r = await Client.ExecuteTaskAsync<List<Commit>>(request);
-            return r.Data;
+            return Client.ExecuteTaskAsync<IEnumerable<Commit>>(request).EnsureSuccess();
         }
 
-        public async Task<IEnumerable<Job>> GetJobs(string projectId, string pipelineId)
+        public async Task<IEnumerable<Job>> GetJobs(string projectId, int pipelineId)
         {
             var request = new RestRequest("projects/{projectId}/pipelines/{pipelineId}/jobs", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
             request.AddUrlSegment("pipelineId", pipelineId);
 
-            request.AddQueryParameter("per_page", "10000");//Arbitrary value
+            request.AddQueryParameter("per_page", "100");
+            request.AddQueryParameter("page", "1");
 
-            var r = await Client.ExecuteTaskAsync<IEnumerable<Job>>(request);
-            return r.Data;
+            var response = await Client.ExecuteTaskAsync<List<Job>>(request);
+            var consolidatedData = response.Data;
+            int totalPages = -1;
+            if (!int.TryParse(response.Headers.FirstOrDefault(p => p.Name == "X-Total-Pages").Value.ToString(), out totalPages))
+                throw new InvalidCastException("Bad conversion of X-Total-Pages in GitlabClient.cs");
+
+            List<Task<IRestResponse<List<Job>>>> nextResponses = new List<Task<IRestResponse<List<Job>>>>();
+            for (int i = 2; i <= totalPages; i++)
+            {
+                var req = new RestRequest("projects/{projectId}/pipelines/{pipelineId}/jobs", Method.GET);
+                req.AddUrlSegment("projectId", projectId);
+                req.AddUrlSegment("pipelineId", pipelineId);
+                req.AddQueryParameter("per_page", "100");
+                req.AddQueryParameter("page", i.ToString());
+
+                nextResponses.Add(Client.ExecuteTaskAsync<List<Job>>(req));
+            }
+            var res = (await Task.WhenAll(nextResponses));
+            foreach (var partialData in res)
+                consolidatedData.AddRange(partialData.Data);
+
+            return consolidatedData;
         }
 
-        public async Task<IEnumerable<Branch>> SearchForBranchInProject(string projectId, string branchPartialName)
+        public Task<IEnumerable<Branch>> SearchForBranchInProject(string projectId, string branchPartialName)
         {
             var request = new RestRequest("projects/{projectId}/repository/branches?search={branchPartialName}", Method.GET);
-            request.AddUrlSegment("projectId", HttpUtility.UrlEncode(projectId));
+            request.AddUrlSegment("projectId", projectId);
             request.AddUrlSegment("branchPartialName", branchPartialName);
 
             request.AddQueryParameter("per_page", "10000");
 
-            var r = await Client.ExecuteTaskAsync<List<Branch>>(request);
-            return r.Data;
+            return Client.ExecuteTaskAsync<IEnumerable<Branch>>(request).EnsureSuccess();
+        }
+
+
+        public async Task<(IEnumerable<Pipeline> pipelines, int totalPages)> FetchNewestPipelines(string projectId, int page, int perPage)
+        {
+            var request = new RestRequest("projects/{projectId}/pipelines", Method.GET);
+            request.AddUrlSegment("projectId", projectId);
+
+            request.AddQueryParameter("per_page", perPage.ToString());
+            request.AddQueryParameter("page", page.ToString());
+
+            var response = await Client.ExecuteTaskAsync<List<Pipeline>>(request);
+
+            if (!int.TryParse(response.Headers.FirstOrDefault(p => p.Name == "X-Total-Pages")?.Value.ToString(), out var totalPages))
+                throw new InvalidCastException("Bad conversion of X-Total-Pages");
+
+            return (response.Data, totalPages);
+        }
+
+
+        public Task<GetUserResponse> GetUser()
+        {
+            var request = new RestRequest("user", Method.GET);
+
+            return Client.ExecuteTaskAsync<GetUserResponse>(request).EnsureSuccess();
         }
     }
 }

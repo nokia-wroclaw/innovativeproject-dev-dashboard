@@ -1,15 +1,13 @@
 <mat-card>
   <div class="panel-header-container">
 
-    <div class="title pull-left">
+    <div *ngIf="!hidePanelTitle" class="title pull-left">
       <p>{{tileTitle}}</p>
     </div>
 
     <i *ngIf="adminMode " class="material-icons dnd-handle pull-right panel-icon">dehaze</i>
 
-    <!-- Edit settings does not currently work so it is blocked -->
-    <!-- [routerLink]=" [ '/admin', panel.id] " -->
-    <a href="#" class="pull-right">
+    <a [routerLink]=" [ '/admin', panel.id] " class="pull-right">
         <i *ngIf="adminMode " class="material-icons panel-icon">settings</i>
     </a>
 

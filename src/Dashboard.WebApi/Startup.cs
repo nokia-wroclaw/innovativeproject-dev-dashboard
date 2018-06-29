@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dashboard.Application;
+using Dashboard.Core.Interfaces;
 using Dashboard.Data.Context;
 using Dashboard.WebApi.Infrastructure;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,11 +37,12 @@ namespace Dashboard.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddAppHangfire();
-
             //TODO: change when database is setup
             services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase("InMemoryDatabase"));
+            {
+                options.UseLazyLoadingProxies();
+                options.UseInMemoryDatabase("InMemoryDatabase");
+            });
 
             //OpenAPI for sweet swagger documentation
             services.AddSwaggerGen(c =>
@@ -47,8 +52,12 @@ namespace Dashboard.WebApi
 
             services.AddMvc(options =>
             {
-            });
+            }).AddJsonOptions(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             //services.AddMvcCore().AddJsonFormatters(f => f.Converters.Add(new StringEnumConverter()));
+
+            services.AddAppHangfire();
 
             // Create the container builder.
             var builder = new ContainerBuilder();
@@ -71,35 +80,44 @@ namespace Dashboard.WebApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            var locale = Configuration["SiteLocale"];
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                SupportedCultures = new List<CultureInfo> { new CultureInfo(locale) },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo(locale) },
+                DefaultRequestCulture = new RequestCulture(locale)
+            });
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseApplicationHttpRequestExceptionMiddleware();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseApplicationHttpRequestExceptionMiddleware();
             }
 
             app.UseStaticFiles();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
+            app
+                .UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
 
-            app.UseHangfireDashboard(options: new DashboardOptions()
-            {
-                AppPath = "/hangfire",
-                Authorization = new[] { new HangfireAuthorizationFilter(),  }
-            });
-            app.UseHangfireServer();
-
-
-            CronJobs.Register();
+            app
+                .UseHangfireServer()
+                .UseHangfireDashboard(options: new DashboardOptions()
+                {
+                    AppPath = "/hangfire",
+                    Authorization = new[] { new HangfireAuthorizationFilter(), }
+                });
 
             app.UseMvc(routes =>
             {

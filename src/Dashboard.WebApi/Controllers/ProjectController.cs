@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dashboard.Application.Interfaces.Services;
 using Dashboard.Core.Entities;
+using Dashboard.WebApi.ApiModels;
 using Dashboard.WebApi.ApiModels.Requests;
+using Dashboard.WebApi.ApiModels.Responses;
 using Dashboard.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +23,11 @@ namespace Dashboard.WebApi.Controllers
 
         // GET api/Project
         [HttpGet]
-        public async Task<IEnumerable<Project>> Get()
+        public async Task<IEnumerable<ResponseProject>> Get()
         {
-            return await _projectService.GetAllProjectsAsync();
+            var projects = await _projectService.GetAllProjectsAsync();
+            var responseProjects = projects.Select(p => new ResponseProject(p));
+            return responseProjects;
         }
 
         // GET api/Project/5
@@ -33,7 +38,7 @@ namespace Dashboard.WebApi.Controllers
             if (project == null)
                 return NotFound();
 
-            return Json(project);
+            return Json(new ResponseProject(project));
         }
 
         // POST api/Project
@@ -49,10 +54,12 @@ namespace Dashboard.WebApi.Controllers
                 ApiHostUrl = model.ApiHostUrl,
                 ApiProjectId = model.ApiProjectId,
                 DataProviderName = model.DataProviderName,
+                CiDataUpdateCronExpression = model.CiDataUpdateCronExpression,
+                PipelinesNumber = model.PipelinesNumber == 0 ? 10 : model.PipelinesNumber
             };
 
-            var createdProject = await _projectService.CreateProjectAsync(project);
-            return Json(createdProject);
+            var r = await _projectService.CreateProjectAsync(project);
+            return ApiResponse.FromServiceResult(r);
         }
 
         // PUT api/Project/5
@@ -69,10 +76,12 @@ namespace Dashboard.WebApi.Controllers
                 ApiHostUrl = model.ApiHostUrl,
                 ApiProjectId = model.ApiProjectId,
                 DataProviderName = model.DataProviderName,
+                CiDataUpdateCronExpression = model.CiDataUpdateCronExpression,
+                PipelinesNumber = model.PipelineNumber
             };
 
             var r = await _projectService.UpdateProjectAsync(updatedProject);
-            return Json(r);
+            return ApiResponse.FromServiceResult(r);
         }
 
         // DELETE api/Project/5

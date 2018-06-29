@@ -56,7 +56,6 @@ import {AdminModeService} from "./dashboard/admin-mode-service/admin-mode.servic
 import {RandomMemePanelComponent} from "./panels/random-meme-panel/random-meme-panel.component";
 import {PanelProjectsComponent} from './configuration/panel-projects/panel-projects.component';
 import {ProjectsListComponent} from './configuration/projects-list/projects-list.component';
-import {PanelsConfigApiService} from "./panels/panels-config-api.service";
 import {RandomMemePanelConfigComponent} from "./panels/random-meme-panel/random-meme-panel-config.component";
 import {RandomMemeService} from "./panels/random-meme-panel/random-meme.service";
 import {StaticBranchPanelComponent} from "./panels/static-branch-panel/static-branch-panel.component";
@@ -65,11 +64,19 @@ import { PanelTypeService } from './panel-manager/service/panel-type/panel-type.
 import { LastPipelinesPanelComponent } from './panels/last-pipelines-panel/last-pipelines-panel.component';
 import { LastPipelinesPanelConfigComponent } from './panels/last-pipelines-panel/last-pipelines-panel-config.component';
 import { PipelineViewComponent } from './panels/shared/pipeline-view/pipeline-view.component';
+import { NotificationService } from './snackbar/notification.service';
+import { PipelineService } from './panels/shared/pipeline-view/pipeline-service/pipeline.service';
+import { DashboardConfigurationComponent } from './configuration/dashboard-configuration/dashboard-configuration.component';
+import { DashboardConfigurationService } from './configuration/dashboard-configuration/dashboard-service/dashboard-configuration.service';
+import { RegexValidatorDirective } from './panels/shared/validators/valid-regex.directive';
 
 const appRoutes : Routes = [
   {
     path: '',
     component: DashboardComponent
+  },{
+    path: 'admin/dashboardConfiguration',
+    component: DashboardConfigurationComponent
   }, {
     path: 'admin/create',
     component: PanelConfigurationComponent
@@ -82,6 +89,9 @@ const appRoutes : Routes = [
   }, {
     path: 'admin/:id',
     component: PanelConfigurationComponent
+  },{
+    path: 'admin/project/:id',
+    component: PanelProjectsComponent
   }, {
     path: '**',
     redirectTo: ''
@@ -104,10 +114,12 @@ const appRoutes : Routes = [
     StaticBranchPanelConfigComponent,
     LastPipelinesPanelComponent,
     LastPipelinesPanelConfigComponent,
-    PipelineViewComponent
+    PipelineViewComponent,
+    DashboardConfigurationComponent,
+    RegexValidatorDirective
   ],
   imports: [
-    RouterModule.forRoot(appRoutes, {enableTracing: true}),
+    RouterModule.forRoot(appRoutes),
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
@@ -155,7 +167,9 @@ const appRoutes : Routes = [
     ProjectsApiService,
     RandomMemeService,
     AdminModeService,
-    PanelsConfigApiService
+    NotificationService,
+    PipelineService,
+    DashboardConfigurationService
   ],
   bootstrap: [AppComponent],
   entryComponents: [RandomMemePanelComponent, RandomMemePanelConfigComponent, StaticBranchPanelComponent, StaticBranchPanelConfigComponent, LastPipelinesPanelComponent, LastPipelinesPanelConfigComponent]

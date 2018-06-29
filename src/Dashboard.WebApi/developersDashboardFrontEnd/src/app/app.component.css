@@ -8,6 +8,11 @@
   right: 0;
 }
 
+.setting{
+    position: absolute;
+    top:0;
+    right: 20px;
+}
 .toolbar {
     height: 40px;
 }
@@ -41,4 +46,27 @@ h1.app-name {
 .no-overflows {
     overflow-y: hidden; 
     overflow-x: hidden; 
+}
+
+
+mat-list-item.gap-above {
+    margin-top: 20px;
+}
+
+.noTitleBarMode mat-toolbar {
+    position: absolute;
+    width: 50px;
+    top: 0;
+    left: 0;
+    z-index: 500;
+    background: transparent;
+    color: #3f51b5;
+
+}
+.noTitleBarMode .app-name {
+    display: none;
+}
+
+.noTitleBarMode mat-list-item:first-child {
+    margin-top: 50px;
 }

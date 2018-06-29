@@ -8,11 +8,15 @@ namespace Dashboard.Data.Context
     {
         public DbSet<Pipeline> Pipelines { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<Stage> Stages { get; set; }
+        public DbSet<Job> Jobs { get; set; }
 
         public DbSet<Panel> Panels { get; set; }
         public DbSet<MemePanel> MemePanels { get; set; }
         public DbSet<StaticBranchPanel> StaticBranchPanels { get; set; }
         public DbSet<DynamicPipelinesPanel> DynamicPipelinesPanels { get; set; }
+
+        public DbSet<MemeImage> MemeImages { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -32,11 +36,15 @@ namespace Dashboard.Data.Context
             builder.Entity<Stage>(m =>
             {
                 m.HasKey(p => p.Id);
+                m.HasMany(s => s.Jobs)
+                    .WithOne(j => j.Stage);
+                    //.OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Job>(m =>
             {
                 m.HasKey(p => p.Id);
+                m.HasOne(p => p.Stage).WithMany(p => p.Jobs);
             });
 
             builder.Entity<Project>(m =>
@@ -48,9 +56,9 @@ namespace Dashboard.Data.Context
                 m.Property(p => p.ApiAuthenticationToken).IsRequired();
                 m.Property(p => p.ApiHostUrl).IsRequired();
                 m.Property(p => p.DataProviderName).IsRequired();
+                m.Property(p => p.PipelinesNumber).HasDefaultValue(100);
 
-                m.HasMany(p => p.StaticPipelines);
-                m.HasMany(p => p.DynamicPipelines);
+                m.HasMany(p => p.Pipelines);
             });
 
             builder.Entity<BranchName>(m =>
@@ -63,21 +71,21 @@ namespace Dashboard.Data.Context
             {
                 model.HasKey(p => p.Id);
                 model.Property(p => p.Id).ValueGeneratedOnAdd();
-                model.HasOne(p => p.Project);
+
+                model.HasOne(p => p.Project)
+                    .WithMany()
+                    .HasForeignKey(p => p.ProjectId);
 
                 model.OwnsOne(p => p.Position);
-            });
-            builder.Entity<MemePanel>(model =>
-            {
-                model.HasBaseType<Panel>();
-            });
-            builder.Entity<StaticBranchPanel>(model =>
-            {
-                model.HasBaseType<Panel>();
+
+                model.HasDiscriminator<string>("PanelType")
+                    .HasValue<MemePanel>(nameof(MemePanel))
+                    .HasValue<StaticBranchPanel>(nameof(StaticBranchPanel))
+                    .HasValue<DynamicPipelinesPanel>(nameof(DynamicPipelinesPanel));
             });
             builder.Entity<DynamicPipelinesPanel>(model =>
             {
-                model.HasBaseType<Panel>();
+                model.Property(p => p.PanelRegex).HasDefaultValue(".*");
             });
             #endregion
         }

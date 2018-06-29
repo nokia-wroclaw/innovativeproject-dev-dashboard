@@ -1,17 +1,39 @@
-<div *ngIf="pipeline">
-  <p style="margin-top: 5px;">Pipeline of
-          <strong>{{pipeline.ref}}</strong> for commit
-          <strong>"{{pipeline.commitTitle}}"</strong> by <strong>{{pipeline.commiterName}}</strong></p>
-          
-  <svg *ngFor="let stage of pipeline.stages; let i = index" height="75" width="80">
-      <text text-anchor="middle" x="40" y="15" font-family="Verdana" font-size="10">
-          {{stage.stageName}}
-      </text>
-      <circle cx="40" cy="40" r="20" stroke="black" stroke-width="1" [attr.fill]="getColorOfStage(stage)" />
-      <line *ngIf="i != 0" x1="0" y1="40" x2="20" y2="40" style="stroke:black;stroke-width:1" />
-      <line *ngIf="i != pipeline.stages.length - 1" x1="60" y1="40" x2="80" y2="40" style="stroke:black;stroke-width:1" />
-  </svg>
-</div>
-<div *ngIf="!pipeline">
-  <p style="margin-top: 5px;">Loading..</p>
+<div #pipelineContainer class="pipeline-cointainer">
+  <div *ngIf="pipeline">
+
+    <div class="pipeline-metadata">
+      <div class="pipeline-metadata-item no-shrink">
+        <i class="material-icons">device_hub</i>
+        <span>{{pipeline.ref}}</span>
+      </div>
+      <div class="pipeline-metadata-item shrink">
+        <i class="material-icons">create</i>
+        <span>{{pipeline.commitTitle}}</span>
+      </div>
+      <div class="pipeline-metadata-item no-shrink">
+        <i class="material-icons">person</i>
+        <span>{{pipeline.commiterName}}</span>
+      </div>
+    </div>
+
+
+    <div class="fleksik" [style.width]="getFullWidth()">
+      <div class="container" *ngFor="let stage of pipeline.stages">
+        <div class="chevron" [style.background-color]="getColorOfStage(stage)">
+          <div class="content">
+            <p>
+              {{stage.stageName}}
+            </p>
+
+            <p *ngIf="stage.stageStatus === 0">
+              {{stage.successed}} / {{stage.total}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!pipeline">
+    <mat-spinner [diameter]="55" strokeWidth="7"></mat-spinner>
+  </div>
 </div>

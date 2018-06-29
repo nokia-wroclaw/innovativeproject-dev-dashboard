@@ -14,5 +14,8 @@ namespace Dashboard.WebApi.ApiModels.Requests
         public string ApiAuthenticationToken { get; set; }
         [Required]
         public string DataProviderName { get; set; }
+        [Required]
+        public string CiDataUpdateCronExpression { get; set; }
+        public int PipelinesNumber { get; set; }
     }
 }

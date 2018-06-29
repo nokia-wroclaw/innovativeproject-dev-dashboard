@@ -1,45 +1,47 @@
-import { Component, OnInit, Input, ElementRef, OnDestroy } from '@angular/core';
+import {Component, OnInit, Input, ElementRef, OnDestroy} from '@angular/core';
 import './../panel.component';
-import { IPanelComponent } from "./../panel.component";
-import { LastPipelinesPanel } from "./last-pipelines";
-import { ProjectsApiService } from '../../projects-manager/api/projects-api.service';
-import { Pipeline, Stage } from '../../projects-manager/project';
-import { Subscription } from 'rxjs';
+import {IPanelComponent} from "./../panel.component";
+import {LastPipelinesPanel} from "./last-pipelines";
+import {ProjectsApiService} from '../../projects-manager/api/projects-api.service';
+import {Pipeline, Stage} from '../../projects-manager/project';
+import {Subscription} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
+import {PipelineService} from '../shared/pipeline-view/pipeline-service/pipeline.service';
 
-@Component({ templateUrl: './last-pipelines-panel.component.html' })
-export class LastPipelinesPanelComponent implements OnDestroy, IPanelComponent<LastPipelinesPanel> {
+@Component({templateUrl: './last-pipelines-panel.component.html'})
+export class LastPipelinesPanelComponent implements OnDestroy,
+IPanelComponent < LastPipelinesPanel > {
 
-  panel: LastPipelinesPanel;
+  panel : LastPipelinesPanel;
 
-  numbers: number[];
-  
-  private pipelineSub : Subscription;
+  numbers : number[];
+
+  private intervalSub : Subscription;
 
   /**
    * Pipelines to visualize.
    */
   pipelines : Pipeline[];
 
+  constructor(private pipelineService : PipelineService) {}
+
   setPanel(panel : LastPipelinesPanel) {
     this.panel = panel;
 
-    // TODO get N newest? or it is guaranted to be N newest by the backend?
-
-    // subscribtion for further updates of related project
-    this.pipelineSub = this
-      .projectsApi
-      .getProject(this.panel.projectId)
-      .filter(project => project != null)
-      .filter(project => project.dynamicPipelines != null)
-      .map(project => project.dynamicPipelines)
-      .subscribe(pipelines => this.pipelines = pipelines.slice(0, this.panel.howManyLastPipelinesToRead));
+    this.intervalSub = Observable
+      .interval(1000)
+      .startWith(0)
+      .subscribe(() => {
+        this
+          .pipelineService
+          .getPipelines(this.panel.id)
+          .subscribe(pipelines => this.pipelines = pipelines)
+      })
   }
 
-  constructor(private projectsApi: ProjectsApiService, private elementRef: ElementRef) {
-    console.log(elementRef);
-  }
-
-  ngOnDestroy(): void {
-  
+  ngOnDestroy() : void {
+    this
+      .intervalSub
+      .unsubscribe();
   }
 }

@@ -12,9 +12,8 @@ export interface IPanelComponent < T > {
  * Interface that must be implemented by component that represent concrete configuration panel - both for dynamic and static panels.
  */
 export interface IPanelConfigComponent<T> {
-    createPanelUrl : string;
     setPanel(panel : T);
 
     isValid() : boolean;
-    postPanel() : Observable<T>;
+    postPanel(edit : boolean) : Observable<T>;
 }
